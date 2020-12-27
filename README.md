@@ -1,0 +1,2 @@
+# DiplomaArchive
+Django Project
