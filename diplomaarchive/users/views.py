@@ -27,7 +27,6 @@ def login_user(request):
         if(user is None): return HttpResponse("Unauthorized")
         else:
             login(request,user)
-            print(request.user)
             return redirect('/')
 
         return HttpResponse("Your username is " + username)
