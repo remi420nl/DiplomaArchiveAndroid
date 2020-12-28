@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Class,Competence,Diploma,Exemption
+from .models import Course,Competence,Diploma,Exemption
 
 
 
@@ -9,26 +9,31 @@ class CompetenceSerializer(serializers.ModelSerializer):
 		fields=['name']
 
 
-class ClassSerializer(serializers.ModelSerializer):
+class CourseSerializer(serializers.ModelSerializer):
 
 	competences = CompetenceSerializer(read_only=False, many=True)
 
-
 	def update(self, instance, validated_data):
 		competence = validated_data.pop('competences')
-		print("UPDATE: " + str(competence))
+		
 		return instance
 
 	class Meta:
-		model = Class
+		model = Course
 		fields=['name', 'competences', 'slug']
 
 class DiplomaSerializer(serializers.ModelSerializer):
+
+	competences = CompetenceSerializer(read_only=False, many=True)
+
 	class Meta:
 		model = Diploma
-		fields=['name', 'date', 'student_id']
+		fields=['name', 'date', 'student', 'competences']
 
 class ExemptionSerializer(serializers.ModelSerializer):
+
 	class Meta:
 		model = Exemption
 		fields=['student_id', 'class_id']
+
+

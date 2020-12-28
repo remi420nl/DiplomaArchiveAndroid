@@ -4,11 +4,13 @@ from django.views.generic import TemplateView
 
 from django.conf.urls.static import static
 
-from .views import ClassesView,AddClass, LookupClass
+from .views import CoursesView,AddClass, LookupCourse, DiplomasView, AddDiploma, ExemptionView
 
 urlpatterns = [
-    path('addclass', AddClass.as_view()),
-    path('allclasses', ClassesView.as_view(), name='classes'),
-    path('class/<slug>/', LookupClass.as_view(), name='classes'),
-
+    path('addcourse', AddClass.as_view()),
+    path('allcourses', CoursesView.as_view(), name='classes'),
+    path('course/<slug>/', LookupCourse.as_view()),
+    path('alldiplomas', DiplomasView.as_view(), name = 'diplomas'),
+    path('adddiploma', AddDiploma.as_view()),
+    path('allexemptions', ExemptionView.as_view())
 ] 
