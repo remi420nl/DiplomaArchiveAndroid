@@ -3,10 +3,8 @@
     "",
     "\\diploma",
     "\\diplomaarchive",
-    "\\users",
-    "\\users\\migrations",
-    "\\users\\templates"
+    "\\users"
   ],
-  "SelectedNode": "\\diploma\\urls.py",
+  "SelectedNode": "\\diploma\\views.py",
   "PreviewInSolutionExplorer": false
 }

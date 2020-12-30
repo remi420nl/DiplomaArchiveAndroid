@@ -2,7 +2,9 @@ from django.db import models
 from users.models import User
 
 class Competence(models.Model):
-     name = models.CharField(max_length=200, unique=True)
+
+    #this has to be unique but the logic is being handled in the serializer
+     name = models.CharField(max_length=200)
 
      def __str__(self):
         return self.name
@@ -20,6 +22,9 @@ class Diploma(models.Model):
      date = models.DateField()
      student = models.ForeignKey(User, on_delete=models.CASCADE)
      competences = models.ManyToManyField(Competence)
+
+     def __str__(self):
+        return self.name
 
 class Exemption(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
