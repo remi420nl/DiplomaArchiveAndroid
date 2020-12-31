@@ -13,7 +13,8 @@ from rest_framework import permissions
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users
 
-from .models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from django.contrib.auth.models import Group
 
 @unauthenticated_user
@@ -78,13 +79,13 @@ class SignupView(APIView):
         data = self.request.data
 
         
-        user_type = 1
+     
         name = data['name']
         email = data['email']
         password = data['password']
         passwordconfirm = data['password2']
         user_type = data['user_type']
-        print("type is: " + str(data['user_type']))
+ 
         if password == passwordconfirm:
             if User.objects.filter(email=email).exists():
                 return Response({'error' : 'Email already exists'})
@@ -96,7 +97,10 @@ class SignupView(APIView):
                    
                     user = User.objects.create_user(email =email,password=password, name=name)
                     
-                    group = Group.objects.get(name='student')
+                    if user_type == 1:
+                        group = Group.objects.get(name='student')
+                    if user_type == 2:
+                        group = Group.objects.get(name='employee')
                     user.user_type = user_type
                     user.groups.add(group)
                     user.save()

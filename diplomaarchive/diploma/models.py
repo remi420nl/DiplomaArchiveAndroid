@@ -7,7 +7,7 @@ class Competence(models.Model):
      name = models.CharField(max_length=200)
 
      def __str__(self):
-        return self.name
+        return str(self.id) + self.name
 
 class Course(models.Model):
     name = models.CharField(max_length=200,unique=True)
@@ -22,6 +22,8 @@ class Diploma(models.Model):
      date = models.DateField()
      student = models.ForeignKey(User, on_delete=models.CASCADE)
      competences = models.ManyToManyField(Competence)
+     front_img = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+     back_img = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
 
      def __str__(self):
         return self.name

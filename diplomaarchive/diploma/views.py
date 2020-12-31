@@ -18,10 +18,6 @@ from datetime import datetime, timezone, timedelta
 from rest_framework import permissions
 
 
-
-
-
-
 class ExceptionMiddleware(object):
 
     def process_exception(self, request, exception):
@@ -153,6 +149,7 @@ class DiplomaView(UpdateAPIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
+    
         id = request.query_params["id"]
 
         try:
