@@ -8,11 +8,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny    
 
-from .models import Course,Competence,Diploma,Exemption
+from .models import Diploma
 from users.models import User
-from rest_framework.decorators import api_view, authentication_classes,permission_classes
+from competence.models import Competence
 
-from .serializers import CourseSerializer, CompetenceSerializer, DiplomaSerializer, ExemptionSerializer
+from .serializers import CourseSerializer, CompetenceSerializer, DiplomaSerializer
 from datetime import datetime, timezone, timedelta
 
 from rest_framework import permissions
@@ -23,54 +23,7 @@ class ExceptionMiddleware(object):
     def process_exception(self, request, exception):
         return Response({'error': True, 'content': exception}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class CoursesView(ListAPIView):
 
-    serializer_class = CourseSerializer
-
-    permission_classes = (AllowAny,)
-
-    def get_queryset(self):
-        courses = Course.objects.all()
-
-        return courses
-
-
-class AddCourse(APIView):
-    permission_classes = (permissions.AllowAny,)
-    serializer_class = CourseSerializer
-    queryset = Course.objects.all()
-
-    def post(self, request,format=None, *args, **kwargs):
-         data = request.data
-         print(data)
-         serializer = CourseSerializer(data = data)
-         if serializer.is_valid(raise_exception=True):
-             name = data['name']
-             slug = data['slug']
-             competences = data['competences']
-
-             saved_course = Course.objects.create(name=name, slug=slug)
-
-             for competence in competences:
-                  key,value = competence.popitem()
-                  if not Competence.objects.filter(name = value).exists():
-                      c = Competence.objects.create(name = value)
-                      saved_course.competences.add(c)
-                  else:
-                      c =  Competence.objects.get(name = value)
-                      saved_course.competences.add(c)
-      
-
-         
-             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-            
-class LookupCourse(RetrieveAPIView):
-    permission_classes = (permissions.AllowAny,)
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
-    lookup_field = 'slug'
-  
         
 class DiplomasView(ListAPIView):
 
@@ -80,7 +33,6 @@ class DiplomasView(ListAPIView):
     def get_queryset(self):
         diplomas = Diploma.objects.all()
 
-        print("DIPLOMAS " + str(diplomas))
         serializer = DiplomaSerializer(diplomas, many=True)
 
         return Response(serializer.data)
@@ -172,22 +124,3 @@ class DiplomaView(UpdateAPIView):
 
 
 
-class ExemptionView(ListAPIView):
-    
-      serializer_class = ExemptionSerializer
-
-      permission_classes = (AllowAny,)
-
-      def get_queryset(self):
-       
-          exemptions = Exemption.objects.all()
-          print("exemptions" + str(exemptions))
-
-          return exemptions
-
-   
-class CompetencesView(ListAPIView):
-
-    serializer_class = CompetenceSerializer
-    queryset = Competence.objects.all()
-    permission_classes = (AllowAny,)

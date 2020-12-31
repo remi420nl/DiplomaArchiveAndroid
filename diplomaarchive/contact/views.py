@@ -4,6 +4,7 @@ from .models import Contact
 from django.core.mail import send_mail
 from rest_framework.response import Response
 
+
 class ContactCreateView(APIView):
     permission_classes = (permissions.AllowAny,)
     

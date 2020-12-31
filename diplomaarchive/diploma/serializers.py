@@ -1,18 +1,14 @@
 from rest_framework import serializers
-from .models import Course,Competence,Diploma,Exemption
+from .models import Diploma
 from django.core.exceptions import ObjectDoesNotExist
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from users.serializers import UserSerializer
 from users.models import User
+from competence.serializers import CompetenceSerializer
+from competence.models import Competence
+from course.models import Course
 
 from rest_framework.exceptions import ValidationError
-
-class CompetenceSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Competence
-		fields=['id','name', 'diploma_set']
-		depth = 1
-
 
 class CourseSerializer(serializers.ModelSerializer):
 
@@ -82,11 +78,5 @@ class DiplomaSerializer(WritableNestedModelSerializer,serializers.ModelSerialize
 		fields=('name', 'date', 'student', 'competences')
 		
 
-
-class ExemptionSerializer(serializers.ModelSerializer):
-
-	class Meta:
-		model = Exemption
-		fields=['student_id', 'class_id']
 
 

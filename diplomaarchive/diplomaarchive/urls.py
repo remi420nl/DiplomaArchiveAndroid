@@ -15,6 +15,8 @@ urlpatterns = [
     path('dashboard', views.dashboard),
     path('api/users/', include('users.urls')),
     path('api/diploma/', include('diploma.urls')),
+    path('api/competence/', include('competence.urls')),
+    path('api/course/', include('course.urls')),
     path('api/contact', include('contact.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
