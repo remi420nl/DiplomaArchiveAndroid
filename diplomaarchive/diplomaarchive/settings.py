@@ -25,7 +25,7 @@ SECRET_KEY = '-6aj33ls=1g4i=z_skqo%jypb*@neeniugev1owz^rj7+sfo-x'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost",]
+ALLOWED_HOSTS = ["localhost", ]
 
 
 # Application definition
@@ -90,6 +90,10 @@ DATABASES = {
 }
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+efwefew
+
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -132,9 +136,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 
 REST_FRAMEWORK = {
@@ -144,16 +147,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
-    'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 3
 }
 
 
-
 CORS_ORIGIN_ALLOW_ALL = True
 
-FILE_UPLOAD_PERMISSIONS=0o640
+FILE_UPLOAD_PERMISSIONS = 0o640
 
-#references to model
+# references to model
 AUTH_USER_MODEL = 'users.User'
-

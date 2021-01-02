@@ -15,6 +15,7 @@ from competence.models import Competence
 from .serializers import CourseSerializer, CompetenceSerializer, DiplomaSerializer
 from datetime import datetime, timezone, timedelta
 
+from users.permissions import IsEmployee, IsStudent
 from rest_framework import permissions
 
 
@@ -23,27 +24,35 @@ class ExceptionMiddleware(object):
     def process_exception(self, request, exception):
         return Response({'error': True, 'content': exception}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
         
 class DiplomasView(ListAPIView):
 
     serializer_class = DiplomaSerializer
     permission_classes = (AllowAny,)
+    pagination_class = None
+
 
     def get_queryset(self):
         diplomas = Diploma.objects.all()
-
-        serializer = DiplomaSerializer(diplomas, many=True)
-
-        return Response(serializer.data)
+      
+        return diplomas
 
 class AddDiploma(APIView):
     
     serializer_class = DiplomaSerializer
-    permission_classes = (AllowAny,)
+  
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+       
+            self.permission_classes = [IsStudent,]
+            return super(AddDiploma, self).get_permissions
 
     def post(self, request, format = None):
         data = request.data
+
+        print(request.user.diploma.all())
+        return Response("bla")
 
         student_id = data['student']
         diploma = data['name']
@@ -88,7 +97,7 @@ class DiplomaView(UpdateAPIView):
     authentication_classes = []
 
     serializer_class = DiplomaSerializer
-    permission_classes = (AllowAny,)
+
 
     def get(self,request, *args, **kwargs):
         id = request.query_params["id"]

@@ -8,13 +8,22 @@ from rest_framework import permissions, status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from users.decorators import allowed_users
+from users.permissions import IsEmployee, IsStudent
+
 
 class CoursesView(ListAPIView):
 
     serializer_class = CourseSerializer
 
-    permission_classes = (AllowAny,)
+   # permission_classes = (AllowAny,)
     pagination_class = None
+
+    def get_permissions(self):
+        if self.request.method == 'GET' or self.request.method == 'POST':
+       
+            self.permission_classes = [IsStudent,]
+            return super(CoursesView, self).get_permissions()
 
     def get_queryset(self):
         courses = Course.objects.all()
@@ -23,7 +32,7 @@ class CoursesView(ListAPIView):
 
 
 class AddCourse(APIView):
-    permission_classes = (permissions.AllowAny,)
+   
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
 

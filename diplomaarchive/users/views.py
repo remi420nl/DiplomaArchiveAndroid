@@ -84,7 +84,7 @@ class SignupView(APIView):
         email = data['email']
         password = data['password']
         passwordconfirm = data['password2']
-        user_type = data['user_type']
+        role = data['role']
  
         if password == passwordconfirm:
             if User.objects.filter(email=email).exists():
@@ -97,11 +97,11 @@ class SignupView(APIView):
                    
                     user = User.objects.create_user(email =email,password=password, name=name)
                     
-                    if user_type == 1:
-                        group = Group.objects.get(name='student')
-                    if user_type == 2:
+                    if role == 1:
                         group = Group.objects.get(name='employee')
-                    user.user_type = user_type
+                    if role == 2:
+                        group = Group.objects.get(name='student')
+                    user.role = role
                     user.groups.add(group)
                     user.save()
                     return Response({'success': "user created succesfully"})

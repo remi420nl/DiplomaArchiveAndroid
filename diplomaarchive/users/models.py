@@ -37,12 +37,15 @@ class User(AbstractBaseUser,PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
-    USER_TYPE_CHOICES = (
-      (1, 'student'),
-      (2, 'employer'),)
+    STUDENT = 1
+    EMPLOYEE = 2
 
+    ROLE_CHOICES = (
+        (STUDENT, 'Admin'),
+        (EMPLOYEE, 'Employee')
+    )
 
-    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, null = True)
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null = True)
     
     objects = UserManager()
 

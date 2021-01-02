@@ -1,10 +1,15 @@
 {
   "ExpandedNodes": [
     "",
+    "\\course",
     "\\diploma",
     "\\diplomaarchive",
+    "\\media\\photos",
+    "\\media\\photos\\2020",
+    "\\media\\photos\\2020\\12",
+    "\\media\\photos\\2020\\12\\31",
     "\\users"
   ],
-  "SelectedNode": "\\diploma\\views.py",
+  "SelectedNode": "\\course\\views.py",
   "PreviewInSolutionExplorer": false
 }
