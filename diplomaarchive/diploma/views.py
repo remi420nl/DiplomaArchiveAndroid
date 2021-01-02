@@ -6,7 +6,7 @@ from rest_framework import permissions, status
 
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import AllowAny    
+from rest_framework.permissions import AllowAny
 
 from .models import Diploma
 from users.models import User
@@ -18,37 +18,40 @@ from datetime import datetime, timezone, timedelta
 from users.permissions import IsEmployee, IsStudent
 from rest_framework import permissions
 
+import pdfplumber
+from pathlib import Path
+import os
+
 
 class ExceptionMiddleware(object):
 
     def process_exception(self, request, exception):
         return Response({'error': True, 'content': exception}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        
+
 class DiplomasView(ListAPIView):
 
     serializer_class = DiplomaSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
 
-
     def get_queryset(self):
         diplomas = Diploma.objects.all()
-      
+
         return diplomas
 
+
 class AddDiploma(APIView):
-    
+
     serializer_class = DiplomaSerializer
-  
 
     def get_permissions(self):
         if self.request.method == 'POST':
-       
-            self.permission_classes = [IsStudent,]
+
+            self.permission_classes = [IsStudent, ]
             return super(AddDiploma, self).get_permissions
 
-    def post(self, request, format = None):
+    def post(self, request, format=None):
         data = request.data
 
         print(request.user.diploma.all())
@@ -58,78 +61,87 @@ class AddDiploma(APIView):
         diploma = data['name']
         date = data['date']
 
-        student = User.objects.get(id = student_id)
-      
+        student = User.objects.get(id=student_id)
 
         if student.user_type is not 1:
-             return Response({"error": "Diploma can only be assigned to a student"},
-                              status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                             )
-
-
-        result = Diploma.objects.filter(name = diploma).filter(student = student).count()
-        if result > 0:
-
-            return Response({"error" : "student already has this diploma assigned"},
+            return Response({"error": "Diploma can only be assigned to a student"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR
                             )
 
- 
-        diploma = Diploma.objects.create(name = diploma, student = student, date = date)
-      
+        result = Diploma.objects.filter(
+            name=diploma).filter(student=student).count()
+        if result > 0:
+
+            return Response({"error": "student already has this diploma assigned"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                            )
+
+        diploma = Diploma.objects.create(
+            name=diploma, student=student, date=date)
 
         for competence in data['competences']:
-       
+
             try:
-                c = Competence.objects.get(name = competence['name'])
+                c = Competence.objects.get(name=competence['name'])
                 diploma.competences.add(c)
             except ObjectDoesNotExist:
-                c = Competence.objects.create(name = competence['name'])
+                c = Competence.objects.create(name=competence['name'])
                 diploma.competences.add(c)
-	  
-        
+
         serializer = DiplomaSerializer(diploma)
-     
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
- 
+
+
 class DiplomaView(UpdateAPIView):
 
     authentication_classes = []
 
     serializer_class = DiplomaSerializer
 
-
-    def get(self,request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         id = request.query_params["id"]
 
         try:
-            diploma = Diploma.objects.get(id = id)
+            diploma = Diploma.objects.get(id=id)
             serializer = DiplomaSerializer(diploma)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
-    
+
         id = request.query_params["id"]
 
         try:
-            diploma = Diploma.objects.get(id = id)
-            serializer = DiplomaSerializer(diploma, data = request.data)
+            diploma = Diploma.objects.get(id=id)
+            serializer = DiplomaSerializer(diploma, data=request.data)
             if serializer.is_valid():
-               serializer.save()
-               return Response(serializer.data, status=status.HTTP_200_OK)
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, *args, **kwargs):
         id = request.query_params["id"]
         try:
-            diploma = Diploma.objects.get(id = id)
+            diploma = Diploma.objects.get(id=id)
             diploma.delete()
             return Response(status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+class ReadDiploma(APIView):
 
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        BASE_DIR = Path(__file__).resolve().parent.parent
+
+        print("reading diploma..")
+
+        with pdfplumber.open(os.path.join(BASE_DIR, 'media')+"\diplomas\programming job.pdf") as pdf:
+            first_page = pdf.pages[0]
+            print(first_page.extract_text())
+        return Response("Done")

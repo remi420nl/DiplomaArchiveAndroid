@@ -10,6 +10,7 @@ class Diploma(models.Model):
      competences = models.ManyToManyField(Competence)
      front_img = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
      back_img = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+     context = models.TextField(blank=True)
 
      def __str__(self):
         return self.name
