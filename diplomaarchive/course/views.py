@@ -16,14 +16,14 @@ class CoursesView(ListAPIView):
 
     serializer_class = CourseSerializer
 
-   # permission_classes = (AllowAny,)
+    permission_classes = (AllowAny,)
     pagination_class = None
 
-    def get_permissions(self):
-        if self.request.method == 'GET' or self.request.method == 'POST':
+    # def get_permissions(self):
+    #     if self.request.method == 'GET' or self.request.method == 'POST':
        
-            self.permission_classes = [IsStudent,]
-            return super(CoursesView, self).get_permissions()
+    #         self.permission_classes = [IsStudent,]
+    #         return super(CoursesView, self).get_permissions()
 
     def get_queryset(self):
         courses = Course.objects.all()
