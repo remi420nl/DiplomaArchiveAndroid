@@ -3,7 +3,7 @@ import axios from "axios";
 export const GetCourses = async () => {
   console.log("api call");
   return await axios
-    .get("http://192.168.43.252:8000/api/course/"
+    .get("http://192.168.169.252:8000/api/course/"
     )
 };
 
@@ -18,3 +18,10 @@ export const GetCourses2 = async () => {
     .then((response) => response.json())
     .then((bla) => console.log(bla));
 };
+
+export const LogIn = async (context) => {
+  console.log("login api call");
+  return await axios
+    .post("http://192.168.169.252:8000/api/token/",context
+    )
+}
