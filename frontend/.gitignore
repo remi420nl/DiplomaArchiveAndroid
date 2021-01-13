@@ -8,6 +8,10 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+environment.js
+Api.js
+Firebase.js
 
 # macOS
 .DS_Store
+

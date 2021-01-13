@@ -10,16 +10,14 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import { screensEnabled } from "react-native-screens";
-import { GetCourses } from "../api/Api";
-import { COLORS } from "./assets/constants";
+import { AuthProvider } from "../App/context/AuthContext";
 
 const styles = StyleSheet.create({
   view: {
     flex: 1,
     backgroundColor: "blue",
 
-    paddingTop: Platform.OS === "android" ? 25 : 0,
+    // paddingTop: Platform.OS === "android" ? 25 : 0,
   },
 });
 
@@ -36,7 +34,9 @@ export default function App() {
   });
 
   return loaded ? (
-    <Navigation />
+    <AuthProvider>
+      <Navigation />
+    </AuthProvider>
   ) : (
     <View>
       <Text>........Loading.........</Text>

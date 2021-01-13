@@ -38,7 +38,7 @@ class AddCourse(APIView):
 
     def post(self, request,format=None, *args, **kwargs):
          data = request.data
-         print(data)
+      
          serializer = CourseSerializer(data = data)
          if serializer.is_valid(raise_exception=True):
              name = data['name']

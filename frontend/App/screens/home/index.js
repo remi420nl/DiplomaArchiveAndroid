@@ -10,8 +10,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: COLORS.lightGray3,
-    borderColor: 'black',
-    borderWidth: 5,
+
+    
+  },
+  header: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent:'flex-end',
+  
     
   },
   main: {
@@ -57,7 +63,13 @@ const styles = StyleSheet.create({
 
 
 
-export default  Home = ({navigation}) => {
+
+
+export default Home = ({navigation}) => {
+
+ const ScreenContainer = ({children}) => (
+    <View>{children}</View>
+  )
 
 const [searchText,setSearchText] = useState("Zoek Vak")
 
@@ -65,7 +77,7 @@ const [searchText,setSearchText] = useState("Zoek Vak")
     <View style={styles.container}> 
    <View  style={styles.header}>
                 <TouchableOpacity onPress={() => {
-                    navigation.push('Login')
+                    alert("todo")
                 }}>
                 <Entypo name="cog" size={32} color={COLORS.white}/>
                 </TouchableOpacity>
@@ -83,6 +95,12 @@ const [searchText,setSearchText] = useState("Zoek Vak")
       </Pressable>
       <View style={styles.main}>
         <Text style={styles.title}>Diploma Archive</Text>
+        <TouchableOpacity
+        onPress={() => navigation.push('Courses')}>
+        <Text>Vakken</Text></TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.push('Diplomas')}>
+          <Text>Diplomas</Text></TouchableOpacity>
         <Pressable
           style={styles.lowerbutton}
           onPress={() => console.warn("clicked")}
