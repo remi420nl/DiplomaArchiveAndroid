@@ -1,3 +1,4 @@
+from .serializers import CustomTokenObtainPairSerializer
 from .serializers import GroupSerializer, UserSerializer
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
@@ -15,6 +16,7 @@ from rest_framework import permissions
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users
 
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -107,14 +109,12 @@ class SignupView(APIView):
                     user = User.objects.create_user(
                         email=email, password=password, name=name)
 
-              
-            
                     user.groups.add(group['id'])
                     user.save()
-                    
+
                     serializer = UserSerializer(user)
                     return Response({'message': "user created succesfully",
-                                     'user' : serializer.data
+                                     'user': serializer.data
                                      })
 
     def get(self, request, format=None):
@@ -125,3 +125,8 @@ class SignupView(APIView):
 
         serializer = GroupSerializer(groups, many=True)
         return Response({'groups': serializer.data})
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+
+    serializer_class = CustomTokenObtainPairSerializer

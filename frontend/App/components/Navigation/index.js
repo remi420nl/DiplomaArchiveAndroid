@@ -1,5 +1,5 @@
 import React, { Children, useEffect, useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme} from "@react-navigation/native";
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
@@ -17,6 +17,7 @@ import { CourseDetail } from "../../screens/course/Details";
 import Loading from "../../screens/loading";
 import UserDetails from "../../screens/auth/UserDetails";
 import { useAuth } from "../../context/AuthContext";
+import { COLORS } from "../../assets/constants";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -28,6 +29,14 @@ export default () => {
   const Drawer = createDrawerNavigator();
 
   const { token, logout } = useAuth();
+
+const Theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: COLORS.background
+  }
+}
 
   //can be deleted..
   const MainStackScreen = () => (
@@ -50,7 +59,10 @@ export default () => {
   );
 
   const TabScreen = () => (
-    <Tabs.Navigator initialRouteName="Home">
+    <Tabs.Navigator initialRouteName="Home" tabBarOptions={{style: { backgroundColor: COLORS.background}, labelStyle: {
+      color: "black", fontSize: 20
+    }}}    activeColor="#00aea2"
+    inactiveColor="#95a5a6">
       <Tabs.Screen
         name="Home"
         options={{ headerShown: false }}
@@ -69,7 +81,7 @@ export default () => {
   );
 
   const HomeStackScreen = () => (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator initialRouteName="Courses">
       <HomeStack.Screen name="Home" options={{ headerShown: false }}>
         {(props) => <Home {...props} />}
       </HomeStack.Screen>
@@ -135,7 +147,7 @@ export default () => {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={Theme}  >
       <DrawerScreen />
     </NavigationContainer>
   );

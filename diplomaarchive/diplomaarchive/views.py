@@ -3,13 +3,13 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("testttt")
+    return HttpResponse("test")
+
 
 def dashboard(request):
     print("dashbooard view")
     if not request.user.is_authenticated:
-        
-        return HttpResponse("Not authorized")
 
+        return HttpResponse("Not authorized")
 
     return HttpResponse("<h1>Dashboard</h1>")

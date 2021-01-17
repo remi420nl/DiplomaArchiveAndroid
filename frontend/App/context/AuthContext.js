@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { View } from "react-native";
-import { auth } from "../../api/Firebase";
 import { Signup, Login } from "../../api/Api";
 
 export const AuthContext = createContext();
@@ -8,7 +7,7 @@ export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
   const signup = (user) => {
@@ -19,13 +18,16 @@ export const AuthProvider = ({ children }) => {
     await Login(credentials)
       .then(({ data }) => {
         setToken("Bearer " + data.access);
+        setUser(data.user);
       })
       .catch((e) => {
         callback(e.response.data.detail);
       });
   };
 
-  const logout = () => {setToken(null)}
+  const logout = () => {
+    setToken(null);
+  };
 
   const contextvalue = {
     user,

@@ -140,7 +140,7 @@ export default ({ navigation }) => {
             </View>
           ))}
 
-          <TouchableOpacity>
+          <TouchableOpacity disabled={loading}>
             <Text
               title="Sign Up"
               onPress={() => submitSignup()}
