@@ -17,6 +17,7 @@ from datetime import datetime, timezone, timedelta
 
 from users.permissions import IsEmployee, IsStudent
 from rest_framework import permissions
+from rest_framework.parsers import FileUploadParser
 
 import pdfplumber
 from pathlib import Path
@@ -32,8 +33,14 @@ class ExceptionMiddleware(object):
 class DiplomasView(ListAPIView):
 
     serializer_class = DiplomaSerializer
-    permission_classes = (AllowAny,)
+
     pagination_class = None
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+
+            self.permission_classes = [IsEmployee, ]
+            return super(DiplomasView, self).get_permissions()
 
     def get_queryset(self):
         diplomas = Diploma.objects.all()
@@ -41,21 +48,76 @@ class DiplomasView(ListAPIView):
         return diplomas
 
 
+class DiplomasByStudent(ListAPIView):
+
+    serializer_class = DiplomaSerializer
+
+    pagination_class = None
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+
+            self.permission_classes = [IsStudent, ]
+            return super(DiplomasByStudent, self).get_permissions()
+
+    def get_queryset(self):
+
+        diplomas = Diploma.objects.filter(student=self.request.user)
+
+        return diplomas
+
+
 class AddDiploma(APIView):
 
+    parser_class = (FileUploadParser,)
     serializer_class = DiplomaSerializer
 
     def get_permissions(self):
         if self.request.method == 'POST':
 
             self.permission_classes = [IsStudent, ]
-            return super(AddDiploma, self).get_permissions
 
-    def post(self, request, format=None):
+            return super(AddDiploma, self).get_permissions()
+
+    def post(self, request):
+
+        # student = User.objects.get(id=2)
+        # name = "testdiploma"
+        # context = "testomschrijving"
+        # front_img = request.data['pdf']
+
+        # dic = {
+        #     'student':student,
+        #     'student_id': 2,
+        #     'name' : name,
+        #     'context' : context,
+        #    ' front_img' : front_img
+        #     }
+
+        # diploma = Diploma.objects.create(
+        #     name=name, student_id=2,student=student,context=context, front_img=front_img)
+
         data = request.data
+        diploma_name = data['name']
 
-        print(request.user.diploma.all())
-        return Response("bla")
+        serializer = DiplomaSerializer(data=data)
+
+        student = request.user
+
+        result = Diploma.objects.filter(
+            name=diploma_name).filter(student=student).count()
+        if result > 0:
+
+            return Response({"error": "Student heeft al diploma met dezelfde naam"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                            )
+
+        if(serializer.is_valid()):
+            serializer.save(student=student)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+     #####################################################################################
+      #  print(request.user.diploma.all())
 
         student_id = data['student']
         diploma = data['name']
@@ -63,21 +125,10 @@ class AddDiploma(APIView):
 
         student = User.objects.get(id=student_id)
 
-        if student.user_type is not 1:
-            return Response({"error": "Diploma can only be assigned to a student"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                            )
-
-        result = Diploma.objects.filter(
-            name=diploma).filter(student=student).count()
-        if result > 0:
-
-            return Response({"error": "student already has this diploma assigned"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                            )
-
-        diploma = Diploma.objects.create(
-            name=diploma, student=student, date=date)
+        # if student.user_type is not 1:
+        #     return Response({"error": "Diploma can only be assigned to a student"},
+        #                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        #                     )
 
         for competence in data['competences']:
 
@@ -101,9 +152,13 @@ class DiplomaView(UpdateAPIView):
 
     def get(self, request, *args, **kwargs):
         id = request.query_params["id"]
+        print("ID ", str(id))
 
         try:
             diploma = Diploma.objects.get(id=id)
+            if diploma.student is not request.user:
+                print("this is not the owner of the diploma")
+                return Response({'error': 'Unauthorized'}, status=403)
             serializer = DiplomaSerializer(diploma)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:

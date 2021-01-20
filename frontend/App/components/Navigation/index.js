@@ -1,5 +1,5 @@
 import React, { Children, useEffect, useState } from "react";
-import { NavigationContainer, DefaultTheme} from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
@@ -18,6 +18,7 @@ import Loading from "../../screens/loading";
 import UserDetails from "../../screens/auth/UserDetails";
 import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
+import AddDiploma from "../../screens/diploma/AddDiploma";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -30,13 +31,13 @@ export default () => {
 
   const { token, logout } = useAuth();
 
-const Theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: COLORS.background
-  }
-}
+  const Theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: COLORS.background,
+    },
+  };
 
   //can be deleted..
   const MainStackScreen = () => (
@@ -59,10 +60,18 @@ const Theme = {
   );
 
   const TabScreen = () => (
-    <Tabs.Navigator initialRouteName="Home" tabBarOptions={{style: { backgroundColor: COLORS.background}, labelStyle: {
-      color: "black", fontSize: 20
-    }}}    activeColor="#00aea2"
-    inactiveColor="#95a5a6">
+    <Tabs.Navigator
+      initialRouteName="Home"
+      tabBarOptions={{
+        style: { backgroundColor: COLORS.background },
+        labelStyle: {
+          color: "black",
+          fontSize: 20,
+        },
+      }}
+      activeColor="#00aea2"
+      inactiveColor="#95a5a6"
+    >
       <Tabs.Screen
         name="Home"
         options={{ headerShown: false }}
@@ -81,7 +90,7 @@ const Theme = {
   );
 
   const HomeStackScreen = () => (
-    <HomeStack.Navigator initialRouteName="Courses">
+    <HomeStack.Navigator initialRouteName="AddDiploma">
       <HomeStack.Screen name="Home" options={{ headerShown: false }}>
         {(props) => <Home {...props} />}
       </HomeStack.Screen>
@@ -91,6 +100,17 @@ const Theme = {
         options={{ title: "Vakken" }}
       />
       <HomeStack.Screen name="Diplomas" component={Diplomas} />
+      <HomeStack.Screen
+        name="AddDiploma"
+        component={AddDiploma}
+        options={{ title: "Diploma Toevoegen" }}
+      />
+      <HomeStack.Screen
+        name="Sign Up"
+        options={{ headerShown: true, title: "Registreren" }}
+      >
+        {(props) => <Signup {...props} />}
+      </HomeStack.Screen>
     </HomeStack.Navigator>
   );
 
@@ -124,15 +144,17 @@ const Theme = {
 
   const CustomDrawerContent = (props) => {
     return (
-    <DrawerContentScrollView>
-      <DrawerItemList {...props}/>
-      {token &&<DrawerItem label="Uitloggen" onPress={() => logout()}/>}
-    </DrawerContentScrollView>
-    )
-  }
+      <DrawerContentScrollView>
+        <DrawerItemList {...props} />
+        {token && <DrawerItem label="Uitloggen" onPress={() => logout()} />}
+      </DrawerContentScrollView>
+    );
+  };
 
   const DrawerScreen = () => (
-    <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+    >
       <Drawer.Screen name="Home" component={TabScreen} />
       {token ? (
         <Drawer.Screen name="Profile" component={LoggedInStackScreen} />
@@ -147,7 +169,7 @@ const Theme = {
   }
 
   return (
-    <NavigationContainer theme={Theme}  >
+    <NavigationContainer theme={Theme}>
       <DrawerScreen />
     </NavigationContainer>
   );

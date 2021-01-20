@@ -121,7 +121,6 @@ class SignupView(APIView):
 
         # to return the groups to the client
         groups = Group.objects.all()
-        print(groups)
 
         serializer = GroupSerializer(groups, many=True)
         return Response({'groups': serializer.data})

@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const loginUser = async (credentials, callback) => {
     await Login(credentials)
       .then(({ data }) => {
+        console.log("log in succesful ", data);
         setToken("Bearer " + data.access);
         setUser(data.user);
       })

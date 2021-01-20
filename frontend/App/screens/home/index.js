@@ -10,13 +10,12 @@ import { AntDesign } from "@expo/vector-icons";
 import { COLORS, FONTS, SIZES } from "../../assets/constants";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
-import { Button} from "../../components/Button"
+import { Button } from "../../components/Button";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-
   },
   header: {
     width: "100%",
@@ -33,9 +32,7 @@ const styles = StyleSheet.create({
   usercontent: {
     marginBottom: 200,
   },
-  search: {
-    
-  },
+  search: {},
   title: {
     ...FONTS.h1,
     fontSize: 60,
@@ -52,8 +49,6 @@ const styles = StyleSheet.create({
 
     justifyContent: "space-evenly",
   },
-
-
 });
 
 export default Home = ({ navigation }) => {
@@ -67,17 +62,39 @@ export default Home = ({ navigation }) => {
 
   const StudentContent = () => (
     <View>
-      <Button text={"Diplomas"} onPress={() => navigation.push("Diplomas")}/>
-     <Button text={"Diploma Uploaden"} theme='primary'/>
+      <Button
+        text={"Diplomas"}
+        onPress={() =>
+          navigation.push("Diplomas", { token: token, user: user })
+        }
+        theme="secondary"
+      />
+      <Button
+        text="Diploma Toevoegen"
+        theme="primary"
+        onPress={() =>
+          navigation.push("AddDiploma", { token: token, user: user })
+        }
+      />
     </View>
   );
 
   const EmployerContent = () => (
     <View>
- <Button text="Vrijstellingen"  theme='secondary'/>
-<Button text="Vakken" onPress={() => navigation.push("Courses")}  theme='primary'/>
+      <Button text="Vrijstellingen" theme="secondary" />
+      <Button
+        text="Vakken"
+        onPress={() => navigation.push("Courses")}
+        theme="primary"
+      />
+      <Button
+        text={"Diplomas"}
+        onPress={() =>
+          navigation.push("Diplomas", { token: token, user: user })
+        }
+        theme="secondary"
+      />
     </View>
-  
   );
 
   return (
@@ -112,9 +129,7 @@ export default Home = ({ navigation }) => {
         </View>
         <View style={styles.usercontent}>
           {user && user.type == "student" && StudentContent()}
-          {EmployerContent()}
-          {StudentContent()}
-          {user && user.type == "employer" && EmployerContent()}
+          {user && user.type == "employee" && EmployerContent()}
         </View>
       </View>
     </View>
