@@ -10,8 +10,10 @@ import {
 import { GetAllDiplomas, GetAllDiplomasByUser } from "../../../api/Api";
 import { Transition, Transitioning } from "react-native-reanimated";
 import { ScrollView } from "react-native-gesture-handler";
+import { useAuth } from "../../context/AuthContext";
+import { COLORS } from "../../assets/constants";
 
-export default ({ route }) => {
+export default ({ navigation, route }) => {
   const [diplomas, setDiplomas] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,7 +23,7 @@ export default ({ route }) => {
   const colorsAdded = useRef(false);
   const ref = useRef();
 
-  const { token, user } = route.params;
+  const { token, user } = useAuth();
 
   const transition = (
     <Transition.Together>
@@ -33,7 +35,7 @@ export default ({ route }) => {
 
   useEffect(() => {
     console.log("useffect Diplomas");
-    if (!colorsAdded.current) {
+    if (!colorsAdded.current && user) {
       if (user.type === "employee") {
         GetAllDiplomas(token)
           .then(({ data }) => setDiplomas(data))
@@ -73,16 +75,28 @@ export default ({ route }) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center",
+    },
+    view: {
+      flex: 1,
+    },
+    header: {
+      backgroundColor: COLORS.background2,
+      alignItems: "center",
+    },
+    headerText: {
+      marginTop: 15,
+      marginHorizontal: 10,
+      padding: 10,
     },
     cardContainer: {
-      flexGrow: 1,
+      flex: 1,
     },
     title: {
       textAlign: "center",
       fontSize: 38,
       letterSpacing: -2,
       fontWeight: "bold",
+      textTransform: "uppercase",
     },
     card: {
       flexGrow: 1,
@@ -91,14 +105,24 @@ export default ({ route }) => {
     },
     competenseList: { marginTop: 10 },
     competence: { fontSize: 20 },
+    link: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: "darkgray",
+    },
   });
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.view}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>
+          Diplomas opgeslagen: {!loading && diplomas.length}
+        </Text>
+      </View>
       <Transitioning.View
-        style={styles.container}
         ref={ref}
         transition={transition}
+        style={styles.container}
       >
         {error && <Text>{error}</Text>}
         {!loading &&
@@ -110,19 +134,29 @@ export default ({ route }) => {
               onPress={() => {
                 setCurrentIndex(currentIndex !== i ? i : null);
                 ref.current.animateNextTransition();
+                console.log("clicked");
               }}
             >
               <View style={[styles.card, { backgroundColor: bg }]}>
                 <Text style={[styles.title, { color }]}>{name}</Text>
                 <View style={styles.competenseList}>
                   {i === currentIndex &&
+                    competences &&
                     competences.map(({ name }) => (
                       <Text style={[styles.competence, { color }]}>{name}</Text>
-                    )) && (
-                      <TouchableOpacity onPress={() => alert(id)}>
-                        <Text>Openen</Text>
-                      </TouchableOpacity>
-                    )}
+                    ))}
+                  {i == currentIndex && (
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("Diploma", {
+                          token: token,
+                          id: id,
+                        })
+                      }
+                    >
+                      <Text style={styles.link}>Openen</Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
             </TouchableOpacity>

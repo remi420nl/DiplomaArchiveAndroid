@@ -12,11 +12,11 @@ import {
 } from "react-native";
 import { AuthProvider } from "../App/context/AuthContext";
 
+
 const styles = StyleSheet.create({
   view: {
     flex: 1,
     backgroundColor: "blue",
-
     // paddingTop: Platform.OS === "android" ? 25 : 0,
   },
 });

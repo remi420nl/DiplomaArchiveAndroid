@@ -119,45 +119,22 @@ class AddDiploma(APIView):
      #####################################################################################
       #  print(request.user.diploma.all())
 
-        student_id = data['student']
-        diploma = data['name']
-        date = data['date']
-
-        student = User.objects.get(id=student_id)
-
-        # if student.user_type is not 1:
-        #     return Response({"error": "Diploma can only be assigned to a student"},
-        #                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        #                     )
-
-        for competence in data['competences']:
-
-            try:
-                c = Competence.objects.get(name=competence['name'])
-                diploma.competences.add(c)
-            except ObjectDoesNotExist:
-                c = Competence.objects.create(name=competence['name'])
-                diploma.competences.add(c)
-
-        serializer = DiplomaSerializer(diploma)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 class DiplomaView(UpdateAPIView):
 
-    authentication_classes = []
-
+    # authentication_classes = []
+    permission_classes = (permissions.AllowAny,)
     serializer_class = DiplomaSerializer
 
     def get(self, request, *args, **kwargs):
-        id = request.query_params["id"]
-        print("ID ", str(id))
+        if 'id' in request.GET:
+
+            id = request.query_params["id"]
 
         try:
             diploma = Diploma.objects.get(id=id)
-            if diploma.student is not request.user:
-                print("this is not the owner of the diploma")
+            if diploma.student.id is not request.user.id:
+
                 return Response({'error': 'Unauthorized'}, status=403)
             serializer = DiplomaSerializer(diploma)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -165,17 +142,17 @@ class DiplomaView(UpdateAPIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
+        if 'id' in request.GET:
+            id = request.query_params["id"]
 
-        id = request.query_params["id"]
-
-        try:
-            diploma = Diploma.objects.get(id=id)
-            serializer = DiplomaSerializer(diploma, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            try:
+                diploma = Diploma.objects.get(id=id)
+                serializer = DiplomaSerializer(diploma, data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, *args, **kwargs):
         id = request.query_params["id"]

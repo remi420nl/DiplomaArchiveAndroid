@@ -19,6 +19,7 @@ import UserDetails from "../../screens/auth/UserDetails";
 import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
 import AddDiploma from "../../screens/diploma/AddDiploma";
+import DiplomaDetails from "../../screens/diploma/Details";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -63,7 +64,11 @@ export default () => {
     <Tabs.Navigator
       initialRouteName="Home"
       tabBarOptions={{
-        style: { backgroundColor: COLORS.background },
+        style: {
+          backgroundColor: COLORS.background2,
+          opacity: 0.8,
+          paddingBottom: 4,
+        },
         labelStyle: {
           color: "black",
           fontSize: 20,
@@ -90,7 +95,7 @@ export default () => {
   );
 
   const HomeStackScreen = () => (
-    <HomeStack.Navigator initialRouteName="AddDiploma">
+    <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen name="Home" options={{ headerShown: false }}>
         {(props) => <Home {...props} />}
       </HomeStack.Screen>
@@ -99,15 +104,20 @@ export default () => {
         component={Courses}
         options={{ title: "Vakken" }}
       />
-      <HomeStack.Screen name="Diplomas" component={Diplomas} />
+      <HomeStack.Screen
+        name="Diplomas"
+        component={Diplomas}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen name="Diploma" component={DiplomaDetails} />
       <HomeStack.Screen
         name="AddDiploma"
         component={AddDiploma}
-        options={{ title: "Diploma Toevoegen" }}
+        options={{ headerShown: false, title: "Diploma Toevoegen" }}
       />
       <HomeStack.Screen
         name="Sign Up"
-        options={{ headerShown: true, title: "Registreren" }}
+        options={{ headerShown: false, title: "Registreren" }}
       >
         {(props) => <Signup {...props} />}
       </HomeStack.Screen>
@@ -118,13 +128,13 @@ export default () => {
     <ProfileStack.Navigator>
       <ProfileStack.Screen
         name="Login"
-        options={{ headerShown: true, title: "Inloggen" }}
+        options={{ headerShown: false, title: "Inloggen" }}
       >
         {(props) => <Login {...props} />}
       </ProfileStack.Screen>
       <ProfileStack.Screen
         name="Sign Up"
-        options={{ headerShown: true, title: "Registreren" }}
+        options={{ headerShown: false, title: "Registreren" }}
       >
         {(props) => <Signup {...props} />}
       </ProfileStack.Screen>

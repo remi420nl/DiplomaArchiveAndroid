@@ -8,12 +8,11 @@ import { useAuth } from "../../context/AuthContext";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.darkgray,
+  
     flex: 1,
     justifyContent: "space-evenly",
 
-    borderColor: "black",
-    borderWidth: 5,
+  
   },
   header: {
     top: 4,
@@ -88,7 +87,7 @@ export default ({ navigation }) => {
   if (groups) {
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>Registreren!</Text>
+        <Text style={styles.header}>Registreren</Text>
      
         <Text style={styles.header}>{loading && "Loading..."}</Text>
         <View style={styles.form}>
@@ -142,7 +141,7 @@ export default ({ navigation }) => {
 
           <TouchableOpacity disabled={loading}>
             <Text
-              title="Sign Up"
+              title="Voltooi"
               onPress={() => submitSignup()}
               style={styles.button}
             >

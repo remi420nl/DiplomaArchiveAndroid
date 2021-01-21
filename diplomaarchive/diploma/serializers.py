@@ -27,7 +27,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class DiplomaSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
 
-    #competences = CompetenceSerializer(read_only=False, many=True)
+    competences = CompetenceSerializer(read_only=False, many=True)
     student = UserSerializer(read_only=True)
 
     def update(self, instance, validated_data):
@@ -74,5 +74,4 @@ class DiplomaSerializer(WritableNestedModelSerializer, serializers.ModelSerializ
 
     class Meta:
         model = Diploma
-        fields = ('id', 'name', 'date', 'student',
-                  'front_img', 'back_img', 'context')
+        fields = '__all__'

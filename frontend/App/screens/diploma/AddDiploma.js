@@ -19,13 +19,11 @@ export default ({ route }) => {
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({});
   const [pdf, setPdf] = useState([]);
-  const [error, setError] = useState("foutmelding gregregreghre");
-  const [succes, setSuccess] = useState("succes!");
+  const [error, setError] = useState(null);
+  const [succes, setSuccess] = useState(null);
   const [checked, setChecked] = useState(false);
 
-  // const { token, user } = route.params;
-  const token = "efewfgewgfew";
-  const user = { name: "ezel" };
+  const { token, user } = route.params;
 
   const buttonDisabled = useRef(false);
 
@@ -36,23 +34,18 @@ export default ({ route }) => {
   }, [checked]);
 
   const handleSubmit = () => {
+    setSuccess(null)
     setError(null);
     if (checkFields() && pdf.length > 0) {
+      CreateNewDiploma(pdf, formData, token)
+        .then(() => setSuccess("Diploma Succesvol Verstuurd"))
+        .catch((e) => {
+          e.response.data.error;
+          setError(e.response.data.error);
+        });
     } else {
       setError("Alle verplichte velden invullen svp");
       return;
-    }
-
-    CreateNewDiploma(pdf, formData, token)
-      .then(() => setSuccess("Diploma Succesvol Verstuurd"))
-      .catch((e) => {
-        e.response.data.error;
-        setError(e.response.data.error);
-      });
-    if (checkFields()) {
-      console.log("all fields entered");
-    } else {
-      setError("Alle verplichte velden invullen svp");
     }
   };
 
@@ -84,11 +77,14 @@ export default ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text>Diploma toevoegen voor {user && user.name}</Text>
+        <Text style={styles.title}>Diploma toevoegen voor {user && user.name}</Text>
       </View>
-      {error && <Text style={styles.error}>{error}</Text>}
-      {succes && <Text style={styles.success}>{succes}</Text>}
+
       <View style={styles.form}>
+        <View style={styles.feedbackmessages}>
+          {error && <Text style={styles.error}>{error}</Text>}
+          {succes && <Text style={styles.success}>{succes}</Text>}
+        </View>
         {formFields.map(({ field, text, type }, i) => (
           <View style={styles.row} key={i}>
             <Text style={styles.label}>{text}</Text>
@@ -118,24 +114,36 @@ export default ({ route }) => {
           disabled={buttonDisabled.current}
         ></Button>
       </View>
+      <View></View>
+      <View></View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.darkgray,
     flex: 1,
-    justifyContent: "space-evenly",
+    justifyContent: "space-evenly"
   },
   header: {
-    top: 4,
+    width: '90%',
+    top: 5,
     color: "white",
     fontSize: 38,
     fontWeight: "bold",
     alignSelf: "center",
+    height: 100,
+ 
+  },
+  title: {
+    textTransform: "uppercase", 
+    fontSize: 26,
+    fontWeight: 'bold',
+    letterSpacing: -1,
+    textAlign:"center"
   },
   form: {
+   
     alignItems: "center",
   },
   row: {
@@ -143,10 +151,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  label: {},
+  label: {
+    fontSize: 20
+  },
   textInput: {
     fontSize: 20,
-    width: "70%",
+    width: "60%",
     borderRadius: 5,
     paddingHorizontal: 8,
     borderBottomColor: "black",
@@ -164,6 +174,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.lightGray,
     opacity: 0.9,
+  },
+  feedbackmessages:{
+    marginBottom: 10,
+    alignItems: 'center'
   },
   error: {
     color: "darkred",

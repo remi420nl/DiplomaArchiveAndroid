@@ -1,25 +1,62 @@
 from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework import permissions, status
 from .serializers import CompetenceSerializer, ExemptionSerializer
 from .models import Competence, Exemption
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny   
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.permissions import AllowAny
+from diploma.models import Diploma
+from diploma.serializers import DiplomaSerializer
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.permissions import AllowAny
+
 
 class ExemptionView(ListAPIView):
-    
-      serializer_class = ExemptionSerializer
 
-      permission_classes = (AllowAny,)
+    serializer_class = ExemptionSerializer
 
-      def get_queryset(self):
-       
-          exemptions = Exemption.objects.all()
-          print("exemptions" + str(exemptions))
+    permission_classes = (AllowAny,)
 
-          return exemptions
+    def get_queryset(self):
 
-   
+        exemptions = Exemption.objects.all()
+        print("exemptions" + str(exemptions))
+
+        return exemptions
+
+
 class CompetencesView(ListAPIView):
 
     serializer_class = CompetenceSerializer
     queryset = Competence.objects.all()
     permission_classes = (AllowAny,)
+
+
+class CompetenceView(UpdateAPIView):
+
+    serializer_class = CompetenceSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def update(self, request, *args, **kwargs):
+
+        if 'diploma' in request.GET:
+
+            try:
+                id = request.query_params["diploma"]
+                diploma = Diploma.objects.get(id=id)
+            except:
+                return Response({"error": "geen diploma gevonden met id {0}"}.format(id), status=404)
+
+            data = request.data
+            competences = data['competences']
+            for competence in competences:
+                try:
+                    c = Competence.objects.get(name=competence['name'])
+                    diploma.competences.add(c)
+                except ObjectDoesNotExist:
+                    c = Competence.objects.create(name=competence['name'])
+                    diploma.competences.add(c)
+
+        serializer = DiplomaSerializer(diploma)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
