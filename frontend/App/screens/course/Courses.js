@@ -11,8 +11,8 @@ import {
 
 import { Transition, Transitioning } from "react-native-reanimated";
 import { GetAllCourses } from "../../../api/Api";
-
-const increment = "INCREMENT";
+import { useAuth } from "../../../App/context/AuthContext";
+import ListElement from "../../components/List/ListElement";
 
 const transition = (
   <Transition.Together>
@@ -21,15 +21,6 @@ const transition = (
     <Transition.Out type="fade" durationMs={200} />
   </Transition.Together>
 );
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case increment:
-      return state + action.payload;
-    default:
-      return state;
-  }
-};
 
 const colors = [
   { bg: "#A8DDE9", color: "#3F5B98" },
@@ -42,7 +33,6 @@ const colors = [
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
   },
   cardContainer: {
     flexGrow: 1,
@@ -84,9 +74,11 @@ export default () => {
   const firstRender = useRef(true);
   const colorsUpdated = useRef(false);
 
+  const { token, user } = useAuth();
+
   useEffect(() => {
     if (!colorsUpdated.current) {
-      GetAllCourses()
+      GetAllCourses(token)
         .then(({ data }) => {
           setCourses(data);
         })
@@ -135,28 +127,17 @@ export default () => {
       >
         {error && <Text style={styles.error}>{error}</Text>}
         {!loading &&
-          courses.map(({ name, competences, color, bg }, i) => (
-            <TouchableOpacity
-              style={styles.cardContainer}
+          courses.map(({ id, ...rest }, i) => (
+            <ListElement
               key={i}
-              onPress={() => {
-                setCurrentIndex(currentIndex !== i ? i : null);
-                ref.current.animateNextTransition();
-              }}
-              activeOpacity={0.9}
-            >
-              <View style={[styles.card, { backgroundColor: bg }]}>
-                <Text style={[styles.courseTitle, { color }]}>{name}</Text>
-                <View style={styles.competencesList}>
-                  {i === currentIndex &&
-                    competences.map((com, i) => (
-                      <Text key={i} style={[styles.competence, { color }]}>
-                        {com.name}
-                      </Text>
-                    ))}
-                </View>
-              </View>
-            </TouchableOpacity>
+              selected={i === currentIndex}
+              animateNext={() => ref.current.animateNextTransition()}
+              setCurrentIndex={() =>
+                setCurrentIndex(currentIndex !== i ? i : null)
+              }
+              onPress={() => alert("todo redirect to course")}
+              {...rest}
+            />
           ))}
       </Transitioning.View>
     </ScrollView>

@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 12,
     flexDirection: "row",
-
     justifyContent: "space-evenly",
   },
 });
@@ -55,10 +54,7 @@ export default Home = ({ navigation }) => {
   const [searchText, setSearchText] = useState("Zoek Vak");
   const { token, user } = useAuth();
 
-  useEffect(() => {
-    console.log("user", user);
-    console.log("token", token);
-  });
+  useEffect(() => {});
 
   const StudentContent = () => (
     <View>

@@ -156,7 +156,14 @@ export default () => {
     return (
       <DrawerContentScrollView>
         <DrawerItemList {...props} />
-        {token && <DrawerItem label="Uitloggen" onPress={() => logout()} />}
+        {token && (
+          <DrawerItem
+            label="Uitloggen"
+            onPress={() => {
+              logout();
+            }}
+          />
+        )}
       </DrawerContentScrollView>
     );
   };

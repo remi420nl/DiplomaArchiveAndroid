@@ -6,8 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 class CompetenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competence
-        fields = ['id', 'name']
-        depth = 1
+        fields = ['id', 'name', 'keyword_set']
 
 
 class ExemptionSerializer(serializers.ModelSerializer):

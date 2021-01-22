@@ -16,7 +16,7 @@ class CoursesView(ListAPIView):
 
     serializer_class = CourseSerializer
 
-    permission_classes = (AllowAny,)
+    # permission_classes = (AllowAny,)
     pagination_class = None
 
     # def get_permissions(self):
@@ -60,8 +60,23 @@ class AddCourse(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class LookupCourse(RetrieveAPIView):
+class LookupCourseBySlug(RetrieveAPIView):
     permission_classes = (permissions.AllowAny,)
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     lookup_field = 'slug'
+
+
+class LookupCourseById(RetrieveAPIView):
+    permission_classes = (permissions.AllowAny,)
+
+    serializer_class = CourseSerializer
+
+
+    def get_queryset(self):
+
+        id = self.kwargs['id']
+        course = Course.objects.filter(id=id)
+        print(course)
+
+        return course

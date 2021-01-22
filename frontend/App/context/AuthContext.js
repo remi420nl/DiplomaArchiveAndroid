@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { View } from "react-native";
 import { Signup, Login } from "../../api/Api";
 
 export const AuthContext = createContext();

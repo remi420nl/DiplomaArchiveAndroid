@@ -9,6 +9,7 @@ from diploma.models import Diploma
 from diploma.serializers import DiplomaSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import AllowAny
+from diploma.serializers import DiplomaSerializer
 
 
 class ExemptionView(ListAPIView):
@@ -45,7 +46,7 @@ class CompetenceView(UpdateAPIView):
                 id = request.query_params["diploma"]
                 diploma = Diploma.objects.get(id=id)
             except:
-                return Response({"error": "geen diploma gevonden met id {0}"}.format(id), status=404)
+                return Response({"error": "geen diploma gevonden met id {0}".format(id)}, status=404)
 
             data = request.data
             competences = data['competences']
@@ -60,3 +61,21 @@ class CompetenceView(UpdateAPIView):
         serializer = DiplomaSerializer(diploma)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get(self, request, *args, **kwargs):
+
+        if 'id' in request.GET:
+
+            id = request.query_params['id']
+
+        if 'course' in request.GET:
+
+            id = request.query_params['course']
+
+            competences = Competence.objects.filter(course__id=id)
+            print(competences)
+
+            serializer = CompetenceSerializer(competences, many=True)
+
+            return Response(
+                {"competences": serializer.data}, status=200)

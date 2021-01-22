@@ -123,7 +123,7 @@ class AddDiploma(APIView):
 class DiplomaView(UpdateAPIView):
 
     # authentication_classes = []
-    permission_classes = (permissions.AllowAny,)
+
     serializer_class = DiplomaSerializer
 
     def get(self, request, *args, **kwargs):
@@ -133,7 +133,13 @@ class DiplomaView(UpdateAPIView):
 
         try:
             diploma = Diploma.objects.get(id=id)
-            if diploma.student.id is not request.user.id:
+            is_employee = request.user.groups.filter(name='employee')
+            print(is_employee)
+
+            if is_employee:
+                print('is employee')
+
+            if diploma.student.id is not request.user.id and not is_employee:
 
                 return Response({'error': 'Unauthorized'}, status=403)
             serializer = DiplomaSerializer(diploma)
