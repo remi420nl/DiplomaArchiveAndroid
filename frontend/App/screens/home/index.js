@@ -4,7 +4,10 @@ import {
   View,
   StyleSheet,
   Pressable,
+  Modal,
   TouchableOpacity,
+  TextInput,
+  TouchableHighlight,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS, FONTS, SIZES } from "../../assets/constants";
@@ -48,13 +51,55 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
   },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
 });
 
 export default Home = ({ navigation }) => {
-  const [searchText, setSearchText] = useState("Zoek Vak");
+  const [searchText, setSearchText] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   const { token, user } = useAuth();
 
   useEffect(() => {});
+
+  const submitSearch = () => {
+    setModalVisible(true);
+  };
 
   const StudentContent = () => (
     <View>
@@ -93,6 +138,32 @@ export default Home = ({ navigation }) => {
     </View>
   );
 
+  const SearchResultModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Gevonden:</Text>
+
+          <TouchableHighlight
+            style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <Text style={styles.textStyle}>Terug</Text>
+          </TouchableHighlight>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -104,19 +175,20 @@ export default Home = ({ navigation }) => {
           <Entypo name="cog" size={32} color={COLORS.white} />
         </TouchableOpacity>
       </View>
-      <View style={styles.search}>
+      <View style={styles.upperbutton}>
         <TouchableOpacity
-          style={styles.upperbutton}
           onPress={() => {
-            setSearchText("");
-            console.warn("clicked");
+            submitSearch();
           }}
         >
           <AntDesign name="search1" size={24} color="darkred" />
-          <Text style={styles.pressabletext}>{searchText}</Text>
         </TouchableOpacity>
+        <TextInput
+          onChangeText={(v) => setSearchText(v)}
+          placeholder="Zoe een vak"
+        />
       </View>
-
+      {SearchResultModal()}
       <View style={styles.main}>
         <View style={{}}>
           <Text>{user ? `Hallo ${user.name}!` : "Niet Ingelogd"}</Text>

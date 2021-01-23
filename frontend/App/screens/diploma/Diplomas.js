@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useReducer } from "react";
 import {
   View,
   Text,
@@ -6,19 +6,80 @@ import {
   StyleSheet,
   Button,
   TouchableOpacity,
+  ActivityIndicatorComponent,
 } from "react-native";
 import { Transition, Transitioning } from "react-native-reanimated";
 import { GetAllDiplomas, GetAllDiplomasByUser } from "../../../api/Api";
 import ListElement from "../../components/List/ListElement";
+import StudentPicker from "../../components/Dropdown/StudentPicker";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
+import { Header } from "react-native/Libraries/NewAppScreen";
 
 export default ({ navigation, route }) => {
   const [diplomas, setDiplomas] = useState();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
   const [currentIndex, setCurrentIndex] = useState();
+
+  const FETCH_SUCCESS = "FETCH_SUCCESSS";
+  const GET_ALL = "GET_ALL";
+  const SET_STUDENT = "SET_STUDENT";
+  const FETCH_FAILED = "FETCH_FAILED";
+  const COLORS_ADDED = "COLORS_ADDED";
+
+  const archiveReducer = (state, action) => {
+    switch (action.type) {
+      case FETCH_SUCCESS:
+        return {
+          ...state,
+          isLoading: true,
+          error: false,
+          data: action.payload,
+          students: action.payload.map((d) => d.student),
+        };
+      case COLORS_ADDED:
+        return {
+          ...state,
+          isLoading: false,
+          error: false,
+          data: action.payload,
+          diplomas: action.payload,
+        };
+      case FETCH_FAILED:
+        return {
+          ...state,
+          isLoading: false,
+          error: action.payload,
+        };
+      case GET_ALL:
+        return {
+          ...state,
+          diplomas: state.data,
+        };
+      case SET_STUDENT:
+        return {
+          ...state,
+          diplomas: state.data.filter(
+            (d) => d.student.id === action.payload.student_id
+          ),
+        };
+      default:
+        return {
+          ...state,
+          error: "Er is iets fout gegaan",
+        };
+    }
+  };
+
+  const [archive, dispatch] = useReducer(archiveReducer, {
+    isLoading: true,
+    error: false,
+    data: null,
+    diplomas: null,
+    students: null,
+  });
 
   const firstRender = useRef(true);
   const colorsAdded = useRef(false);
@@ -30,16 +91,22 @@ export default ({ navigation, route }) => {
     if (!colorsAdded.current && user) {
       if (user.type === "employee") {
         GetAllDiplomas(token)
-          .then(({ data }) => setDiplomas(data))
-          .catch((e) => console.log(e));
+          .then(({ data }) => {
+            dispatch({ type: FETCH_SUCCESS, payload: data });
+          })
+          .catch((e) => dispatch({ type: FETCH_FAILED, payload: e }));
       } else if (user.type === "student") {
         GetAllDiplomasByUser(token)
-          .then(({ data }) => setDiplomas(data))
-          .catch((e) => console.log(e));
+          .then(({ data }) => dispatch({ type: FETCH_SUCCESS, payload: data }))
+          .catch((e) => dispatch({ type: FETCH_FAILED, payload: e }));
       }
     }
     return () => setColors();
-  }, [diplomas]);
+  });
+
+  useEffect(() => {
+    console.log("diplomasscreen");
+  });
 
   const colors = [
     { bg: "#A8DDE9", color: "#3F5B98" },
@@ -50,17 +117,16 @@ export default ({ navigation, route }) => {
   ];
 
   const setColors = () => {
-    if (!colorsAdded.current && diplomas) {
+    if (!colorsAdded.current && archive.data) {
       colorsAdded.current = true;
       let arr = [];
       let length = colors.length - 1;
       let count = 0;
-      diplomas.forEach((diploma) => {
+      archive.data.forEach((diploma) => {
         arr.push({ ...diploma, ...colors[count] });
         count === length ? (count = 0) : count++;
       });
-      setDiplomas(arr);
-      setLoading(false);
+      dispatch({ type: COLORS_ADDED, payload: arr });
     }
   };
 
@@ -74,6 +140,8 @@ export default ({ navigation, route }) => {
 
   const styles = StyleSheet.create({
     header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
       backgroundColor: COLORS.background2,
       alignItems: "center",
     },
@@ -84,22 +152,53 @@ export default ({ navigation, route }) => {
     },
   });
 
+  const Header = () => (
+    <View style={styles.header}>
+      <View>
+        <Text style={styles.headerText}>
+          Diplomas in systeem: {!isLoading && archive.data.length}
+        </Text>
+
+        {!isLoading && archive.students && user.type === "employee" && (
+          <View>
+            <Text tyle={styles.headerText}>
+              {"Studenten: " + archive.students.length}
+            </Text>
+          </View>
+        )}
+      </View>
+      {user.type === "employee" && (
+        <View>
+          {archive.students && (
+            <StudentPicker
+              data={archive.students}
+              onPress={(student) => {
+                console.log(student);
+                dispatch({
+                  type: student.id ? SET_STUDENT : GET_ALL,
+                  payload: { student_id: student.id },
+                });
+              }}
+            />
+          )}
+        </View>
+      )}
+    </View>
+  );
+
+  const { isLoading, error } = archive;
+
   return (
     <ScrollView>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>
-          Diplomas opgeslagen: {!loading && diplomas.length}
-        </Text>
-      </View>
-
+      {Header()}
       {error && <Text>{error}</Text>}
       <Transitioning.View
         ref={ref}
         transition={transition}
         style={styles.container}
       >
-        {!loading &&
-          diplomas.map(({ id, ...rest }, i) => (
+        {!isLoading &&
+          archive.diplomas.map(({ id, ...rest }, i) => (
             <ListElement
               key={i}
               selected={i === currentIndex}
