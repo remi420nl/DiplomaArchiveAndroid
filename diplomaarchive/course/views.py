@@ -16,7 +16,7 @@ class CoursesView(ListAPIView):
 
     serializer_class = CourseSerializer
 
-    # permission_classes = (AllowAny,)
+    permission_classes = (AllowAny,)
     pagination_class = None
 
     # def get_permissions(self):
@@ -26,6 +26,14 @@ class CoursesView(ListAPIView):
     #         return super(CoursesView, self).get_permissions()
 
     def get_queryset(self):
+
+        name = self.request.query_params.get('name', None)
+
+        if name:
+
+            courses = Course.objects.filter(name__contains=name)
+            return courses
+
         courses = Course.objects.all()
 
         return courses
@@ -69,14 +77,6 @@ class LookupCourseBySlug(RetrieveAPIView):
 
 class LookupCourseById(RetrieveAPIView):
     permission_classes = (permissions.AllowAny,)
-
+    queryset = Course.objects.all()
     serializer_class = CourseSerializer
-
-
-    def get_queryset(self):
-
-        id = self.kwargs['id']
-        course = Course.objects.filter(id=id)
-        print(course)
-
-        return course
+    lookup_field = 'id'

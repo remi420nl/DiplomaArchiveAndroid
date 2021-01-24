@@ -10,18 +10,34 @@ from diploma.serializers import DiplomaSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import AllowAny
 from diploma.serializers import DiplomaSerializer
+from users.permissions import IsEmployee, IsStudent
 
 
 class ExemptionView(ListAPIView):
 
     serializer_class = ExemptionSerializer
+    pagination_class = None
 
-    permission_classes = (AllowAny,)
+    def get_permissions(self):
+
+        if self.request.method == 'GET':
+
+            self.permission_classes = [IsEmployee, ]
+
+            return super(ExemptionView, self).get_permissions()
 
     def get_queryset(self):
 
+        if 'course' in self.request.GET:
+            try:
+                id = self.request.query_params["course"]
+                exemptions = Exemption.objects.filter(course_id=id)
+
+                return exemptions
+            except:
+                return Response({"error": "Something went wrong.."}, status=404)
+
         exemptions = Exemption.objects.all()
-        print("exemptions" + str(exemptions))
 
         return exemptions
 

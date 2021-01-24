@@ -13,13 +13,14 @@ import Login from "../../screens/auth/Login";
 import Signup from "../../screens/auth/Signup";
 import Courses from "../../screens/course/Courses";
 import Diplomas from "../../screens/diploma/Diplomas";
-import { CourseDetail } from "../../screens/course/Details";
+
 import Loading from "../../screens/loading";
 import UserDetails from "../../screens/auth/UserDetails";
 import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
 import AddDiploma from "../../screens/diploma/AddDiploma";
 import DiplomaDetails from "../../screens/diploma/Details";
+import CourseDetails from "../../screens/course/Details";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -103,6 +104,11 @@ export default () => {
         name="Courses"
         component={Courses}
         options={{ title: "Vakken" }}
+      />
+      <HomeStack.Screen
+        name="Course"
+        component={CourseDetails}
+        options={{ title: "Vak" }}
       />
       <HomeStack.Screen
         name="Diplomas"

@@ -13,5 +13,7 @@ class IsStudent(BasePermission):
 class IsEmployee(BasePermission):
     def has_permission(self, request, view):
         if request.user and request.user.groups.filter(name='employee'):
+
             return True
+
         return False

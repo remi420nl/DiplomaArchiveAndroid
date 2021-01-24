@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Competence, Exemption
 from django.core.exceptions import ObjectDoesNotExist
+from users.serializers import UserSerializer
 
 
 class CompetenceSerializer(serializers.ModelSerializer):
@@ -10,7 +11,8 @@ class CompetenceSerializer(serializers.ModelSerializer):
 
 
 class ExemptionSerializer(serializers.ModelSerializer):
+    student = UserSerializer()
 
     class Meta:
         model = Exemption
-        fields = ['student_id', 'class_id']
+        fields = ['student', 'course_id']

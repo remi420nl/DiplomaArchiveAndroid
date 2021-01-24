@@ -14,6 +14,11 @@ import { COLORS, FONTS, SIZES } from "../../assets/constants";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
+import {
+  SearchCourseByName,
+  GetDiplomaById,
+  GetCourseById,
+} from "../../../api/Api";
 
 const styles = StyleSheet.create({
   container: {
@@ -88,17 +93,28 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
+  error: {},
 });
 
 export default Home = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [error, setError] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const { token, user } = useAuth();
 
   useEffect(() => {});
 
   const submitSearch = () => {
-    setModalVisible(true);
+    SearchCourseByName(searchText, token)
+      .then(({ data }) => {
+        setSearchResult(data);
+      })
+      .then(() => setModalVisible(true))
+      .catch((e) => {
+        console.log(e);
+        setError("ERROR");
+      });
   };
 
   const StudentContent = () => (
@@ -150,6 +166,14 @@ export default Home = ({ navigation }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Gevonden:</Text>
+          {searchResult.map((c, i) => (
+            <TouchableHighlight
+              key={i}
+              onPress={() => navigation.push("Course", { id: c.id })}
+            >
+              <Text>{c.name}</Text>
+            </TouchableHighlight>
+          ))}
 
           <TouchableHighlight
             style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
@@ -188,6 +212,7 @@ export default Home = ({ navigation }) => {
           placeholder="Zoe een vak"
         />
       </View>
+      {error && <Text style={styles.error}>{error}</Text>}
       {SearchResultModal()}
       <View style={styles.main}>
         <View style={{}}>
