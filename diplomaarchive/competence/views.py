@@ -4,6 +4,7 @@ from rest_framework import permissions, status
 from .serializers import CompetenceSerializer, ExemptionSerializer, ExemptionUpdateSerializer
 from .models import Competence, Exemption
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from diploma.models import Diploma
 from diploma.serializers import DiplomaSerializer
@@ -83,14 +84,90 @@ class ExemptionView(UpdateAPIView):
                 exemption, data=request.data, partial=True)
             if(serializer.is_valid()):
                 serializer.save()
-                return Response({'message': 'updated'}, status=20)
+                return Response({'message': 'updated'}, status=200)
 
 
-class CompetencesView(ListAPIView):
+class CompetencesView(APIView):
 
     serializer_class = CompetenceSerializer
-    queryset = Competence.objects.all()
+
+    # needs to be removed
     permission_classes = (AllowAny,)
+
+    def get(self, request, format=None):
+
+        combined = []
+
+        if 'id' in self.request.GET:
+
+            id = self.request.query_params['id']
+
+        if 'course' in self.request.GET:
+
+            id = self.request.query_params['course']
+            if id is not None:
+                try:
+                    competences = Competence.objects.filter(course__id=id)
+
+                    # to trigger an error in case nothing is found
+                    competences[0]
+
+                    serializer = CompetenceSerializer(competences, many=True)
+                    result = {'course_competences': serializer.data}
+
+                    combined.append(result)
+                except:
+                    combined.append(
+                        {'error': 'course with id {0} has no competences'.format(id)})
+
+        if 'student' in self.request.GET:
+            id = self.request.query_params['student']
+
+            if id is not None:
+
+                try:
+
+                    diplomas = Diploma.objects.filter(student_id=id)
+
+                    # to trigger an error in case nothing is found
+                    diplomas[0]
+
+                    competences = []
+
+                    for diploma in diplomas:
+
+                        competences_from_diploma = Competence.objects.filter(
+                            diploma__id=diploma.id)
+                        for competence in competences_from_diploma:
+                            competences.append(competence)
+
+                    serializer = CompetenceSerializer(competences, many=True)
+
+                    result = {'student_competences': serializer.data}
+
+                    combined.append(result)
+                except:
+                    combined.append(
+                        {'error': 'student with id {0} has no diplomas'.format(id)})
+
+        if 'diploma' in self.request.GET:
+            id = self.request.query_params['diploma']
+            if id is not None:
+                try:
+                    competences = Competence.objects.filter(diploma__id=id)
+                    # to trigger an error in case nothing is found
+                    competences[0]
+
+                    serializer = CompetenceSerializer(competences, many=True)
+                    result = {'diploma_competences': serializer.data}
+
+                    combined.append(result)
+
+                except:
+                    combined.append(
+                        {'error': 'diploma with id {0} has no competences'.format(id)})
+
+        return Response(combined, status=200)
 
 
 class CompetenceView(UpdateAPIView):
@@ -127,15 +204,3 @@ class CompetenceView(UpdateAPIView):
         if 'id' in request.GET:
 
             id = request.query_params['id']
-
-        if 'course' in request.GET:
-
-            id = request.query_params['course']
-
-            competences = Competence.objects.filter(course__id=id)
-            print(competences)
-
-            serializer = CompetenceSerializer(competences, many=True)
-
-            return Response(
-                {"competences": serializer.data}, status=200)

@@ -30,9 +30,9 @@ export const COLORS = {
   offwhite: "#f0f0f0",
 
   //for exemptions screen, Aprroved, Rejected, Pending
-  a: "green",
-  r: "darkred",
-  p: "#f1d304",
+  Goedgekeurd: "green",
+  Afgewezen: "darkred",
+  "In Behandeling": "#f1d304",
 };
 
 export const SIZES = {

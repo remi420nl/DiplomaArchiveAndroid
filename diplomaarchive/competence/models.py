@@ -14,9 +14,9 @@ class Competence(models.Model):
 
 class Exemption(models.Model):
     status_choices = (
-        ('a', 'approved'),
-        ('r', 'rejected'),
-        ('p', 'pending')
+        ('a', 'Goedgekeurd'),
+        ('r', 'Afgewezen'),
+        ('p', 'In Behandeling')
     )
 
     student = models.ForeignKey(User, on_delete=models.CASCADE)

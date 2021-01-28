@@ -5,12 +5,12 @@ from users.serializers import UserSerializer
 
 
 class ChoiceField(serializers.ChoiceField):
-    pass
-# def to_representation(self, obj):
 
-#     if obj == '' and self.allow_blank:
-#         return obj
-#     return self._choices[obj]
+    def to_representation(self, obj):
+
+        if obj == '' and self.allow_blank:
+            return obj
+        return self._choices[obj]
 
 # def to_internal_value(self, data):
 
@@ -25,6 +25,7 @@ class ChoiceField(serializers.ChoiceField):
 
 class CompetenceSerializer(serializers.ModelSerializer):
     class Meta:
+
         model = Competence
         fields = ['id', 'name', 'keyword_set']
 
@@ -32,14 +33,14 @@ class CompetenceSerializer(serializers.ModelSerializer):
 class ExemptionSerializer(serializers.ModelSerializer):
     course = serializers.SerializerMethodField()
     student = UserSerializer()
-    # status = ChoiceField(choices=Exemption.status_choices)
+    status = ChoiceField(choices=Exemption.status_choices)
 
     class Meta:
         model = Exemption
         fields = ['id', 'student', 'course', 'status']
 
     def get_course(self, obj):
-        return obj.course.name
+        return {'name': obj.course.name, 'id': obj.course.id}
 
 
 class ExemptionUpdateSerializer(serializers.ModelSerializer):

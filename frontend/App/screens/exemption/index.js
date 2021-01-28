@@ -29,10 +29,10 @@ import SegmentedControl from "@react-native-community/segmented-control";
 const statusarray = [
   { key: "a", text: "Goedkeuren" },
   { key: "r", text: "Afkeuren" },
-  { key: "p", text: "In Afwachting" },
+  { key: "p", text: "In Behandeling" },
 ];
 
-export default () => {
+export default ({ navigation }) => {
   const [exemptions, setExemptions] = useState(null);
   const [exemption, setExemption] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -52,10 +52,6 @@ export default () => {
 
   const selectExemption = (exemption) => {
     setModalVisible(true);
-
-    let status = statusChoices.filter((s) => s.key === exemption.status);
-
-    exemption = { ...exemption, statusText: status[0].text };
 
     setExemption(exemption);
   };
@@ -186,15 +182,19 @@ export default () => {
 
     return (
       <Pressable
-        onLongPress={() => {
-          selectExemption(item);
-        }}
+        onLongPress={() => selectExemption(item)}
+        onPress={() =>
+          navigation.navigate("Competences", {
+            student: item.student,
+            course: item.course,
+          })
+        }
         style={[styles.item, { backgroundColor: COLORS[item.status] }]}
       >
         <Text style={[styles.itemText, { color: "darkgray" }]}>
           {item.student.name}
         </Text>
-        <Text style={styles.itemText}>{item.course}</Text>
+        <Text style={styles.itemText}>{item.course.name}</Text>
       </Pressable>
     );
   };
@@ -218,8 +218,8 @@ export default () => {
             <Text style={styles.modalTitle}>
               Student: {exemption.student.name}
             </Text>
-            <Text style={styles.modalTitle}>Vak: {exemption.course}</Text>
-            <Text>{exemption.statusText}</Text>
+            <Text style={styles.modalTitle}>Vak: {exemption.course.name}</Text>
+            <Text>{exemption.status}</Text>
 
             <View style={styles.modalButtons}>
               <Text style={styles.modalText}>Kies een optie:</Text>
