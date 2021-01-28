@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createRef, useRef } from "react";
 import {
   View,
   Text,
@@ -6,16 +6,25 @@ import {
   StyleSheet,
   Button,
   TouchableHighlight,
+  Pressable,
 } from "react-native";
+import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 
-import { GetAllExemptionsForCourse, GetCourseById } from "../../../api/Api";
+import {
+  GetAllExemptionsForCourse,
+  GetCourseById,
+  RegisterGroups,
+} from "../../../api/Api";
+import { COLORS } from "../../assets/constants";
 import { useAuth } from "../../context/AuthContext";
 
 export default ({ route }) => {
   const [course, setCourse] = useState();
   const [loading, setLoading] = useState(true);
   const [exemptions, setExemptions] = useState(null);
+
   const { token, user } = useAuth();
+  const refs = useRef([]);
 
   useEffect(() => {
     if (user.type === "employee") {
@@ -26,17 +35,54 @@ export default ({ route }) => {
     }
   }, [course]);
 
-  const ExemptionsView = () => (
-    <View style={styles.subContainer}>
-      <Text style={styles.header}>Vrijstellingen</Text>
-      {exemptions &&
-        exemptions.map((e, i) => <Text key={i}>{e.student.name}</Text>)}
-    </View>
-  );
+  const ExemptionsView = () => {
+    const exemptionsLength = exemptions && exemptions.length;
+
+    if (exemptionsLength !== refs.length) {
+      refs.current = Array(exemptionsLength)
+        .fill()
+        .map((e, i) => refs.current[i] || createRef());
+    }
+
+    return (
+      <View style={styles.subContainer}>
+        <Text style={styles.header}>Vrijstellingen</Text>
+        <View style={styles.exemptions}>
+          {exemptions &&
+            exemptions.map((e, i) => (
+              <Menu
+                ref={(r) => (refs.current[i] = r)}
+                button={
+                  <Pressable
+                    onLongPress={() => {
+                      refs.current[i].show();
+                    }}
+                    style={styles.studentButton}
+                  >
+                    <Text style={styles.studentName} key={i}>
+                      {e.student.name}
+                    </Text>
+                  </Pressable>
+                }
+              >
+                <MenuItem>Menu item 1</MenuItem>
+                <MenuItem onPress={() => alert("test")}>Menu item 2</MenuItem>
+
+                <MenuDivider />
+                <MenuItem onPress={() => refs.current[i].hide()}>
+                  Menu item 4
+                </MenuItem>
+              </Menu>
+            ))}
+        </View>
+      </View>
+    );
+  };
 
   useEffect(() => {
     const id = route.params.id;
 
+    // user has to be logged in for this
     GetCourseById(id, token)
       .then(({ data }) => {
         setCourse(data);
@@ -61,6 +107,22 @@ export default ({ route }) => {
       maxHeight: "20%",
     },
     header: {
+      fontWeight: "bold",
+    },
+    exemptions: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
+    studentButton: {
+      backgroundColor: COLORS.blue,
+      borderRadius: 10,
+
+      alignSelf: "flex-start",
+    },
+    studentName: {
+      padding: 6,
+
+      color: "#fff",
       fontWeight: "bold",
     },
   });

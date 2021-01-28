@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from .serializers import CompetenceSerializer, ExemptionSerializer
+from .serializers import CompetenceSerializer, ExemptionSerializer, ExemptionUpdateSerializer
 from .models import Competence, Exemption
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny
@@ -13,7 +13,7 @@ from diploma.serializers import DiplomaSerializer
 from users.permissions import IsEmployee, IsStudent
 
 
-class ExemptionView(ListAPIView):
+class ExemptionsView(ListAPIView):
 
     serializer_class = ExemptionSerializer
     pagination_class = None
@@ -24,7 +24,7 @@ class ExemptionView(ListAPIView):
 
             self.permission_classes = [IsEmployee, ]
 
-            return super(ExemptionView, self).get_permissions()
+            return super(ExemptionsView, self).get_permissions()
 
     def get_queryset(self):
 
@@ -40,6 +40,50 @@ class ExemptionView(ListAPIView):
         exemptions = Exemption.objects.all()
 
         return exemptions
+
+
+class ExemptionView(UpdateAPIView):
+
+    serializer_class = ExemptionSerializer
+
+    def get_permissions(self):
+
+        if self.request.method in {'GET', 'POST'}:
+
+            self.permission_classes = [permissions.IsAuthenticated, ]
+
+            return super(ExemptionView, self).get_permissions()
+
+        if self.request.method in {'PUT', 'DELETE'}:
+            print(self.request.user)
+
+            self.permission_classes = [IsEmployee, ]
+
+            return super(ExemptionView, self).get_permissions()
+
+    def get(self, request, *args, **kwargs):
+
+        if 'id' in request.GET:
+
+            id = request.query_params['id']
+
+    def post(self, request, *args, **kwargs):
+
+        if 'id' in request.GET:
+
+            id = request.query_params['id']
+
+    def put(self, request, *args, **kwargs):
+
+        if 'id' in request.GET:
+
+            id = request.query_params['id']
+            exemption = Exemption.objects.get(id=id)
+            serializer = ExemptionUpdateSerializer(
+                exemption, data=request.data, partial=True)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response({'message': 'updated'}, status=20)
 
 
 class CompetencesView(ListAPIView):

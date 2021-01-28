@@ -138,7 +138,11 @@ export default Home = ({ navigation }) => {
 
   const EmployerContent = () => (
     <View>
-      <Button text="Vrijstellingen" theme="secondary" />
+      <Button
+        text="Vrijstellingen"
+        theme="secondary"
+        onPress={() => navigation.push("Exemptions", {})}
+      />
       <Button
         text="Vakken"
         onPress={() => navigation.push("Courses")}

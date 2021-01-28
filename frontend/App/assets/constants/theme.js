@@ -18,16 +18,21 @@ export const COLORS = {
 
   darkgray: "#898C95",
   yellow: "#FFD573",
-  lightBlue: "#95A9B8",
+  lightBlue: "#4da6ff",
   darkgreen: "#008159",
   peach: "#FF615F",
   purple: "#8e44ad",
-  red: "#FF0000",
+  red: "#cc3300",
 
   text: "#343434",
   border: "gray",
   blue: "#4f6d7a",
   offwhite: "#f0f0f0",
+
+  //for exemptions screen, Aprroved, Rejected, Pending
+  a: "green",
+  r: "darkred",
+  p: "#f1d304",
 };
 
 export const SIZES = {

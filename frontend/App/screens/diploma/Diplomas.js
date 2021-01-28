@@ -104,10 +104,6 @@ export default ({ navigation, route }) => {
     return () => setColors();
   });
 
-  useEffect(() => {
-    console.log("diplomasscreen");
-  });
-
   const colors = [
     { bg: "#A8DDE9", color: "#3F5B98" },
     { bg: "#086E4B", color: "#FCBE4A" },

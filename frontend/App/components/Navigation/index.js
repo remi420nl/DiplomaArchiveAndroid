@@ -21,6 +21,7 @@ import { COLORS } from "../../assets/constants";
 import AddDiploma from "../../screens/diploma/AddDiploma";
 import DiplomaDetails from "../../screens/diploma/Details";
 import CourseDetails from "../../screens/course/Details";
+import Exemptions from "../../screens/exemption";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -96,7 +97,7 @@ export default () => {
   );
 
   const HomeStackScreen = () => (
-    <HomeStack.Navigator initialRouteName="Home">
+    <HomeStack.Navigator initialRouteName="Exemptions">
       <HomeStack.Screen name="Home" options={{ headerShown: false }}>
         {(props) => <Home {...props} />}
       </HomeStack.Screen>
@@ -120,6 +121,11 @@ export default () => {
         name="AddDiploma"
         component={AddDiploma}
         options={{ headerShown: false, title: "Diploma Toevoegen" }}
+      />
+      <HomeStack.Screen
+        name="Exemptions"
+        component={Exemptions}
+        options={{ title: "Vrijstellingen" }}
       />
       <HomeStack.Screen
         name="Sign Up"

@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default () => {
+export default ({ navigation }) => {
   const [courses, setCourses] = useState();
   const [currentIndex, setCurrentIndex] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -135,7 +135,7 @@ export default () => {
               setCurrentIndex={() =>
                 setCurrentIndex(currentIndex !== i ? i : null)
               }
-              onPress={() => alert("todo redirect to course")}
+              onPress={() => navigation.push("Course", { id: id })}
               {...rest}
             />
           ))}

@@ -4,6 +4,25 @@ from django.core.exceptions import ObjectDoesNotExist
 from users.serializers import UserSerializer
 
 
+class ChoiceField(serializers.ChoiceField):
+    pass
+# def to_representation(self, obj):
+
+#     if obj == '' and self.allow_blank:
+#         return obj
+#     return self._choices[obj]
+
+# def to_internal_value(self, data):
+
+#     if data == '' and self.allow_blank:
+#         return ''
+
+#     for key, val in self._choices.items():
+#         if val == data:
+#             return key
+#     self.fail('invalid_choice', input=data)
+
+
 class CompetenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competence
@@ -11,8 +30,20 @@ class CompetenceSerializer(serializers.ModelSerializer):
 
 
 class ExemptionSerializer(serializers.ModelSerializer):
+    course = serializers.SerializerMethodField()
     student = UserSerializer()
+    # status = ChoiceField(choices=Exemption.status_choices)
 
     class Meta:
         model = Exemption
-        fields = ['student', 'course_id']
+        fields = ['id', 'student', 'course', 'status']
+
+    def get_course(self, obj):
+        return obj.course.name
+
+
+class ExemptionUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Exemption
+        exclude = ('student', 'course')
