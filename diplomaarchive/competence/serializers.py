@@ -24,10 +24,21 @@ class ChoiceField(serializers.ChoiceField):
 
 
 class CompetenceSerializer(serializers.ModelSerializer):
+
+    match = serializers.SerializerMethodField()
+
     class Meta:
 
         model = Competence
-        fields = ['id', 'name', 'keyword_set']
+        fields = ['id', 'name', 'keyword_set', 'match']
+
+    def get_match(self, obj):
+
+        if hasattr(obj, 'match'):
+            if obj.match:
+                return True
+        else:
+            return False
 
 
 class ExemptionSerializer(serializers.ModelSerializer):

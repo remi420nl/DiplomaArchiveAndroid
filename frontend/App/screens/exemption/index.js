@@ -276,7 +276,6 @@ export default ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text>test</Text>
       {exemptions && (
         <FlatList
           data={exemptions}

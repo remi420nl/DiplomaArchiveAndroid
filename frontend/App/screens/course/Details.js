@@ -65,12 +65,13 @@ export default ({ route }) => {
                   </Pressable>
                 }
               >
-                <MenuItem>Menu item 1</MenuItem>
-                <MenuItem onPress={() => alert("test")}>Menu item 2</MenuItem>
+                <MenuItem onPress={() => alert("todo")}>
+                  Student Openen
+                </MenuItem>
 
                 <MenuDivider />
                 <MenuItem onPress={() => refs.current[i].hide()}>
-                  Menu item 4
+                  Terug
                 </MenuItem>
               </Menu>
             ))}
@@ -105,6 +106,7 @@ export default ({ route }) => {
     subContainer: {
       flexGrow: 1,
       maxHeight: "20%",
+      marginRight: 20,
     },
     header: {
       fontWeight: "bold",
@@ -127,16 +129,30 @@ export default ({ route }) => {
     },
   });
 
-  if (!loading)
+  if (!loading) {
+    const isEmployee = user.type === "employee";
+
     return (
       <View style={styles.view}>
         <View style={styles.container}>
           <View style={styles.subContainer}>
-            <Text style={styles.header}>{course.name}</Text>
+            <TouchableHighlight
+              onPress={() =>
+                isEmployee ? alert("Omschrijving Bijwerken") : null
+              }
+            >
+              <Text style={styles.header}>{course.name}</Text>
+            </TouchableHighlight>
             <Text>{course.context}</Text>
           </View>
           <View style={styles.subContainer}>
-            <Text style={styles.header}>Competenties</Text>
+            <TouchableHighlight
+              onPress={() =>
+                isEmployee ? alert("Competenties Bijwerken") : null
+              }
+            >
+              <Text style={styles.header}>Competenties</Text>
+            </TouchableHighlight>
             <View>
               {course.competences.map((c, i) => (
                 <TouchableHighlight
@@ -148,10 +164,11 @@ export default ({ route }) => {
               ))}
             </View>
           </View>
-          {user && course && user.type === "employee" && ExemptionsView()}
+          {user && course && isEmployee && ExemptionsView()}
         </View>
       </View>
     );
+  }
 
   return <Text>Loading..</Text>;
 };

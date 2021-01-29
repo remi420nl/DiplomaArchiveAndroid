@@ -7,6 +7,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from diploma.models import Diploma
+from course.models import Course
 from diploma.serializers import DiplomaSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import AllowAny
@@ -91,12 +92,30 @@ class CompetencesView(APIView):
 
     serializer_class = CompetenceSerializer
 
-    # needs to be removed
-    permission_classes = (AllowAny,)
+    def check_matches(self, student, course, combined):
+        for s_competence in student:
+            for c_competence in course:
+                if s_competence == c_competence:
+                    s_competence.match = True
+                    c_competence.match = True
+
+        serializer = CompetenceSerializer(student, many=True)
+
+        combined['student_competences'] = serializer.data
+
+        serializer = CompetenceSerializer(
+            course, many=True)
+
+        combined['course_competences'] = serializer.data
+
+        return combined
 
     def get(self, request, format=None):
 
-        combined = []
+        combined = {}
+
+        student_competences = []
+        course_competences = []
 
         if 'id' in self.request.GET:
 
@@ -106,19 +125,21 @@ class CompetencesView(APIView):
 
             id = self.request.query_params['course']
             if id is not None:
+                course_id = id
+
                 try:
-                    competences = Competence.objects.filter(course__id=id)
+                    course_competences = Competence.objects.filter(
+                        course__id=id)
+
+                    for competence in course_competences:
+                        competence.match = False
 
                     # to trigger an error in case nothing is found
-                    competences[0]
+                    course_competences[0]
 
-                    serializer = CompetenceSerializer(competences, many=True)
-                    result = {'course_competences': serializer.data}
-
-                    combined.append(result)
                 except:
-                    combined.append(
-                        {'error': 'course with id {0} has no competences'.format(id)})
+                    combined['course_competences'] = {
+                        'error': 'course with id {0} has no competences'.format(id)}
 
         if 'student' in self.request.GET:
             id = self.request.query_params['student']
@@ -132,40 +153,44 @@ class CompetencesView(APIView):
                     # to trigger an error in case nothing is found
                     diplomas[0]
 
-                    competences = []
-
                     for diploma in diplomas:
 
-                        competences_from_diploma = Competence.objects.filter(
+                        diploma_competences = Competence.objects.filter(
                             diploma__id=diploma.id)
-                        for competence in competences_from_diploma:
-                            competences.append(competence)
+                        for competence in diploma_competences:
+                            competence.match = False
 
-                    serializer = CompetenceSerializer(competences, many=True)
+                            student_competences.append(competence)
 
-                    result = {'student_competences': serializer.data}
-
-                    combined.append(result)
                 except:
-                    combined.append(
-                        {'error': 'student with id {0} has no diplomas'.format(id)})
+                    combined['student_competences'] = {
+                        'error': 'student with id {0} has no diplomas'.format(id)}
 
         if 'diploma' in self.request.GET:
+
             id = self.request.query_params['diploma']
             if id is not None:
                 try:
                     competences = Competence.objects.filter(diploma__id=id)
+
                     # to trigger an error in case nothing is found
                     competences[0]
 
                     serializer = CompetenceSerializer(competences, many=True)
-                    result = {'diploma_competences': serializer.data}
-
-                    combined.append(result)
+                    combined['diploma_competences'] = serializer.data
 
                 except:
-                    combined.append(
-                        {'error': 'diploma with id {0} has no competences'.format(id)})
+                    combined['diploma_competences'] = {
+                        'error': 'diploma with id {0} has no competences'.format(id)}
+
+        # course = Course.objects.get(id=1)
+
+        # result = Diploma.objects.filter(student_id=18).filter(
+        #     competences__in=course.competences.all())
+        # print(result)
+
+        combined = self.check_matches(
+            student_competences, course_competences, combined)
 
         return Response(combined, status=200)
 
@@ -183,7 +208,7 @@ class CompetenceView(UpdateAPIView):
                 id = request.query_params["diploma"]
                 diploma = Diploma.objects.get(id=id)
             except:
-                return Response({"error": "geen diploma gevonden met id {0}".format(id)}, status=404)
+                return Response({"error": "no diploma found with id {0}".format(id)}, status=404)
 
             data = request.data
             competences = data['competences']
