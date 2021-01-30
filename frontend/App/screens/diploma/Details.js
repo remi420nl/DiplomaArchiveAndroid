@@ -65,10 +65,10 @@ export default ({ route }) => {
     return (
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.header}>{diploma.name}</Text>
-          <Text style={styles.text}>{diploma.date}</Text>
+          <Text style={styles.text}>Diploma van {diploma.student.name}</Text>
           <Text style={styles.text}>{diploma.context}</Text>
-          <Text style={styles.text}>{diploma.student.name}</Text>
+          <Text style={styles.header}>{diploma.name}</Text>
+          <Text style={styles.text}>Behaald op {diploma.date}</Text>
         </View>
         <View style={styles.competences}>
           <Text style={styles.header}>Competenties:</Text>

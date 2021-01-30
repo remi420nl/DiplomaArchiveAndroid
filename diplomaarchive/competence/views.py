@@ -88,7 +88,14 @@ class ExemptionView(UpdateAPIView):
                 return Response({'message': 'updated'}, status=200)
 
 
-class CompetencesView(APIView):
+class CompetencesView(ListAPIView):
+
+    serializer_class = CompetenceSerializer
+    queryset = Competence.objects.all()
+    pagination_class = None
+
+
+class CompetenceView(APIView):
 
     serializer_class = CompetenceSerializer
 
@@ -101,16 +108,18 @@ class CompetencesView(APIView):
 
         serializer = CompetenceSerializer(student, many=True)
 
-        combined['student_competences'] = serializer.data
+        combined['student'] = serializer.data
 
         serializer = CompetenceSerializer(
             course, many=True)
 
-        combined['course_competences'] = serializer.data
+        combined['course'] = serializer.data
 
         return combined
 
     def get(self, request, format=None):
+
+        print(request.query_params)
 
         combined = {}
 
@@ -138,7 +147,7 @@ class CompetencesView(APIView):
                     course_competences[0]
 
                 except:
-                    combined['course_competences'] = {
+                    combined['courses'] = {
                         'error': 'course with id {0} has no competences'.format(id)}
 
         if 'student' in self.request.GET:
@@ -163,7 +172,7 @@ class CompetencesView(APIView):
                             student_competences.append(competence)
 
                 except:
-                    combined['student_competences'] = {
+                    combined['student'] = {
                         'error': 'student with id {0} has no diplomas'.format(id)}
 
         if 'diploma' in self.request.GET:
@@ -177,10 +186,10 @@ class CompetencesView(APIView):
                     competences[0]
 
                     serializer = CompetenceSerializer(competences, many=True)
-                    combined['diploma_competences'] = serializer.data
+                    combined['diploma'] = serializer.data
 
                 except:
-                    combined['diploma_competences'] = {
+                    combined['diploma'] = {
                         'error': 'diploma with id {0} has no competences'.format(id)}
 
         # course = Course.objects.get(id=1)
@@ -195,7 +204,7 @@ class CompetencesView(APIView):
         return Response(combined, status=200)
 
 
-class CompetenceView(UpdateAPIView):
+class CompetenceUpdateView(UpdateAPIView):
 
     serializer_class = CompetenceSerializer
     permission_classes = (permissions.AllowAny,)

@@ -23,6 +23,7 @@ import DiplomaDetails from "../../screens/diploma/Details";
 import CourseDetails from "../../screens/course/Details";
 import Exemptions from "../../screens/exemption";
 import Competences from "../../screens/competences";
+import EditCompetences from "../../screens/competences/Edit";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -98,7 +99,7 @@ export default () => {
   );
 
   const HomeStackScreen = () => (
-    <HomeStack.Navigator initialRouteName="Home">
+    <HomeStack.Navigator initialRouteName="EditCompetences">
       <HomeStack.Screen name="Home" options={{ headerShown: false }}>
         {(props) => <Home {...props} />}
       </HomeStack.Screen>
@@ -133,6 +134,12 @@ export default () => {
         component={Competences}
         options={{ title: "Competenties" }}
       />
+      <HomeStack.Screen
+        name="EditCompetences"
+        component={EditCompetences}
+        options={{ title: "Competencies bewerken" }}
+      />
+
       <HomeStack.Screen
         name="Sign Up"
         options={{ headerShown: false, title: "Registreren" }}

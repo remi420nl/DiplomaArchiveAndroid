@@ -18,19 +18,41 @@ import {
 import { COLORS } from "../../assets/constants";
 import { useAuth } from "../../context/AuthContext";
 
-export default ({ route }) => {
+export default ({ navigation, route }) => {
   const [course, setCourse] = useState();
   const [loading, setLoading] = useState(true);
   const [exemptions, setExemptions] = useState(null);
 
   const { token, user } = useAuth();
   const refs = useRef([]);
+  const id = route.params.id;
+
+  useEffect(() => {
+    // Added eventlistener to refresh when the user navigates back to this screen so the course gets updated
+
+    const unsubscribe = navigation.addListener("focus", () => {
+      GetCourseById(id, token)
+        .then(({ data }) => {
+          setCourse(data);
+        })
+        .then(() => setLoading(false))
+        .catch((e) => console.log(e));
+    });
+
+    // user has to be logged in for this
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     if (user.type === "employee") {
       const id = route.params.id;
+      //Set all the exemptions for this cours that have status Goedgekeurd / Approved
       GetAllExemptionsForCourse(id, token)
-        .then(({ data }) => setExemptions(data))
+        .then(({ data }) => {
+          console.log(data);
+          setExemptions(data.filter((e) => e.status === "Goedgekeurd"));
+        })
         .catch((e) => console.log(e));
     }
   }, [course]);
@@ -46,7 +68,12 @@ export default ({ route }) => {
 
     return (
       <View style={styles.subContainer}>
-        <Text style={styles.header}>Vrijstellingen</Text>
+        <TouchableHighlight
+          style={styles.header}
+          onPress={() => navigation.push("Exemptions", { id: id })}
+        >
+          <Text style={styles.headerText}>Vrijstellingen</Text>
+        </TouchableHighlight>
         <View style={styles.exemptions}>
           {exemptions &&
             exemptions.map((e, i) => (
@@ -80,18 +107,6 @@ export default ({ route }) => {
     );
   };
 
-  useEffect(() => {
-    const id = route.params.id;
-
-    // user has to be logged in for this
-    GetCourseById(id, token)
-      .then(({ data }) => {
-        setCourse(data);
-      })
-      .then(() => setLoading(false))
-      .catch((e) => console.log(e));
-  }, []);
-
   const styles = StyleSheet.create({
     view: {
       flex: 1,
@@ -108,7 +123,8 @@ export default ({ route }) => {
       maxHeight: "20%",
       marginRight: 20,
     },
-    header: {
+    header: {},
+    headerText: {
       fontWeight: "bold",
     },
     exemptions: {
@@ -130,28 +146,32 @@ export default ({ route }) => {
   });
 
   if (!loading) {
-    const isEmployee = user.type === "employee";
+    const isEmployee = user && user.type === "employee";
 
     return (
       <View style={styles.view}>
         <View style={styles.container}>
           <View style={styles.subContainer}>
             <TouchableHighlight
+              style={styles.headerText}
               onPress={() =>
                 isEmployee ? alert("Omschrijving Bijwerken") : null
               }
             >
-              <Text style={styles.header}>{course.name}</Text>
+              <Text style={styles.headerText}>{course.name}</Text>
             </TouchableHighlight>
             <Text>{course.context}</Text>
           </View>
           <View style={styles.subContainer}>
             <TouchableHighlight
+              style={styles.header}
               onPress={() =>
-                isEmployee ? alert("Competenties Bijwerken") : null
+                isEmployee
+                  ? navigation.push("EditCompetences", { courseId: id })
+                  : null
               }
             >
-              <Text style={styles.header}>Competenties</Text>
+              <Text style={styles.headerText}>Competenties</Text>
             </TouchableHighlight>
             <View>
               {course.competences.map((c, i) => (
@@ -164,7 +184,7 @@ export default ({ route }) => {
               ))}
             </View>
           </View>
-          {user && course && isEmployee && ExemptionsView()}
+          {course && isEmployee && ExemptionsView()}
         </View>
       </View>
     );

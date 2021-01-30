@@ -33,8 +33,9 @@ export default ({ navigation, route }) => {
   useEffect(() => {
     GetCompetences(token, student.id, course.id)
       .then(({ data }) => {
-        setStudentComp(data.student_competences);
-        setCourseComp(data.course_competences);
+        setStudentComp(data.student);
+        console.log(data);
+        setCourseComp(data.course);
       })
       .catch((e) => console.log(e));
   }, []);
@@ -101,7 +102,6 @@ export default ({ navigation, route }) => {
           <Text style={styles.headerText}>{student.name}</Text>
         </View>
         <FlatList
-          style={styles.flatList}
           horizontal={true}
           data={studentCompetences}
           renderItem={RenderItem}

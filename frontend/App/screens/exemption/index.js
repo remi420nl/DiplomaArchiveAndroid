@@ -19,12 +19,12 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import {
   GetAllExemptions,
+  GetAllExemptionsForCourse,
   RegisterGroups,
   UpdateExemptionById,
 } from "../../../api/Api";
 import { COLORS, FONTS } from "../../assets/constants";
 import { useAuth } from "../../context/AuthContext";
-import SegmentedControl from "@react-native-community/segmented-control";
 
 const statusarray = [
   { key: "a", text: "Goedkeuren" },
@@ -32,27 +32,31 @@ const statusarray = [
   { key: "p", text: "In Behandeling" },
 ];
 
-export default ({ navigation }) => {
+export default ({ navigation, route }) => {
   const [exemptions, setExemptions] = useState(null);
   const [exemption, setExemption] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [statusChoices] = useState(statusarray);
-  const [selectedStatus, setSelectedStatus] = useState();
 
   const { token } = useAuth();
+  const { id } = route.params;
 
   useEffect(() => {
-    GetAllExemptions(token)
-      .then(({ data }) => {
-        setExemptions(data);
-      })
-      .catch((e) => console.log("ERROR", e));
+    if (id) {
+      GetAllExemptionsForCourse(id, token).then(({ data }) =>
+        setExemptions(data)
+      );
+    } else {
+      GetAllExemptions(token)
+        .then(({ data }) => {
+          setExemptions(data);
+        })
+        .catch((e) => console.log("ERROR", e));
+    }
   }, [exemption]);
 
   const selectExemption = (exemption) => {
     setModalVisible(true);
-
     setExemption(exemption);
   };
 
@@ -62,14 +66,9 @@ export default ({ navigation }) => {
 
   const saveExemption = () => {
     UpdateExemptionById(exemption.id, token, exemption).then((r) => {
-      console.log(r);
       setExemption(null);
     });
   };
-
-  useEffect(() => {
-    console.log(selectedIndex);
-  }, [selectedIndex]);
 
   const styles = StyleSheet.create({
     container: {
@@ -159,6 +158,7 @@ export default ({ navigation }) => {
     },
   });
 
+  //TODO
   const formatData = (data, numColumns) => {
     const numberOfFullRows = Math.floor(data.length / numColumns);
 
