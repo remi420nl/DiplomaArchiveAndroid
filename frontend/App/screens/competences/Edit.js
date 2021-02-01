@@ -17,33 +17,56 @@ import {
 } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 
-import { GetCompetences, GetAllCompetences } from "../../../api/Api";
+import {
+  GetCompetences,
+  GetAllCompetences,
+  AddCompetencesForCourse,
+  DeleteCompetencesForCourse,
+} from "../../../api/Api";
 import Box from "../../components/Flatlist/Box";
 import { useAuth } from "../../context/AuthContext";
 
 // for editing competenece and keywords for a specific course
 
 export default ({ navitation, route }) => {
-  const [competences, setCompetences] = useState(null);
+  const [competences, setCompetences] = useState([]);
   const [allCompetences, setAllCompetences] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [toBeAdded, setToBeAdded] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
 
   const { token } = useAuth();
-  //const { courseId, courseName } = route.params;
+  const { courseId, courseName } = route.params;
 
   useEffect(() => {
     //Getting competences for course
-    GetCompetences(token, null, 1, null)
+    console.log("Useffect");
+    setError("");
+    setLoading(true);
+    GetCompetences(token, null, courseId, null)
       .then(({ data }) => {
         setCompetences(data.course);
+        setLoading(false);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        setError("Er is iets fout gegaan");
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
-    GetAllCompetences(token).then(({ data }) => setAllCompetences(data));
-  }, []);
+    GetAllCompetences(token)
+      .then(({ data }) =>
+        setAllCompetences(
+          data.filter(
+            (c) =>
+              competences.map((course_c) => course_c.id).indexOf(c.id) === -1
+          )
+        )
+      )
+      .catch((e) => console.log(e));
+  }, [competences]);
 
   const styles = StyleSheet.create({
     container: {
@@ -51,6 +74,7 @@ export default ({ navitation, route }) => {
       justifyContent: "flex-start",
 
       marginHorizontal: 10,
+      marginBottom: 80,
     },
     addButton: {
       backgroundColor: "green",
@@ -72,6 +96,7 @@ export default ({ navitation, route }) => {
       flexDirection: "row",
       height: 25,
     },
+
     // for the modal:
 
     centeredView: {
@@ -113,16 +138,16 @@ export default ({ navitation, route }) => {
     },
   });
 
-  const renderCheckboxList = ({ item, index }) => {
+  const renderCheckboxList = ({ item }) => {
     return (
       <View style={styles.checboxList}>
         <CheckBox
-          value={toBeAdded.includes(index)}
+          value={toBeAdded.includes(item.id)}
           onValueChange={() =>
             setToBeAdded((state) =>
-              state.includes(index)
-                ? state.filter((i) => i !== index)
-                : [...state, index]
+              state.includes(item.id)
+                ? state.filter((i) => i !== item.id)
+                : [...state, item.id]
             )
           }
         />
@@ -137,27 +162,58 @@ export default ({ navitation, route }) => {
         <FlatList
           data={allCompetences}
           renderItem={renderCheckboxList}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
         />
       </View>
     );
   };
 
-  const deleteDialog = (text) =>
+  const addCompetence = () => {
+    const context = { competences: toBeAdded };
+
+    setLoading(true);
+    AddCompetencesForCourse(token, courseId, context)
+      .then(({ data }) => {
+        setCompetences(data.competences);
+        setLoading(false);
+        setToBeAdded(null);
+      })
+      .catch((r) => console.log(r));
+  };
+
+  const deleteCompetence = (id) => {
+    setLoading(true);
+    DeleteCompetencesForCourse(token, id, courseId)
+      .then(({ data }) => {
+        setLoading(false);
+        setCompetences(data.competences);
+      })
+      .catch((e) => console.log(e));
+  };
+
+  const deleteDialog = (item) =>
     Alert.alert(
-      text,
-      `Wilt u deze competentie verwijderren voor het vak ${"coursName"}`,
+      item.name,
+      `Wilt u deze competentie verwijderren voor het vak ${courseName}`,
       [
         {
-          text: "Cancel",
+          text: "Annuleer",
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
-        { text: "OK", onPress: () => console.log("OK Pressed") },
+        { text: "OK", onPress: () => deleteCompetence(item.id) },
       ],
       { cancelable: false }
     );
 
+  if (loading || error) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading..</Text>
+        <Text>{error}</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -178,9 +234,7 @@ export default ({ navitation, route }) => {
               </TouchableHighlight>
               <TouchableHighlight
                 style={{ ...styles.modalButton, backgroundColor: "#2196F3" }}
-                onPress={() => {
-                  alert("opslaan..");
-                }}
+                onPress={() => addCompetence()}
               >
                 <Text style={{ ...styles.buttonText, fontSize: 16 }}>
                   Opslaan

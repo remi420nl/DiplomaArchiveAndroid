@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from diploma.models import Diploma
 from course.models import Course
+from course.serializers import CourseSerializer
 from diploma.serializers import DiplomaSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import AllowAny
@@ -20,33 +21,36 @@ class ExemptionsView(ListAPIView):
     serializer_class = ExemptionSerializer
     pagination_class = None
 
-    def get_permissions(self):
-
-        if self.request.method == 'GET':
-
-            self.permission_classes = [IsEmployee, ]
-
-            return super(ExemptionsView, self).get_permissions()
-
     def get_queryset(self):
 
-        if 'course' in self.request.GET:
+        if 'course' in self.request.GET and self.request.user.groups.filter(name='employee'):
+
             try:
                 id = self.request.query_params["course"]
                 exemptions = Exemption.objects.filter(course_id=id)
 
                 return exemptions
             except:
+                exemptions = Exemption.objects.all()
+
+                return exemptions
+
+        if self.request.user.groups.filter(name='student'):
+
+            try:
+                id = self.request.user.id
+                exemptions = Exemption.objects.filter(student_id=id)
+
+                return exemptions
+            except:
+
                 return Response({"error": "Something went wrong.."}, status=404)
-
-        exemptions = Exemption.objects.all()
-
-        return exemptions
 
 
 class ExemptionView(UpdateAPIView):
 
     serializer_class = ExemptionSerializer
+    permission_classes = (permissions.AllowAny,)
 
     def get_permissions(self):
 
@@ -57,7 +61,6 @@ class ExemptionView(UpdateAPIView):
             return super(ExemptionView, self).get_permissions()
 
         if self.request.method in {'PUT', 'DELETE'}:
-            print(self.request.user)
 
             self.permission_classes = [IsEmployee, ]
 
@@ -65,15 +68,27 @@ class ExemptionView(UpdateAPIView):
 
     def get(self, request, *args, **kwargs):
 
-        if 'id' in request.GET:
+        if 'course' in request.GET:
 
-            id = request.query_params['id']
+            id = request.query_params['course']
 
     def post(self, request, *args, **kwargs):
 
-        if 'id' in request.GET:
+        if 'course' in request.GET:
 
-            id = request.query_params['id']
+            try:
+                courseId = request.query_params['course']
+                user = request.user
+
+                course = Course.objects.get(id=courseId)
+
+                exemption = Exemption.objects.create(
+                    course=course, student=user)
+
+                serializer = ExemptionSerializer(exemption)
+                return Response(serializer.data, status=201)
+            except:
+                return Response({"error": "something went wrong"}, status=500)
 
     def put(self, request, *args, **kwargs):
 
@@ -118,8 +133,6 @@ class CompetenceView(APIView):
         return combined
 
     def get(self, request, format=None):
-
-        print(request.query_params)
 
         combined = {}
 
@@ -192,12 +205,6 @@ class CompetenceView(APIView):
                     combined['diploma'] = {
                         'error': 'diploma with id {0} has no competences'.format(id)}
 
-        # course = Course.objects.get(id=1)
-
-        # result = Diploma.objects.filter(student_id=18).filter(
-        #     competences__in=course.competences.all())
-        # print(result)
-
         combined = self.check_matches(
             student_competences, course_competences, combined)
 
@@ -211,30 +218,67 @@ class CompetenceUpdateView(UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
 
-        if 'diploma' in request.GET:
+        def add_competences(instance, data):
 
+            for id in data:
+                try:
+                    c = Competence.objects.get(id=id)
+                    instance.competences.add(c)
+                except ObjectDoesNotExist:
+                    return Response({"error": "Competence with id {0} could not be added".format(id)}, status=500)
+
+            return instance
+
+        if 'diploma' in request.GET:
+            id = request.query_params['diploma']
             try:
-                id = request.query_params["diploma"]
+
                 diploma = Diploma.objects.get(id=id)
             except:
                 return Response({"error": "no diploma found with id {0}".format(id)}, status=404)
 
             data = request.data
             competences = data['competences']
-            for competence in competences:
-                try:
-                    c = Competence.objects.get(name=competence['name'])
-                    diploma.competences.add(c)
-                except ObjectDoesNotExist:
-                    c = Competence.objects.create(name=competence['name'])
-                    diploma.competences.add(c)
 
-        serializer = DiplomaSerializer(diploma)
+            updated_diploma = add_competences(diploma, competences)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer = DiplomaSerializer(updated_diploma)
 
-    def get(self, request, *args, **kwargs):
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if 'id' in request.GET:
+        if 'course' in request.GET:
+            id = request.query_params['course']
+            try:
 
-            id = request.query_params['id']
+                course = Course.objects.get(id=id)
+            except:
+                return Response({"error": "no course found with id {0}".format(id)}, status=404)
+
+            data = request.data
+            competences = data['competences']
+
+            updated_course = add_competences(course, competences)
+
+            serializer = CourseSerializer(updated_course)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, *args, **kwargs):
+
+        course_id = request.query_params['course']
+        competence_id = request.query_params['competence']
+
+        try:
+
+            competence = Competence.objects.get(id=competence_id)
+            course = Course.objects.get(id=course_id)
+
+            r = course.competences.remove(competence)
+
+            serializer = CourseSerializer(course)
+
+            return Response(serializer.data, status=200)
+
+        except:
+
+            return Response({"error": "someteing went wrong"}, status=500)

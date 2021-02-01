@@ -34,7 +34,7 @@ export default ({ navigation, route }) => {
     GetCompetences(token, student.id, course.id)
       .then(({ data }) => {
         setStudentComp(data.student);
-        console.log(data);
+
         setCourseComp(data.course);
       })
       .catch((e) => console.log(e));

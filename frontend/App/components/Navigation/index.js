@@ -99,7 +99,7 @@ export default () => {
   );
 
   const HomeStackScreen = () => (
-    <HomeStack.Navigator initialRouteName="EditCompetences">
+    <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen name="Home" options={{ headerShown: false }}>
         {(props) => <Home {...props} />}
       </HomeStack.Screen>

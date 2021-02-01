@@ -19,7 +19,7 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-export default ({ data, horizontal, onPress, colums }) => {
+const Box = ({ data, horizontal, onPress, colums }) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -59,7 +59,7 @@ export default ({ data, horizontal, onPress, colums }) => {
 
   const RenderItem = ({ item, index, seperators }) => (
     <TouchableHighlight
-      onLongPress={() => onPress(item.name)}
+      onLongPress={() => onPress(item)}
       style={{ ...styles.item, backgroundColor: item.match ? "green" : "blue" }}
     >
       <Text style={styles.itemText}>{item.name}</Text>
@@ -78,3 +78,5 @@ export default ({ data, horizontal, onPress, colums }) => {
     </View>
   );
 };
+
+export default React.memo(Box);
