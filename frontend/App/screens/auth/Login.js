@@ -7,14 +7,12 @@ import { useAuth } from "../../context/AuthContext";
 
 const styles = StyleSheet.create({
   container: {
-   
     flex: 1,
     justifyContent: "space-evenly",
-
   },
   header: {
     top: 4,
-    color: "white",
+    color: COLORS.steelblue,
     fontSize: 38,
     fontWeight: "bold",
     alignSelf: "center",
@@ -24,7 +22,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 20,
-    width: 200,
+    width: 220,
     borderRadius: 5,
     paddingHorizontal: 8,
     borderBottomColor: "black",
@@ -98,7 +96,7 @@ export default ({ navigation }) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Sign Up")}>
-          <Text>No account? Sign up first</Text>
+          <Text>Nog geen account? Registreer eerst</Text>
         </TouchableOpacity>
       </View>
       <View></View>

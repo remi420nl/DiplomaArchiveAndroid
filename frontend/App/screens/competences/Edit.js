@@ -74,7 +74,18 @@ export default ({ navitation, route }) => {
       justifyContent: "flex-start",
 
       marginHorizontal: 10,
-      marginBottom: 80,
+      marginBottom: 50,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "bold",
+      letterSpacing: 2,
+      textAlign: "center",
+    },
+    description: {
+      fontSize: 16,
+      textAlign: "center",
+      paddingVertical: 15,
     },
     addButton: {
       backgroundColor: "green",
@@ -176,7 +187,7 @@ export default ({ navitation, route }) => {
       .then(({ data }) => {
         setCompetences(data.competences);
         setLoading(false);
-        setToBeAdded(null);
+        setToBeAdded([]);
       })
       .catch((r) => console.log(r));
   };
@@ -194,7 +205,7 @@ export default ({ navitation, route }) => {
   const deleteDialog = (item) =>
     Alert.alert(
       item.name,
-      `Wilt u deze competentie verwijderren voor het vak ${courseName}`,
+      `Wilt u deze competentie verwijderen voor het vak ${courseName}`,
       [
         {
           text: "Annuleer",
@@ -244,7 +255,7 @@ export default ({ navitation, route }) => {
           </View>
         </View>
       </Modal>
-
+      <Text style={styles.title}>{courseName}</Text>
       <TouchableHighlight
         style={styles.addButton}
         onPress={() => {
@@ -253,6 +264,7 @@ export default ({ navitation, route }) => {
       >
         <Text style={styles.buttonText}>Toevoegen</Text>
       </TouchableHighlight>
+      <Text style={styles.description}>Momenteel toegewezen:</Text>
       {competences && (
         <Box
           data={competences}

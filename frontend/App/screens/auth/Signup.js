@@ -8,25 +8,23 @@ import { useAuth } from "../../context/AuthContext";
 
 const styles = StyleSheet.create({
   container: {
-  
     flex: 1,
     justifyContent: "space-evenly",
-
-  
   },
   header: {
     top: 4,
-    color: "white",
+    color: COLORS.steelblue,
     fontSize: 38,
     fontWeight: "bold",
     alignSelf: "center",
   },
   form: {
     alignItems: "center",
+    flexGrow: 1,
   },
   textInput: {
     fontSize: 20,
-    width: 200,
+    width: 220,
     borderRadius: 5,
     paddingHorizontal: 8,
     borderBottomColor: "black",
@@ -72,12 +70,11 @@ export default ({ navigation }) => {
   });
 
   const submitSignup = async (e) => {
-
     setLoading(true);
     const user = { ...form, group: checked };
 
     await signup(user)
-      .then(() => navigation.navigate('Login'))
+      .then(() => navigation.navigate("Login"))
       .catch((e) => {
         setError(e.response.data.error);
         setLoading(false);
@@ -87,8 +84,9 @@ export default ({ navigation }) => {
   if (groups) {
     return (
       <View style={styles.container}>
+        <View style={{ flex: 1 }}></View>
         <Text style={styles.header}>Registreren</Text>
-     
+
         <Text style={styles.header}>{loading && "Loading..."}</Text>
         <View style={styles.form}>
           <Text style={styles.error}>{error}</Text>
@@ -145,7 +143,7 @@ export default ({ navigation }) => {
               onPress={() => submitSignup()}
               style={styles.button}
             >
-              Sign Up
+              Registreren
             </Text>
           </TouchableOpacity>
         </View>

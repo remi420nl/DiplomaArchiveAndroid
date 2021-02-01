@@ -44,38 +44,21 @@ export default () => {
     },
   };
 
-  //can be deleted..
-  const MainStackScreen = () => (
-    <MainStack.Navigator initialRouteName="Home">
-      <MainStack.Screen
-        name="Home"
-        options={{
-          headerShown: false,
-        }}
-      >
-        {(props) => <Home {...props} />}
-      </MainStack.Screen>
-      <MainStack.Screen
-        name="Login"
-        options={{ headerShown: true, title: "Inloggen" }}
-      >
-        {(props) => <Login {...props} />}
-      </MainStack.Screen>
-    </MainStack.Navigator>
-  );
-
   const TabScreen = () => (
     <Tabs.Navigator
       initialRouteName="Home"
       tabBarOptions={{
         style: {
-          backgroundColor: COLORS.background2,
+          backgroundColor: COLORS.steelblue,
           opacity: 0.8,
-          paddingBottom: 4,
+          paddingBottom: 12,
         },
         labelStyle: {
-          color: "black",
+          color: COLORS.white,
+
           fontSize: 20,
+          fontWeight: "bold",
+          letterSpacing: 1,
         },
       }}
       activeColor="#00aea2"
@@ -169,7 +152,7 @@ export default () => {
   const LoggedInStackScreen = () => (
     <ProfileStack.Navigator>
       <ProfileStack.Screen
-        name="Profile"
+        name="Profiel"
         options={{ headerShown: true, title: "Profiel" }}
       >
         {(props) => <UserDetails {...props} />}
@@ -199,9 +182,9 @@ export default () => {
     >
       <Drawer.Screen name="Home" component={TabScreen} />
       {token ? (
-        <Drawer.Screen name="Profile" component={LoggedInStackScreen} />
+        <Drawer.Screen name="Profiel" component={LoggedInStackScreen} />
       ) : (
-        <Drawer.Screen name="Login" component={LoggedOutStackScreen} />
+        <Drawer.Screen name="Inloggen" component={LoggedOutStackScreen} />
       )}
     </Drawer.Navigator>
   );

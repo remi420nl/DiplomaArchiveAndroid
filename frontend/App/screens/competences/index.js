@@ -86,7 +86,7 @@ export default ({ navigation, route }) => {
   );
 
   const CountNoMatches = () => {
-    count = 0;
+    let count = 0;
 
     courseCompetences.forEach((c) => (!c.match ? count++ : null));
 

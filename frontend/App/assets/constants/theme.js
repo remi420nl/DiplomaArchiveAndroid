@@ -13,8 +13,9 @@ export const COLORS = {
   lightGray2: "#FAFBFD",
   lightGray3: "#d3d3d3",
   gray: "#BEC1D2",
+  gray2: "#808080",
   background2: "rgba(206,204,202,0.2)",
-  background: "#ceccca",
+  background: "#DCDCDC",
 
   darkgray: "#898C95",
   yellow: "#FFD573",
@@ -23,6 +24,9 @@ export const COLORS = {
   peach: "#FF615F",
   purple: "#8e44ad",
   red: "#cc3300",
+  limegreen: "#32CD32",
+  steelblue: "#4682B4",
+  mediumseagrean: "mediumseagreen",
 
   text: "#343434",
   border: "gray",

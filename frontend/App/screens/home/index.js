@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Text,
   View,
   StyleSheet,
-  Pressable,
-  Modal,
+  FlatList,
+  Keyboard,
   TouchableOpacity,
   TextInput,
   TouchableHighlight,
+  TouchableWithoutFeedback,
+  StatusBar,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+
 import { COLORS, FONTS, SIZES } from "../../assets/constants";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
-import {
-  SearchCourseByName,
-  GetDiplomaById,
-  GetCourseById,
-} from "../../../api/Api";
+import { GetAllCourses, SearchCourseByName } from "../../../api/Api";
+import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 
 const styles = StyleSheet.create({
   container: {
@@ -37,26 +36,40 @@ const styles = StyleSheet.create({
     marginTop: "10%",
     justifyContent: "space-around",
   },
+  mainContent: {},
   usercontent: {
     marginBottom: 200,
   },
   search: {},
+
   title: {
     ...FONTS.h1,
     fontSize: 60,
-    color: "#1c86ee",
-    width: "60%",
+    color: COLORS.steelblue,
+
     margin: 15,
   },
-  upperbutton: {
+  welcomeText: {
+    marginLeft: 15,
+    fontSize: 18,
+    color: COLORS.steelblue,
+    fontWeight: "bold",
+  },
+  searchField: {
     backgroundColor: "#fff",
-    width: "55%",
-    borderRadius: 20,
-    padding: 12,
+    width: 200,
+    borderRadius: 10,
+
+    padding: 10,
     flexDirection: "row",
-    justifyContent: "space-evenly",
+  },
+  textInput: {
+    letterSpacing: 2.5,
+    width: "100%",
+    textAlign: "center",
   },
 
+  /////
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -93,29 +106,72 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
+  searchResult: {
+    height: 300,
+    position: "absolute",
+
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    borderRadius: 15,
+  },
+  searchItem: {
+    flexDirection: "row",
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  searchItemText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
   error: {},
 });
 
 export default Home = ({ navigation }) => {
-  const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [error, setError] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [courses, setCourses] = useState([]);
   const { token, user } = useAuth();
 
-  useEffect(() => {});
+  const ref = useRef(null);
 
-  const submitSearch = () => {
-    SearchCourseByName(searchText, token)
-      .then(({ data }) => {
-        setSearchResult(data);
-      })
-      .then(() => setModalVisible(true))
-      .catch((e) => {
-        console.log(e);
-        setError("ERROR");
-      });
-  };
+  useEffect(() => {
+    GetAllCourses().then(({ data }) => {
+      setCourses(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log("useffect");
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => setKeyboardOpen(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => setKeyboardOpen(false)
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  });
+
+  // const submitSearch = () => {
+  //   SearchCourseByName(searchText, token)
+  //     .then(({ data }) => {
+  //       setSearchResult(data);
+  //     })
+  //     .then(() => setModalVisible(true))
+  //     .catch((e) => {
+  //       console.log(e);
+  //       setError("ERROR");
+  //     });
+  // };
 
   const StudentContent = () => (
     <View>
@@ -158,77 +214,139 @@ export default Home = ({ navigation }) => {
     </View>
   );
 
-  const SearchResultModal = () => (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        setModalVisible(!modalVisible);
-      }}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Gevonden:</Text>
-          {searchResult.map((c, i) => (
-            <TouchableHighlight
-              key={i}
-              onPress={() => navigation.push("Course", { id: c.id })}
-            >
-              <Text>{c.name}</Text>
-            </TouchableHighlight>
-          ))}
+  // const SearchResultModal = () => (
+  //   <Modal
+  //     animationType="fade"
+  //     transparent={true}
+  //     visible={modalVisible}
+  //     onRequestClose={() => {
+  //       setModalVisible(!modalVisible);
+  //     }}
+  //   >
+  //     <View style={styles.centeredView}>
+  //       <View style={styles.modalView}>
+  //         <Text style={styles.modalText}>Gevonden:</Text>
+  //         {searchResult.map((c, i) => (
+  //           <TouchableHighlight
+  //             key={i}
+  //             onPress={() => navigation.push("Course", { id: c.id })}
+  //           >
+  //             <Text>{c.name}</Text>
+  //           </TouchableHighlight>
+  //         ))}
 
-          <TouchableHighlight
-            style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <Text style={styles.textStyle}>Terug</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
-    </Modal>
-  );
+  //         <TouchableHighlight
+  //           style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+  //           onPress={() => {
+  //             setModalVisible(!modalVisible);
+  //           }}
+  //         >
+  //           <Text style={styles.textStyle}>Terug</Text>
+  //         </TouchableHighlight>
+  //       </View>
+  //     </View>
+  //   </Modal>
+  // );
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+  const TopButton = () => (
+    <Menu
+      ref={(r) => (ref.current = r)}
+      button={
         <TouchableOpacity
           onPress={() => {
-            alert("todo");
+            ref.current.show();
           }}
         >
           <Entypo name="cog" size={32} color={COLORS.white} />
         </TouchableOpacity>
-      </View>
-      <View style={styles.upperbutton}>
-        <TouchableOpacity
-          onPress={() => {
-            submitSearch();
-          }}
-        >
-          <AntDesign name="search1" size={24} color="darkred" />
-        </TouchableOpacity>
-        <TextInput
-          onChangeText={(v) => setSearchText(v)}
-          placeholder="Zoe een vak"
-        />
-      </View>
-      {error && <Text style={styles.error}>{error}</Text>}
-      {SearchResultModal()}
-      <View style={styles.main}>
-        <View style={{}}>
-          <Text>{user ? `Hallo ${user.name}!` : "Niet Ingelogd"}</Text>
+      }
+    >
+      <MenuItem onPress={() => alert("todo")}>Informatie</MenuItem>
 
-          <Text style={styles.title}>Diploma Archive</Text>
+      <MenuItem onPress={() => alert("todo")}>Contactformulier</MenuItem>
+      <MenuDivider />
+      <MenuItem onPress={() => ref.current.hide()}>Verberg</MenuItem>
+    </Menu>
+  );
+
+  const isStudent = user && user.type == "student";
+  const isEmployee = user && user.type == "employee";
+
+  const renderItem = ({ item, index }) => (
+    <TouchableHighlight
+      style={[
+        styles.searchItem,
+        {
+          backgroundColor: index % 2 == 0 ? COLORS.gray2 : COLORS.white,
+        },
+      ]}
+      onPress={() => navigation.push("Course", { id: item.id })}
+    >
+      <Text
+        style={[
+          styles.searchItemText,
+          { color: index % 2 == 0 ? COLORS.white : COLORS.black },
+        ]}
+      >
+        {item.name}
+      </Text>
+    </TouchableHighlight>
+  );
+
+  return (
+    <TouchableWithoutFeedback
+      style={{ flex: 1 }}
+      onPressOut={() => {
+        setSearchResult(null);
+        Keyboard.dismiss();
+      }}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>{TopButton()}</View>
+        <View>
+          <View style={styles.searchField}>
+            <TextInput
+              style={styles.textInput}
+              onChangeText={(v) => searchCourses(v)}
+              placeholder="Zoek een vak"
+              onFocus={() => {
+                setSearchResult(courses);
+              }}
+            />
+          </View>
+          <View>
+            {searchResult && (
+              <View
+                style={{
+                  ...styles.searchResult,
+                  height: keyboardOpen ? 300 : 600,
+                }}
+              >
+                <FlatList
+                  data={searchResult}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.id.toString()}
+                />
+              </View>
+            )}
+          </View>
         </View>
-        <View style={styles.usercontent}>
-          {user && user.type == "student" && StudentContent()}
-          {user && user.type == "employee" && EmployerContent()}
+        {error && <Text style={styles.error}>{error}</Text>}
+
+        <View style={styles.main}>
+          <View style={styles.mainContent}>
+            <Text style={styles.welcomeText}>
+              {user ? `Hallo ${user.name}!` : "Niet Ingelogd"}
+            </Text>
+
+            <Text style={styles.title}>DIPLOMA ARCHIVE</Text>
+          </View>
+          <View style={styles.usercontent}>
+            {isStudent && StudentContent()}
+            {isEmployee && EmployerContent()}
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
