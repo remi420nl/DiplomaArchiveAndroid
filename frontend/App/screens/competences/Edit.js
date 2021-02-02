@@ -28,6 +28,8 @@ import { useAuth } from "../../context/AuthContext";
 
 // for editing competenece and keywords for a specific course
 
+// possibly move this page to the course section
+
 export default ({ navitation, route }) => {
   const [competences, setCompetences] = useState([]);
   const [allCompetences, setAllCompetences] = useState(null);

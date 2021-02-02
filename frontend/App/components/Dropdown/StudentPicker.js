@@ -8,10 +8,6 @@ export default ({ data, onPress }) => {
 
   const selected = useRef(allDiplomas);
 
-  useEffect(() => {
-    console.log("studentpicker");
-  });
-
   return (
     <Picker
       selectedValue={selected.current}

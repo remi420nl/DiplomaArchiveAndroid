@@ -11,7 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
 import Loading from "../loading";
 
-export default ({ route }) => {
+export default ({ navigation, route }) => {
   const [diploma, setDiploma] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -57,8 +57,10 @@ export default ({ route }) => {
     button: {
       marginVertical: 25,
     },
-    competenseList: { marginTop: 10 },
-    competence: { fontSize: 20 },
+    competenseList: { marginTop: 10 
+    },
+    competence: { fontSize: 20 
+    },
   });
 
   if (diploma) {
@@ -82,8 +84,8 @@ export default ({ route }) => {
         <View style={styles.buttons}>
           <TouchableOpacity style={styles.button}>
             <Button
-              text="Diploma Uitlezen"
-              onPress={() => {}}
+              text="Competenties beheren"
+              onPress={() => navigation.push("ManageDiploma")}
               theme="secondary"
             />
           </TouchableOpacity>

@@ -4,7 +4,7 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Button,
+  TouchableOpacity,
   TouchableHighlight,
   Pressable,
 } from "react-native";
@@ -115,6 +115,7 @@ export default ({ navigation, route }) => {
               </Menu>
             ))}
         </View>
+     
       </View>
     );
   };
@@ -133,7 +134,7 @@ export default ({ navigation, route }) => {
         <View>
           {requests.length < 1 ? (
             <TouchableHighlight
-              style={styles.button}
+              style={styles.buttonStudent}
               onPress={() => {
                 requestExemption();
               }}
@@ -185,7 +186,9 @@ export default ({ navigation, route }) => {
       color: "#fff",
       fontWeight: "bold",
     },
-    button: {
+
+   
+    buttonStudent: {
       backgroundColor: COLORS.white,
       borderRadius: 10,
       padding: 10,

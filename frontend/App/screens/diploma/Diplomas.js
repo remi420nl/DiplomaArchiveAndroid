@@ -29,6 +29,8 @@ export default ({ navigation, route }) => {
   const FETCH_FAILED = "FETCH_FAILED";
   const COLORS_ADDED = "COLORS_ADDED";
 
+  const SingleStudentView = route.params.student;
+
   const archiveReducer = (state, action) => {
     switch (action.type) {
       case FETCH_SUCCESS:
@@ -45,7 +47,11 @@ export default ({ navigation, route }) => {
           isLoading: false,
           error: false,
           data: action.payload,
-          diplomas: action.payload,
+          diplomas: SingleStudentView
+            ? action.payload.filter(
+                (d) => d.student.id === SingleStudentView.id
+              )
+            : action.payload,
         };
       case FETCH_FAILED:
         return {
@@ -94,6 +100,7 @@ export default ({ navigation, route }) => {
           .then(({ data }) => {
             dispatch({ type: FETCH_SUCCESS, payload: data });
           })
+
           .catch((e) => dispatch({ type: FETCH_FAILED, payload: e }));
       } else if (user.type === "student") {
         GetAllDiplomasByUser(token)
@@ -101,7 +108,9 @@ export default ({ navigation, route }) => {
           .catch((e) => dispatch({ type: FETCH_FAILED, payload: e }));
       }
     }
-    return () => setColors();
+    return () => {
+      setColors();
+    };
   });
 
   const colors = [
@@ -145,42 +154,54 @@ export default ({ navigation, route }) => {
       marginTop: 15,
       marginHorizontal: 10,
       padding: 10,
+      fontSize: 20,
+      fontWeight: "bold",
+      textAlign: "center",
+    },
+    headerRow: {
+      flexDirection: "row",
     },
   });
 
-  const Header = () => (
-    <View style={styles.header}>
-      <View>
-        <Text style={styles.headerText}>
-          Diplomas in systeem: {!isLoading && archive.data.length}
-        </Text>
+  const Header = () => {
+    if (SingleStudentView) {
+      return (
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{SingleStudentView.name}</Text>
+        </View>
+      );
+    }
 
-        {!isLoading && archive.students && user.type === "employee" && (
-          <View>
-            <Text tyle={styles.headerText}>
-              {"Studenten: " + archive.students.length}
-            </Text>
-          </View>
-        )}
-      </View>
-      {user.type === "employee" && (
-        <View>
-          {archive.students && (
-            <StudentPicker
-              data={archive.students}
-              onPress={(student) => {
-                console.log(student);
-                dispatch({
-                  type: student.id ? SET_STUDENT : GET_ALL,
-                  payload: { student_id: student.id },
-                });
-              }}
-            />
+    return (
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
+          <Text style={styles.headerText}>
+            Diplomas in systeem: {!isLoading && archive.data.length}
+          </Text>
+          {!isLoading && archive.students && user.type === "employee" && (
+            <View>
+              <Text tyle={styles.headerText}>
+                Studenten: {archive.students.length}
+              </Text>
+
+              <View>
+                <StudentPicker
+                  SingleStudentView={SingleStudentView}
+                  data={archive.students}
+                  onPress={(student) => {
+                    dispatch({
+                      type: student.id ? SET_STUDENT : GET_ALL,
+                      payload: { student_id: student.id },
+                    });
+                  }}
+                />
+              </View>
+            </View>
           )}
         </View>
-      )}
-    </View>
-  );
+      </View>
+    );
+  };
 
   const { isLoading, error } = archive;
 

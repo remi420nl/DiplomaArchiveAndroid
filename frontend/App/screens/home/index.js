@@ -261,9 +261,12 @@ export default Home = ({ navigation }) => {
         </TouchableOpacity>
       }
     >
-      <MenuItem onPress={() => alert("todo")}>Informatie</MenuItem>
-
       <MenuItem onPress={() => alert("todo")}>Contactformulier</MenuItem>
+      {isEmployee && (
+        <MenuItem onPress={() => alert("todo")}>Competencies beheren</MenuItem>
+      )}
+      <MenuDivider />
+      <MenuItem onPress={() => alert("todo")}>Informatie</MenuItem>
       <MenuDivider />
       <MenuItem onPress={() => ref.current.hide()}>Verberg</MenuItem>
     </Menu>

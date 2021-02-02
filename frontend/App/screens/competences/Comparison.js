@@ -10,15 +10,15 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Button,
   TouchableHighlight,
   Pressable,
   FlatList,
   Dimensions,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { GetCompetences, RegisterGroups } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
+import { Button } from "../../components/Button";
 
 export default ({ navigation, route }) => {
   const [studentCompetences, setStudentComp] = useState(null);
@@ -68,12 +68,20 @@ export default ({ navigation, route }) => {
     },
     header: {
       alignItems: "center",
-      marginVertical: 20,
+      margin: 20,
+      flexDirection: "row",
     },
     headerText: {
       fontFamily: "Roboto-Bold",
       fontSize: 24,
       letterSpacing: -1,
+      textAlign: "center",
+    },
+    button: {},
+    topBar: {
+      marginRight: 20,
+      flexDirection: "row",
+      justifyContent: "flex-end",
     },
   });
 
@@ -98,8 +106,19 @@ export default ({ navigation, route }) => {
 
     return (
       <View style={styles.scrollView}>
+        <View style={styles.topBar}>
+          <TouchableOpacity style={styles.button}>
+            <Button
+              text="Diploma's inzien"
+              onPress={() => navigation.push("Diplomas", { student: student })}
+              theme="primary"
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.header}>
-          <Text style={styles.headerText}>{student.name}</Text>
+          <Text style={styles.headerText}>
+            Competenties van: {student.name}
+          </Text>
         </View>
         <FlatList
           horizontal={true}

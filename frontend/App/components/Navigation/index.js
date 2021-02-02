@@ -22,8 +22,9 @@ import AddDiploma from "../../screens/diploma/AddDiploma";
 import DiplomaDetails from "../../screens/diploma/Details";
 import CourseDetails from "../../screens/course/Details";
 import Exemptions from "../../screens/exemption";
-import Competences from "../../screens/competences";
+import Competences from "../../screens/competences/Comparison";
 import EditCompetences from "../../screens/competences/Edit";
+import ManageDiploma from "../../screens/competences/ManageDiploma";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -120,7 +121,12 @@ export default () => {
       <HomeStack.Screen
         name="EditCompetences"
         component={EditCompetences}
-        options={{ title: "Competencies bewerken" }}
+        options={{ title: "Competenties bewerken" }}
+      />
+      <HomeStack.Screen
+        name="ManageDiploma"
+        component={ManageDiploma}
+        options={{ title: "Competencies beheren" }}
       />
 
       <HomeStack.Screen

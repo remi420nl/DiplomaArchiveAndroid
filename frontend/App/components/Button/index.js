@@ -14,12 +14,11 @@ export const Button = ({ text, style, onPress, disabled, theme }) => {
     container: {
       backgroundColor: theme == "primary" ? COLORS.mediumseagrean : COLORS.gray2,
       marginVertical: 5,
-      minWidth: "30%",
-      maxWidth: "50%",
-      maxHeight: 35,
+     
+      maxWidth: 180,
+      maxHeight: 60,
       borderRadius: 2,
-      paddingTop: 5,
-      paddingBottom: 5,
+      padding: 5
     },
   });
 
