@@ -31,6 +31,7 @@ class CompetenceSerializer(serializers.ModelSerializer):
 
         model = Competence
         fields = ['id', 'name', 'keyword_set', 'match']
+        extra_kwargs = {'keyword_set': {'required': False}}
 
     def get_match(self, obj):
 

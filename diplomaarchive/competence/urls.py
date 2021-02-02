@@ -6,7 +6,7 @@ from .views import ExemptionView, ExemptionsView, CompetencesView, CompetenceVie
 
 urlpatterns = [
 
-    path('allcompetences', CompetencesView.as_view(), name='competences'),
+    path('allcompetences/', CompetencesView.as_view(), name='competences'),
     path('competences/', CompetenceView.as_view(), name='competence'),
     path('updatecompetence/', CompetenceUpdateView.as_view(), name='competence'),
     path('allexemptions/', ExemptionsView.as_view()),

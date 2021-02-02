@@ -23,8 +23,10 @@ import DiplomaDetails from "../../screens/diploma/Details";
 import CourseDetails from "../../screens/course/Details";
 import Exemptions from "../../screens/exemption";
 import Competences from "../../screens/competences/Comparison";
-import EditCompetences from "../../screens/competences/Edit";
+import ManageCourse from "../../screens/competences/ManageCourse";
 import ManageDiploma from "../../screens/competences/ManageDiploma";
+import EditCompetences from "../../screens/competences/Edit";
+import CompetenceDetails from "../../screens/competences/Detail";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -116,7 +118,7 @@ export default () => {
       <HomeStack.Screen
         name="Competences"
         component={Competences}
-        options={{ title: "Competenties" }}
+        options={{ title: "Competenties vergelijken" }}
       />
       <HomeStack.Screen
         name="EditCompetences"
@@ -124,9 +126,19 @@ export default () => {
         options={{ title: "Competenties bewerken" }}
       />
       <HomeStack.Screen
+        name="CompetenceDetails"
+        component={CompetenceDetails}
+        options={{ title: "Competentie bewerken" }}
+      />
+      <HomeStack.Screen
+        name="ManageCourse"
+        component={ManageCourse}
+        options={{ title: "Vak Competenties Beheren" }}
+      />
+      <HomeStack.Screen
         name="ManageDiploma"
         component={ManageDiploma}
-        options={{ title: "Competencies beheren" }}
+        options={{ title: "Diploma Competencies beheren" }}
       />
 
       <HomeStack.Screen

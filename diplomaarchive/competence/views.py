@@ -28,7 +28,6 @@ class ExemptionsView(ListAPIView):
             try:
                 id = self.request.query_params["course"]
                 exemptions = Exemption.objects.filter(course_id=id)
-
                 return exemptions
             except:
                 exemptions = Exemption.objects.all()
@@ -106,6 +105,7 @@ class ExemptionView(UpdateAPIView):
 class CompetencesView(ListAPIView):
 
     serializer_class = CompetenceSerializer
+    permission_classes = (permissions.AllowAny,)
     queryset = Competence.objects.all()
     pagination_class = None
 
@@ -113,6 +113,25 @@ class CompetencesView(ListAPIView):
 class CompetenceView(APIView):
 
     serializer_class = CompetenceSerializer
+
+    def get_permissions(self):
+
+        if self.request.method in {'PUT', 'POST'}:
+            self.permission_classes = [IsEmployee, ]
+
+            return super(CompetenceView, self).get_permissions()
+
+    def post(self, request, *args, **kwargs):
+        print("post method")
+        print(request.data)
+
+        serializer = CompetenceSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data, status=201)
+
+        return Response(serializer.errors, status=500)
 
     def check_matches(self, student, course, combined):
         for s_competence in student:
@@ -214,7 +233,7 @@ class CompetenceView(APIView):
 class CompetenceUpdateView(UpdateAPIView):
 
     serializer_class = CompetenceSerializer
-    permission_classes = (permissions.AllowAny,)
+   # permission_classes = (permissions.AllowAny,)
 
     def update(self, request, *args, **kwargs):
 

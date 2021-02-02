@@ -6,7 +6,7 @@ from course.models import Course
 class Competence(models.Model):
 
     # this has to be unique but the logic is being handled in the serializer
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.name

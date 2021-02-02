@@ -115,7 +115,6 @@ export default ({ navigation, route }) => {
               </Menu>
             ))}
         </View>
-     
       </View>
     );
   };
@@ -187,7 +186,6 @@ export default ({ navigation, route }) => {
       fontWeight: "bold",
     },
 
-   
     buttonStudent: {
       backgroundColor: COLORS.white,
       borderRadius: 10,
@@ -221,7 +219,7 @@ export default ({ navigation, route }) => {
               style={styles.header}
               onPress={() =>
                 isEmployee
-                  ? navigation.push("EditCompetences", {
+                  ? navigation.push("ManageCourse", {
                       courseId: courseId,
                       courseName: course.name,
                     })

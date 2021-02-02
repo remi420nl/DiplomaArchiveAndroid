@@ -69,43 +69,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  /////
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  openButton: {
-    backgroundColor: "#F194FF",
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
   searchResult: {
     height: 300,
     position: "absolute",
@@ -161,18 +124,6 @@ export default Home = ({ navigation }) => {
     };
   });
 
-  // const submitSearch = () => {
-  //   SearchCourseByName(searchText, token)
-  //     .then(({ data }) => {
-  //       setSearchResult(data);
-  //     })
-  //     .then(() => setModalVisible(true))
-  //     .catch((e) => {
-  //       console.log(e);
-  //       setError("ERROR");
-  //     });
-  // };
-
   const StudentContent = () => (
     <View>
       <Button
@@ -214,40 +165,6 @@ export default Home = ({ navigation }) => {
     </View>
   );
 
-  // const SearchResultModal = () => (
-  //   <Modal
-  //     animationType="fade"
-  //     transparent={true}
-  //     visible={modalVisible}
-  //     onRequestClose={() => {
-  //       setModalVisible(!modalVisible);
-  //     }}
-  //   >
-  //     <View style={styles.centeredView}>
-  //       <View style={styles.modalView}>
-  //         <Text style={styles.modalText}>Gevonden:</Text>
-  //         {searchResult.map((c, i) => (
-  //           <TouchableHighlight
-  //             key={i}
-  //             onPress={() => navigation.push("Course", { id: c.id })}
-  //           >
-  //             <Text>{c.name}</Text>
-  //           </TouchableHighlight>
-  //         ))}
-
-  //         <TouchableHighlight
-  //           style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-  //           onPress={() => {
-  //             setModalVisible(!modalVisible);
-  //           }}
-  //         >
-  //           <Text style={styles.textStyle}>Terug</Text>
-  //         </TouchableHighlight>
-  //       </View>
-  //     </View>
-  //   </Modal>
-  // );
-
   const TopButton = () => (
     <Menu
       ref={(r) => (ref.current = r)}
@@ -263,7 +180,9 @@ export default Home = ({ navigation }) => {
     >
       <MenuItem onPress={() => alert("todo")}>Contactformulier</MenuItem>
       {isEmployee && (
-        <MenuItem onPress={() => alert("todo")}>Competencies beheren</MenuItem>
+        <MenuItem onPress={() => navigation.push("EditCompetences")}>
+          Competencies bewerken
+        </MenuItem>
       )}
       <MenuDivider />
       <MenuItem onPress={() => alert("todo")}>Informatie</MenuItem>
