@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.urls import path, re_path
 
-from .views import ExemptionView, ExemptionsView, CompetencesView, CompetenceView, CompetenceUpdateView
+from .views import ExemptionView, ExemptionsView, CompetencesView, CompetenceView, CompetenceUpdateView, KeywordsView
 
 urlpatterns = [
 
@@ -11,5 +11,7 @@ urlpatterns = [
     path('updatecompetence/', CompetenceUpdateView.as_view(), name='competence'),
     path('allexemptions/', ExemptionsView.as_view()),
     path('exemption/', ExemptionView.as_view()),
+    path('keywords/<int:id>', KeywordsView.as_view()),
+
 
 ]

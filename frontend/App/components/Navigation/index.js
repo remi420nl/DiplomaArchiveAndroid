@@ -26,7 +26,7 @@ import Competences from "../../screens/competences/Comparison";
 import ManageCourse from "../../screens/competences/ManageCourse";
 import ManageDiploma from "../../screens/competences/ManageDiploma";
 import EditCompetences from "../../screens/competences/Edit";
-import CompetenceDetails from "../../screens/competences/Detail";
+import Keywords from "../../screens/competences/Keywords";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -126,9 +126,9 @@ export default () => {
         options={{ title: "Competenties bewerken" }}
       />
       <HomeStack.Screen
-        name="CompetenceDetails"
-        component={CompetenceDetails}
-        options={{ title: "Competentie bewerken" }}
+        name="Keywords"
+        component={Keywords}
+        options={{ title: "Trefwoorden bewerken" }}
       />
       <HomeStack.Screen
         name="ManageCourse"

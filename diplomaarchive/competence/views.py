@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from .serializers import CompetenceSerializer, ExemptionSerializer, ExemptionUpdateSerializer
-from .models import Competence, Exemption
-from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
+from .serializers import CompetenceSerializer, ExemptionSerializer, ExemptionUpdateSerializer, KeywordSerializer
+from .models import Competence, Exemption, Keyword
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from diploma.models import Diploma
@@ -14,6 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import AllowAny
 from diploma.serializers import DiplomaSerializer
 from users.permissions import IsEmployee, IsStudent
+from django.shortcuts import get_object_or_404
 
 
 class ExemptionsView(ListAPIView):
@@ -116,14 +117,18 @@ class CompetenceView(APIView):
 
     def get_permissions(self):
 
-        if self.request.method in {'PUT', 'POST'}:
+        if self.request.method in {'PUT', 'POST', 'DELETE'}:
             self.permission_classes = [IsEmployee, ]
 
             return super(CompetenceView, self).get_permissions()
 
+        if self.request.method in {'GET', ''}:
+            print("GETTTTTTTTTT")
+            self.permission_classes = [permissions.IsAuthenticated, ]
+
+            return super(CompetenceView, self).get_permissions()
+
     def post(self, request, *args, **kwargs):
-        print("post method")
-        print(request.data)
 
         serializer = CompetenceSerializer(data=request.data)
 
@@ -229,6 +234,14 @@ class CompetenceView(APIView):
 
         return Response(combined, status=200)
 
+    def delete(self, request, *args, **kwargs):
+
+        id = self.request.query_params['id']
+        obj = get_object_or_404(Competence, id=id)
+        obj.delete()
+
+        return Response({"message": "deleted succesfully"}, status=200)
+
 
 class CompetenceUpdateView(UpdateAPIView):
 
@@ -247,6 +260,25 @@ class CompetenceUpdateView(UpdateAPIView):
                     return Response({"error": "Competence with id {0} could not be added".format(id)}, status=500)
 
             return instance
+
+        if 'id' in request.GET:
+            id = request.query_params['id']
+
+            try:
+                data = request.data
+
+                obj = get_object_or_404(Competence, id=id)
+
+                serializer = CompetenceSerializer(obj, data=data, partial=True)
+                if(serializer.is_valid()):
+
+                    serializer.save()
+
+                    return Response({"succes": serializer.data}, status=201)
+
+            except:
+
+                return Response({"error": "Competence with id {0} could not be added".format(id)}, status=500)
 
         if 'diploma' in request.GET:
             id = request.query_params['diploma']
@@ -301,3 +333,78 @@ class CompetenceUpdateView(UpdateAPIView):
         except:
 
             return Response({"error": "someteing went wrong"}, status=500)
+
+
+class KeywordsView(APIView):
+
+    serializer_class = KeywordSerializer
+    pagination_class = None
+    lookup_field = 'id'
+
+    def get(self, request, id, format=None):
+
+        keywords = Keyword.objects.filter(competence=id)
+        serializer = KeywordSerializer(keywords, many=True)
+
+        return Response(serializer.data, status=200)
+
+    def post(self, request, id, format=None):
+
+        try:
+            keywords = request.data.pop('keywords')
+            id = request.data.pop('competence')
+
+            competence = Competence.objects.get(id=id)
+            data = []
+
+            for keyword in keywords:
+                data.append({'name': keyword, 'competence': id})
+
+            serializer = KeywordSerializer(data=data, many=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "succes"}, status=201)
+
+            return Response({"error": "something went wrong"}, status=500)
+        except:
+            return Response({"error": "something went wrong"}, status=500)
+
+    def delete(self, request, id, format=None):
+
+        Keyword.objects.filter(id=id).delete()
+        return Response({"message": "succes"}, status=200)
+
+    def put(self, request, id, format=None):
+
+        try:
+            data = request.data
+
+            response = []
+
+            for keyword in data:
+
+                obj = Keyword.objects.get(id=keyword['id'])
+
+                serializer = KeywordSerializer(obj, data=keyword, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    response.append(serializer.data)
+
+            return Response({'result': response}, status=201)
+
+        except:
+            return Response({"error": "something went wrong"}, status=500)
+
+
+# class KeywordsView(ListAPIView):
+
+#     serializer_class = KeywordSerializer
+#     permission_classes = (permissions.AllowAny,)
+#     pagination_class = None
+
+#     def get_queryset(self):
+#         id = self.kwargs['c_id']
+#         result = Keyword.objects.filter(id=id)
+
+#         return result

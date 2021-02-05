@@ -31,7 +31,6 @@ export default ({ navigation, route }) => {
 
   useEffect(() => {
     // Added eventlistener to refresh when the user navigates back to this screen so the course gets updated
-
     const unsubscribe = navigation.addListener("focus", () => {
       setError(null);
       GetCourseById(courseId, token)
@@ -44,11 +43,8 @@ export default ({ navigation, route }) => {
     });
 
     // user has to be logged in for this
-
     return unsubscribe;
   }, [navigation]);
-
-  useEffect(() => {}, [course]);
 
   const fetchExemptions = () => {
     if (user.type === "employee") {

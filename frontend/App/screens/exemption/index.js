@@ -1,7 +1,7 @@
 import React, {
   useEffect,
   useState,
-  createRef,
+  useMemo,
   useRef,
   useCallback,
 } from "react";
@@ -56,13 +56,18 @@ export default ({ navigation, route }) => {
   }, [exemption]);
 
   const selectExemption = (exemption) => {
-    setModalVisible(true);
     setExemption(exemption);
+    setModalVisible(true);
   };
 
   const setStatus = (status) => {
     setExemption((e) => ({ ...e, status: status }));
   };
+
+  //to save the old status so it can be changed in usestate by the user but keep showing the the oldstatus untill the change is saved
+  const oldStatus = React.useMemo(() => exemption && exemption.status, [
+    !modalVisible,
+  ]);
 
   const saveExemption = () => {
     UpdateExemptionById(exemption.id, token, exemption).then((r) => {
@@ -95,6 +100,7 @@ export default ({ navigation, route }) => {
       letterSpacing: 1.4,
       flexShrink: 1,
     },
+
     //Below is for modal
     centeredView: {
       flex: 1,
@@ -156,6 +162,13 @@ export default ({ navigation, route }) => {
     segmentButtonText: {
       fontFamily: "Roboto-Bold",
     },
+    colorExplanation: {
+      flexDirection: "row",
+      height: 40,
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+    },
   });
 
   //TODO
@@ -171,7 +184,6 @@ export default ({ navigation, route }) => {
       data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
       numberOfElementsLastRow++;
     }
-
     return data;
   };
 
@@ -179,7 +191,6 @@ export default ({ navigation, route }) => {
     if (item.empty === true) {
       return <View style={[styles.item, styles.itemInvisible]} />;
     }
-
     return (
       <Pressable
         onLongPress={() => selectExemption(item)}
@@ -191,7 +202,7 @@ export default ({ navigation, route }) => {
         }
         style={[styles.item, { backgroundColor: COLORS[item.status] }]}
       >
-        <Text style={[styles.itemText, { color: "darkgray" }]}>
+        <Text style={[styles.itemText, { color: COLORS.black, fontSize: 18 }]}>
           {item.student.name}
         </Text>
         <Text style={styles.itemText}>{item.course.name}</Text>
@@ -219,7 +230,7 @@ export default ({ navigation, route }) => {
               Student: {exemption.student.name}
             </Text>
             <Text style={styles.modalTitle}>Vak: {exemption.course.name}</Text>
-            <Text>{exemption.status}</Text>
+            <Text>{oldStatus}</Text>
 
             <View style={styles.modalButtons}>
               <Text style={styles.modalText}>Kies een optie:</Text>
@@ -274,8 +285,30 @@ export default ({ navigation, route }) => {
     );
   };
 
+  const colorExplanation = () => {
+    const options = ["Goedgekeurd", "Afgewezen", "In Behandeling"];
+
+    return (
+      <View style={styles.colorExplanation}>
+        {options.map((o) => (
+          <View
+            style={{
+              padding: 5,
+              alignItems: "center",
+              backgroundColor: COLORS[o],
+              flex: 1,
+            }}
+          >
+            <Text style={styles.itemText}>{o}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
+      {colorExplanation()}
       {exemptions && (
         <FlatList
           data={exemptions}

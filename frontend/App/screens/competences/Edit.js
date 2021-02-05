@@ -14,10 +14,12 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
+  Pressable,
+  Alert,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import {
   CreateNewCompetence,
+  DeleteCompetence,
   GetAllCompetences,
   GetCompetences,
   RegisterGroups,
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
   },
-  addButton: {
+  button: {
     backgroundColor: COLORS.white,
     marginBottom: 10,
     elevation: 3,
@@ -64,6 +66,24 @@ export default ({ navigation, route }) => {
   const { user, token } = useAuth();
 
   useEffect(() => {
+    // Added eventlistener to refresh when the user navigates back to this screen so the course gets updated
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchCompetences();
+    });
+
+    // user has to be logged in for this
+    return unsubscribe;
+  }, [!editMode, navigation]);
+
+  const addRow = () => {
+    const copy = [...competences];
+    copy.unshift({ name: "", id: "temp" });
+
+    setCompetences(copy);
+    setEditMode(true);
+  };
+
+  const fetchCompetences = () => {
     GetAllCompetences(token)
       .then(({ data }) => {
         setCompetences(
@@ -74,13 +94,6 @@ export default ({ navigation, route }) => {
         setLoading(false);
       })
       .catch((e) => console.log(e));
-  }, [!editMode]);
-
-  const addRow = () => {
-    const copy = [...competences];
-    copy.unshift({ name: "", id: "temp" });
-    setCompetences(copy);
-    setEditMode(true);
   };
 
   const saveCompetence = () => {
@@ -90,7 +103,7 @@ export default ({ navigation, route }) => {
     }
 
     CreateNewCompetence(token, { name: input })
-      .then((r) => {
+      .then(() => {
         cancelEdit();
       })
       .catch((r) => console.log(r));
@@ -100,22 +113,47 @@ export default ({ navigation, route }) => {
     const copy = [...competences];
     copy.shift();
     setCompetences(copy);
+    setInput(null);
     setEditMode(false);
   };
+
+  const deleteDialog = (item) =>
+    Alert.alert(
+      "Verwijder uit systeem",
+      `Weet je zeker dat je ${item.name} wilt verwijderen?`,
+      [
+        {
+          text: "Annuleer",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Bevestigen",
+          onPress: () =>
+            DeleteCompetence(token, item.id)
+              .then(() => alert("Succesvol verwijderd"))
+              .then(() => fetchCompetences())
+              .catch((e) => console.log(e)),
+        },
+      ],
+      { cancelable: false }
+    );
+
   const onItemPress = (item, index) => {
     if (!editMode)
-      navigation.push("CompetenceDetails", {
+      navigation.push("Keywords", {
         id: item.id,
-        keywords: item.keyword_set,
+        competenceId: item.id,
         name: item.name,
       });
   };
 
   const renderItem = ({ item, index }) => {
-    console.log(item);
-    console.log(index);
     return (
-      <TouchableOpacity onPress={() => onItemPress(item, index)}>
+      <Pressable
+        onPress={() => onItemPress(item, index)}
+        onLongPress={() => deleteDialog(item)}
+      >
         <Card>
           <TextInput
             editable={editMode}
@@ -126,7 +164,7 @@ export default ({ navigation, route }) => {
             showSoftInputOnFocus={editMode && index === 0}
           />
         </Card>
-      </TouchableOpacity>
+      </Pressable>
     );
   };
 
@@ -140,7 +178,7 @@ export default ({ navigation, route }) => {
                 name="check"
                 size={28}
                 color="green"
-                style={styles.addButton}
+                style={styles.button}
               />
             </TouchableOpacity>
           )}
@@ -150,7 +188,7 @@ export default ({ navigation, route }) => {
               name="plus"
               size={28}
               color="black"
-              style={styles.addButton}
+              style={styles.button}
             />
           </TouchableOpacity>
 
@@ -160,7 +198,7 @@ export default ({ navigation, route }) => {
                 name="close"
                 size={28}
                 color="red"
-                style={styles.addButton}
+                style={styles.button}
               />
             </TouchableOpacity>
           )}

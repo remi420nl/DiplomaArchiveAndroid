@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Competence, Exemption
+from .models import Competence, Exemption, Keyword
 from django.core.exceptions import ObjectDoesNotExist
 from users.serializers import UserSerializer
 
@@ -60,3 +60,10 @@ class ExemptionUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exemption
         exclude = ('student', 'course')
+
+
+class KeywordSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Keyword
+        fields = ('__all__')
