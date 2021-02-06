@@ -2,14 +2,14 @@ import React, { useEffect, useState, createRef, useRef } from "react";
 import {
   View,
   Text,
-  TextInput,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   TouchableHighlight,
   Pressable,
 } from "react-native";
 import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
-
+import Loading from "../loading";
 import {
   CreateNewExemption,
   GetAllExemptions,
@@ -76,12 +76,11 @@ export default ({ navigation, route }) => {
     }
 
     return (
-      <View style={styles.subContainer}>
+      <View>
         <TouchableHighlight
-          style={styles.header}
           onPress={() => navigation.push("Exemptions", { id: courseId })}
         >
-          <Text style={styles.headerText}>Vrijstellingen</Text>
+          <Text style={styles.header}>Vrijstellingen</Text>
         </TouchableHighlight>
         <View style={styles.exemptions}>
           {exemptions &&
@@ -147,25 +146,39 @@ export default ({ navigation, route }) => {
   };
 
   const styles = StyleSheet.create({
-    view: {
-      flex: 1,
-      justifyContent: "space-around",
-      marginLeft: 20,
-    },
     container: {
-      flexGrow: 1,
-      height: "70%",
-      justifyContent: "space-around",
+      marginTop: 40,
+      margin: 10,
+      flex: 1,
+      padding: 10,
+      justifyContent: "space-evenly",
     },
-    subContainer: {
-      flexGrow: 1,
-
-      marginRight: 20,
+    content: {
+      flex: 1,
+      paddingVertical: 5,
     },
-    header: {},
-    headerText: {
+    competences: {
+      flex: 2,
+      paddingVertical: 5,
+    },
+    header: {
+      fontSize: 22,
       fontWeight: "bold",
+      textTransform: "uppercase",
     },
+    text: {
+      fontSize: 18,
+      height: 25,
+    },
+    lowerContainer: {
+      flex: 2,
+      paddingVertical: 5,
+    },
+    button: {
+      marginVertical: 15,
+    },
+    competenseList: { marginTop: 10 },
+    competence: { fontSize: 20 },
     exemptions: {
       flexDirection: "row",
       justifyContent: "space-between",
@@ -173,7 +186,7 @@ export default ({ navigation, route }) => {
     studentButton: {
       backgroundColor: COLORS.blue,
       borderRadius: 10,
-
+      margin: 5,
       alignSelf: "flex-start",
     },
     studentName: {
@@ -186,6 +199,7 @@ export default ({ navigation, route }) => {
       backgroundColor: COLORS.white,
       borderRadius: 10,
       padding: 10,
+      margin: 5,
     },
     buttonText: {
       fontWeight: "bold",
@@ -197,53 +211,46 @@ export default ({ navigation, route }) => {
     const isStudent = user && user.type === "student";
 
     return (
-      <View style={styles.view}>
-        <View style={styles.container}>
-          <View style={styles.subContainer}>
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.content}>
             <TouchableHighlight
-              style={styles.headerText}
               onPress={() =>
                 isEmployee ? alert("Omschrijving Bijwerken") : null
               }
             >
-              <Text style={styles.headerText}>{course.name}</Text>
+              <Text style={styles.header}>{course.name}</Text>
             </TouchableHighlight>
             <Text>{course.context}</Text>
           </View>
-          <View style={styles.subContainer}>
-            <TouchableHighlight
-              style={styles.header}
-              onPress={() =>
-                isEmployee
-                  ? navigation.push("ManageCourse", {
-                      courseId: courseId,
-                      courseName: course.name,
-                    })
-                  : null
-              }
-            >
-              <Text style={styles.headerText}>Competenties</Text>
-            </TouchableHighlight>
-            <View>
-              {course.competences.map((c, i) => (
-                <TouchableHighlight
-                  key={i}
-                  activeOpacity={0.4}
-                  onPress={() => alert(c.id)}
-                >
-                  <Text>{c.name}</Text>
-                </TouchableHighlight>
-              ))}
-            </View>
-          </View>
-          <View style={styles.subContainer}>
-            {course && isEmployee && ExemptionsView()}
-            {course && isStudent && StudentView()}
-          </View>
+        </ScrollView>
+
+        <View style={styles.competences}>
+          <TouchableHighlight
+            onPress={() =>
+              isEmployee
+                ? navigation.push("ManageCourse", {
+                    courseId: courseId,
+                    courseName: course.name,
+                  })
+                : null
+            }
+          >
+            <Text style={styles.header}>Competenties</Text>
+          </TouchableHighlight>
+          <ScrollView style={{ padding: 10 }}>
+            {course.competences.map((c, i) => (
+              <Text style={styles.text}>{c.name}</Text>
+            ))}
+          </ScrollView>
+        </View>
+        <View style={styles.lowerContainer}>
+          {course && isEmployee && ExemptionsView()}
+          {course && isStudent && StudentView()}
         </View>
       </View>
     );
+  } else {
+    return <Loading />;
   }
-
-  return <Text>Loading..</Text>;
 };

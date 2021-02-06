@@ -37,11 +37,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexGrow: 1,
   },
-  card: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+
   courseTitle: {
     fontSize: 38,
     fontWeight: "bold",

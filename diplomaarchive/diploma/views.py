@@ -19,6 +19,7 @@ from datetime import datetime, timezone, timedelta
 from users.permissions import IsEmployee, IsStudent
 from rest_framework import permissions
 from rest_framework.parsers import FileUploadParser
+from users.permissions import IsEmployee, IsStudent
 
 import pdfplumber
 from pathlib import Path
@@ -136,7 +137,6 @@ class DiplomaView(UpdateAPIView):
         try:
             diploma = Diploma.objects.get(id=id)
             is_employee = request.user.groups.filter(name='employee')
-            print(is_employee)
 
             if is_employee:
                 print('is employee')
@@ -155,10 +155,14 @@ class DiplomaView(UpdateAPIView):
 
             try:
                 diploma = Diploma.objects.get(id=id)
-                serializer = DiplomaSerializer(diploma, data=request.data)
+                print(request.data)
+                serializer = DiplomaSerializer(
+                    diploma, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
+                print(serializer.errors)
+                return Response(serializer.errors, status=500)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -174,7 +178,7 @@ class DiplomaView(UpdateAPIView):
 
 class ReadDiploma(APIView):
 
-    permission_classes = (AllowAny,)
+    permission_classes = [IsEmployee, ]
 
     def check_keyword_matches(self, array):
         query_set = Keyword.objects.all()
@@ -186,15 +190,15 @@ class ReadDiploma(APIView):
 
         return serializer.data
 
-    def post(self, request, *args, **kwargs):
-        BASE_DIR = Path(__file__).resolve().parent.parent
+    # def post(self, request, *args, **kwargs):
+    #     BASE_DIR = Path(__file__).resolve().parent.parent
 
-        print("reading diploma..")
+    #     print("reading diploma..")
 
-        with pdfplumber.open(os.path.join(BASE_DIR, 'media')+"\diplomas\programming job.pdf") as pdf:
-            first_page = pdf.pages[0]
-            print(first_page.extract_text())
-        return Response("Done")
+    #     with pdfplumber.open(os.path.join(BASE_DIR, 'media')+"\diplomas\programming job.pdf") as pdf:
+    #         first_page = pdf.pages[0]
+    #         print(first_page.extract_text())
+    #     return Response("Done")
 
     def get(self, request, *args, **kwargs):
         print(request)
@@ -202,7 +206,6 @@ class ReadDiploma(APIView):
             id = request.query_params["id"]
             try:
                 diploma = Diploma.objects.get(id=id)
-                print(diploma)
 
                 result = []
 
@@ -216,6 +219,9 @@ class ReadDiploma(APIView):
                             page = pdf.pages[0].extract_text()
                             result.append(page)
 
+                if len(result) == 0:
+                    return Response({'error': 'no pdf found'}, status=404)
+
                 words = []
                 for r in result:
                     words_array = re.split("( )", r)
@@ -226,8 +232,8 @@ class ReadDiploma(APIView):
                         words.append(word)
 
                 matches = self.check_keyword_matches(cleaned_keywords)
-                print("matches:")
-                print(matches)
+                print(words)
+
                 return Response({'keywords': words,
                                  'matches': matches
                                  }, status=200)

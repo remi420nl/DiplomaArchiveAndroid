@@ -32,32 +32,31 @@ class DiplomaSerializer(WritableNestedModelSerializer, serializers.ModelSerializ
 
     def update(self, instance, validated_data):
 
-        instance.name = validated_data['name']
-        instance.date = validated_data['date']
-
         updated_competences = []
         for x in validated_data['competences']:
+
             for key, value in x.items():
-                updated_competences.append(value)
+                # id is not included (?) so the name will extraced to get the object
+                if(key == "name"):
+
+                    updated_competences.append(value)
 
         for oldcompetence in instance.competences.all():
 
             if oldcompetence.name not in updated_competences:
-                print("competence not found will be deleted..")
+
                 oldcompetence.delete()
 
         for competence in updated_competences:
 
             try:
 
-                c = Competence.objects.get(name=competence)
+                competence = Competence.objects.get(name=competence)
 
-                competence = Competence(id=c.id, name=competence)
-
-                competence.save()
                 instance.competences.add(competence)
+
             except ObjectDoesNotExist:
-                print("competence will be created")
+
                 competence = Competence(name=competence, diploma=instance)
 
                 competence.save()
