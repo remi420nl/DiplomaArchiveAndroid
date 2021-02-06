@@ -57,10 +57,8 @@ export default ({ navigation, route }) => {
     button: {
       marginVertical: 25,
     },
-    competenseList: { marginTop: 10 
-    },
-    competence: { fontSize: 20 
-    },
+    competenseList: { marginTop: 10 },
+    competence: { fontSize: 20 },
   });
 
   if (diploma) {
@@ -85,7 +83,9 @@ export default ({ navigation, route }) => {
           <TouchableOpacity style={styles.button}>
             <Button
               text="Competenties beheren"
-              onPress={() => navigation.push("ManageDiploma")}
+              onPress={() =>
+                navigation.push("ManageDiploma", { diplomaId: id })
+              }
               theme="secondary"
             />
           </TouchableOpacity>

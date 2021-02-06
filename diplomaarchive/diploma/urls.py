@@ -13,6 +13,6 @@ urlpatterns = [
     path('byuser', DiplomasByStudent.as_view()),
     path('adddiploma', AddDiploma.as_view()),
     re_path(r'^$', DiplomasView.as_view(), name='diplomas'),
-    path('senddiploma', ReadDiploma.as_view())
+    path('readpdf/', ReadDiploma.as_view())
 ]
 0

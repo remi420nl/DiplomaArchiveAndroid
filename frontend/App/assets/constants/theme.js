@@ -37,6 +37,8 @@ export const COLORS = {
   Goedgekeurd: "green",
   Afgewezen: "darkred",
   "In Behandeling": "#f7d216",
+  Gematched: "#008159",
+  "Geen Match": "#4f6d7a",
 };
 
 export const SIZES = {

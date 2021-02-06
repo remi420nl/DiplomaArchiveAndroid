@@ -19,6 +19,7 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { GetCompetences, RegisterGroups } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
+import { COLORS } from "../../assets/constants";
 
 export default ({ navigation, route }) => {
   const [studentCompetences, setStudentComp] = useState(null);
@@ -44,6 +45,7 @@ export default ({ navigation, route }) => {
     container: {
       flex: 1,
       marginVertical: 20,
+      padding: 3,
     },
     scrollView: {
       flex: 1,
@@ -83,11 +85,23 @@ export default ({ navigation, route }) => {
       flexDirection: "row",
       justifyContent: "flex-end",
     },
+    colorExplanation: {
+      flexDirection: "row",
+      height: 40,
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+    },
   });
 
-  const RenderItem = ({ item, index, seperators }) => (
+  const RenderItem = ({ item, index }) => (
     <View
-      style={{ ...styles.item, backgroundColor: item.match ? "green" : "blue" }}
+      style={{
+        ...styles.item,
+        backgroundColor: item.match
+          ? COLORS["Gematched"]
+          : COLORS["Geen Match"],
+      }}
     >
       <Text style={styles.itemText}>{item.name}</Text>
     </View>
@@ -144,8 +158,30 @@ export default ({ navigation, route }) => {
     );
   };
 
+  const colorExplanation = () => {
+    const options = ["Gematched", "Geen Match"];
+
+    return (
+      <View style={styles.colorExplanation}>
+        {options.map((o) => (
+          <View
+            style={{
+              padding: 5,
+              alignItems: "center",
+              backgroundColor: COLORS[o],
+              flex: 1,
+            }}
+          >
+            <Text style={styles.itemText}>{o}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
+      {colorExplanation()}
       {studentCompetences && courseCompetences && HorizontalScroll()}
     </View>
   );

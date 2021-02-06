@@ -10,7 +10,8 @@ from rest_framework.permissions import AllowAny
 
 from .models import Diploma
 from users.models import User
-from competence.models import Competence
+from competence.models import Competence, Keyword
+from competence.serializers import KeywordSerializer
 
 from .serializers import CourseSerializer, CompetenceSerializer, DiplomaSerializer
 from datetime import datetime, timezone, timedelta
@@ -22,6 +23,7 @@ from rest_framework.parsers import FileUploadParser
 import pdfplumber
 from pathlib import Path
 import os
+import re
 
 
 class ExceptionMiddleware(object):
@@ -174,6 +176,16 @@ class ReadDiploma(APIView):
 
     permission_classes = (AllowAny,)
 
+    def check_keyword_matches(self, array):
+        query_set = Keyword.objects.all()
+
+        keywords_matched = filter(lambda k: any(
+            k.name.lower() == m.lower() for m in array), query_set)
+
+        serializer = KeywordSerializer(list(keywords_matched), many=True)
+
+        return serializer.data
+
     def post(self, request, *args, **kwargs):
         BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -183,3 +195,42 @@ class ReadDiploma(APIView):
             first_page = pdf.pages[0]
             print(first_page.extract_text())
         return Response("Done")
+
+    def get(self, request, *args, **kwargs):
+        print(request)
+        if 'id' in request.GET:
+            id = request.query_params["id"]
+            try:
+                diploma = Diploma.objects.get(id=id)
+                print(diploma)
+
+                result = []
+
+                pdfs = ['front_img', 'back_img']
+                for i in pdfs:
+
+                    if getattr(diploma, "{}".format(i)):
+                        pdf = getattr(diploma, "{}".format(i))
+
+                        with pdfplumber.open(pdf) as pdf:
+                            page = pdf.pages[0].extract_text()
+                            result.append(page)
+
+                words = []
+                for r in result:
+                    words_array = re.split("( )", r)
+                    cleaned_keywords = list(
+                        filter(lambda kw: kw.strip(), words_array))
+
+                    for word in cleaned_keywords:
+                        words.append(word)
+
+                matches = self.check_keyword_matches(cleaned_keywords)
+                print("matches:")
+                print(matches)
+                return Response({'keywords': words,
+                                 'matches': matches
+                                 }, status=200)
+
+            except:
+                return Response({'error': 'failed reading diploma'}, status=500)
