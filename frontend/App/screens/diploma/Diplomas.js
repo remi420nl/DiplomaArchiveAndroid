@@ -87,30 +87,21 @@ export default ({ navigation, route }) => {
     students: null,
   });
 
-  const firstRender = useRef(true);
   const colorsAdded = useRef(false);
   const ref = useRef();
 
   const { token, user } = useAuth();
 
   useEffect(() => {
-    if (!colorsAdded.current && user) {
-      if (user.type === "employee") {
-        GetAllDiplomas(token)
-          .then(({ data }) => {
-            dispatch({ type: FETCH_SUCCESS, payload: data });
-          })
+    const unsubscribe = navigation.addListener("focus", () => {
+      getDiplomas();
+    });
 
-          .catch((e) => dispatch({ type: FETCH_FAILED, payload: e }));
-      } else if (user.type === "student") {
-        GetAllDiplomasByUser(token)
-          .then(({ data }) => dispatch({ type: FETCH_SUCCESS, payload: data }))
-          .catch((e) => dispatch({ type: FETCH_FAILED, payload: e }));
-      }
-    }
-    return () => {
-      setColors();
-    };
+    return () => unsubscribe();
+  }, [navigation]);
+
+  useEffect(() => {
+    setColors();
   });
 
   const colors = [
@@ -132,6 +123,23 @@ export default ({ navigation, route }) => {
         count === length ? (count = 0) : count++;
       });
       dispatch({ type: COLORS_ADDED, payload: arr });
+    }
+  };
+
+  const getDiplomas = () => {
+    if (!colorsAdded.current && user) {
+      if (user.type === "employee") {
+        GetAllDiplomas(token)
+          .then(({ data }) => {
+            dispatch({ type: FETCH_SUCCESS, payload: data });
+          })
+
+          .catch((e) => dispatch({ type: FETCH_FAILED, payload: e }));
+      } else if (user.type === "student") {
+        GetAllDiplomasByUser(token)
+          .then(({ data }) => dispatch({ type: FETCH_SUCCESS, payload: data }))
+          .catch((e) => dispatch({ type: FETCH_FAILED, payload: e }));
+      }
     }
   };
 

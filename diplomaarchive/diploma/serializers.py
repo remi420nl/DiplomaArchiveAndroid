@@ -27,7 +27,8 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class DiplomaSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
 
-    competences = CompetenceSerializer(read_only=False, many=True)
+    competences = CompetenceSerializer(
+        read_only=False, many=True, required=False)
     student = UserSerializer(read_only=True)
 
     def update(self, instance, validated_data):
@@ -36,7 +37,7 @@ class DiplomaSerializer(WritableNestedModelSerializer, serializers.ModelSerializ
         for x in validated_data['competences']:
 
             for key, value in x.items():
-                # id is not included (?) so the name will extraced to get the object
+                # id is not included (?) so the name will extracted to get the object
                 if(key == "name"):
 
                     updated_competences.append(value)
@@ -50,7 +51,6 @@ class DiplomaSerializer(WritableNestedModelSerializer, serializers.ModelSerializ
         for competence in updated_competences:
 
             try:
-
                 competence = Competence.objects.get(name=competence)
 
                 instance.competences.add(competence)

@@ -124,7 +124,6 @@ export default ({ navigation, route }) => {
       [
         {
           text: "Annuleer",
-          onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
         {

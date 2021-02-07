@@ -56,9 +56,19 @@ export default ({
     competenceList: { marginTop: 10 },
     competence: { fontSize: 20 },
     link: {
-      fontSize: 18,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderColor: COLORS.white,
+      borderWidth: 3,
+      borderRadius: 15,
+      marginVertical: 10,
+    },
+    linkText: {
+      fontSize: 20,
       fontWeight: "bold",
-      color: "darkgray",
+      color: COLORS.white,
+      textTransform: "uppercase",
+      letterSpacing: 4,
     },
   });
 
@@ -83,8 +93,8 @@ export default ({
               </Text>
             ))}
           {selected && (
-            <TouchableOpacity onPress={() => onPress()}>
-              <Text style={styles.link}>Openen</Text>
+            <TouchableOpacity style={styles.link} onPress={() => onPress()}>
+              <Text style={styles.linkText}>Openen</Text>
             </TouchableOpacity>
           )}
         </View>

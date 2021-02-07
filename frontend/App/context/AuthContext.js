@@ -9,24 +9,28 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
-  const signup = (user) => {
-    return Signup(user);
+  const signup = (userData) => {
+    return Signup(userData);
   };
 
   const loginUser = async (credentials, callback) => {
     await Login(credentials)
       .then(({ data }) => {
-        console.log("log in succesful ", data);
         setToken("Bearer " + data.access);
         setUser(data.user);
       })
       .catch((e) => {
-        callback(e.response.data.detail);
+        if (e.response.status === 401) {
+          callback("Gebruikersnaam of wachtwoord onjuist");
+        } else {
+          callback(e.response.data.detail);
+        }
       });
   };
 
   const logout = () => {
     setToken(null);
+    setUser(null);
   };
 
   const contextvalue = {

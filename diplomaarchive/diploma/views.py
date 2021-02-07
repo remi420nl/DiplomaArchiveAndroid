@@ -84,22 +84,6 @@ class AddDiploma(APIView):
 
     def post(self, request):
 
-        # student = User.objects.get(id=2)
-        # name = "testdiploma"
-        # context = "testomschrijving"
-        # front_img = request.data['pdf']
-
-        # dic = {
-        #     'student':student,
-        #     'student_id': 2,
-        #     'name' : name,
-        #     'context' : context,
-        #    ' front_img' : front_img
-        #     }
-
-        # diploma = Diploma.objects.create(
-        #     name=name, student_id=2,student=student,context=context, front_img=front_img)
-
         data = request.data
         diploma_name = data['name']
 
@@ -119,8 +103,8 @@ class AddDiploma(APIView):
             serializer.save(student=student)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-     #####################################################################################
-      #  print(request.user.diploma.all())
+        print(serializer.errors)
+        return Response(status=500)
 
 
 class DiplomaView(UpdateAPIView):
@@ -155,13 +139,13 @@ class DiplomaView(UpdateAPIView):
 
             try:
                 diploma = Diploma.objects.get(id=id)
-                print(request.data)
+
                 serializer = DiplomaSerializer(
                     diploma, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
-                print(serializer.errors)
+
                 return Response(serializer.errors, status=500)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
@@ -170,8 +154,10 @@ class DiplomaView(UpdateAPIView):
         id = request.query_params["id"]
         try:
             diploma = Diploma.objects.get(id=id)
-            diploma.delete()
-            return Response(status=status.HTTP_200_OK)
+            if diploma.student.id == request.user.id:
+                diploma.delete()
+                return Response(status=status.HTTP_200_OK)
+            return Response(status=403)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

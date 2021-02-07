@@ -12,6 +12,7 @@ export const COLORS = {
   lightGray: "#F5F7F9",
   lightGray2: "#FAFBFD",
   lightGray3: "#d3d3d3",
+  lightGray4: "#adadad",
   gray: "#BEC1D2",
   gray2: "#808080",
   background2: "rgba(206,204,202,0.2)",
@@ -27,6 +28,7 @@ export const COLORS = {
   limegreen: "#32CD32",
   steelblue: "#4682B4",
   mediumseagrean: "mediumseagreen",
+  shadow: "#333",
 
   text: "#343434",
   border: "gray",
@@ -36,9 +38,13 @@ export const COLORS = {
   //for exemptions screen, Aprroved, Rejected, Pending
   Goedgekeurd: "green",
   Afgewezen: "darkred",
-  "In Behandeling": "#f7d216",
+  "In Behandeling": "#d9b529",
   Gematched: "#008159",
   "Geen Match": "#4f6d7a",
+
+  testgreen: "#97CC76",
+  testred: "#ED6D64",
+  testyellow: "#",
 };
 
 export const SIZES = {

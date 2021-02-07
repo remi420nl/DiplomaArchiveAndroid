@@ -1,12 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import { GetDiplomaById } from "../../../api/Api";
+import { View, Text, Alert, StyleSheet, TouchableOpacity } from "react-native";
+import { DeleteDiploma, GetDiplomaById } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
 import Loading from "../loading";
@@ -16,9 +10,9 @@ export default ({ navigation, route }) => {
   const [diploma, setDiploma] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState();
 
   const { token, id } = route.params;
+  const { user } = useAuth();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -67,6 +61,66 @@ export default ({ navigation, route }) => {
     competence: { fontSize: 20 },
   });
 
+  const deleteDialog = () =>
+    Alert.alert(
+      "Verwijder uit systeem",
+      `Weet je zeker dat je ${diploma.name} wilt verwijderen?`,
+      [
+        {
+          text: "Annuleer",
+          style: "cancel",
+        },
+        {
+          text: "Bevestigen",
+          onPress: () =>
+            DeleteDiploma(token, diploma.id)
+              .then(() => alert("Succesvol verwijderd"))
+              .then(() => navigation.goBack())
+              .catch((e) => console.log(e)),
+        },
+      ],
+      { cancelable: false }
+    );
+
+  const buttons = () => {
+    const isEmployee = user.type === "employee";
+    const isStudent = user.type === "student";
+
+    return (
+      <View style={styles.buttons}>
+        <TouchableOpacity style={styles.button}>
+          {isEmployee && (
+            <Button
+              text="Competenties beheren"
+              onPress={() =>
+                navigation.push("ManageDiploma", {
+                  diplomaId: id,
+                  diplomaName: diploma.name,
+                  currentCompetences: diploma.competences,
+                })
+              }
+              theme="secondary"
+            />
+          )}
+          {isStudent && (
+            <Button
+              text="Diploma Verwijderen"
+              onPress={() => deleteDialog()}
+              theme="secondary"
+            />
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Button
+            text="Diploma Downloaden"
+            onPress={() => {}}
+            theme="primary"
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   if (diploma) {
     return (
       <View style={styles.container}>
@@ -92,29 +146,7 @@ export default ({ navigation, route }) => {
               ))}
           </ScrollView>
         </View>
-        <View style={styles.buttons}>
-          <TouchableOpacity style={styles.button}>
-            <Button
-              text="Competenties beheren"
-              onPress={() =>
-                navigation.push("ManageDiploma", {
-                  diplomaId: id,
-                  diplomaName: diploma.name,
-                  currentCompetences: diploma.competences,
-                })
-              }
-              theme="secondary"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button}>
-            <Button
-              text="Diploma Downloaden"
-              onPress={() => {}}
-              theme="primary"
-            />
-          </TouchableOpacity>
-        </View>
+        {buttons()}
       </View>
     );
   } else {

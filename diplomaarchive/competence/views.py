@@ -24,7 +24,21 @@ class ExemptionsView(ListAPIView):
 
     def get_queryset(self):
 
-        if 'course' in self.request.GET and self.request.user.groups.filter(name='employee'):
+        if 'course' in self.request.GET:
+
+            if self.request.user.groups.filter(name='student'):
+
+                try:
+                    course_id = self.request.query_params["course"]
+                    user_id = self.request.user.id
+                    exemptions = Exemption.objects.filter(
+                        course_id=course_id, student_id=user_id)
+
+                    print(exemptions)
+                    return exemptions
+                except:
+
+                    return []
 
             try:
                 id = self.request.query_params["course"]
@@ -34,17 +48,6 @@ class ExemptionsView(ListAPIView):
                 exemptions = Exemption.objects.all()
 
                 return exemptions
-
-        if self.request.user.groups.filter(name='student'):
-
-            try:
-                id = self.request.user.id
-                exemptions = Exemption.objects.filter(student_id=id)
-
-                return exemptions
-            except:
-
-                return Response({"error": "Something went wrong.."}, status=404)
 
 
 class ExemptionView(UpdateAPIView):

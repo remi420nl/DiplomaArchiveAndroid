@@ -108,7 +108,7 @@ export default () => {
       <HomeStack.Screen
         name="AddDiploma"
         component={AddDiploma}
-        options={{ headerShown: false, title: "Diploma Toevoegen" }}
+        options={{ headerShown: true, title: "Diploma Toevoegen" }}
       />
       <HomeStack.Screen
         name="Exemptions"

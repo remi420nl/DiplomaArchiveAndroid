@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, TextInput, StyleSheet, Button } from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
 import { COLORS } from "../../assets/constants";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as DocumentPicker from "expo-document-picker";
 import { CreateNewDiploma } from "../../../api/Api";
 import CheckBox from "expo-checkbox";
+import { Button } from "../../components/Button";
 
 const fields = [
   { text: "Naam diploma", field: "name", type: "text" },
@@ -34,7 +35,7 @@ export default ({ route }) => {
   }, [checked]);
 
   const handleSubmit = () => {
-    setSuccess(null)
+    setSuccess(null);
     setError(null);
     if (checkFields() && pdf.length > 0) {
       CreateNewDiploma(pdf, formData, token)
@@ -77,7 +78,9 @@ export default ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Diploma toevoegen voor {user && user.name}</Text>
+        <Text style={styles.title}>
+          Diploma toevoegen voor {user && user.name}
+        </Text>
       </View>
 
       <View style={styles.form}>
@@ -106,13 +109,12 @@ export default ({ route }) => {
           <Text style={[styles.label]}>Achterkant Toevoegen</Text>
           <CheckBox value={checked} onValueChange={setChecked} />
         </View>
-
         <Button
-          title="Opslaan"
-          style={styles.button}
-          onPress={() => handleSubmit()}
+          text="Opslaan"
+          theme="primary"
+          onPress={handleSubmit}
           disabled={buttonDisabled.current}
-        ></Button>
+        />
       </View>
       <View></View>
       <View></View>
@@ -123,27 +125,25 @@ export default ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
   header: {
-    width: '90%',
+    width: "90%",
     top: 5,
     color: "white",
     fontSize: 38,
     fontWeight: "bold",
     alignSelf: "center",
     height: 100,
- 
   },
   title: {
-    textTransform: "uppercase", 
+    textTransform: "uppercase",
     fontSize: 26,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     letterSpacing: -1,
-    textAlign:"center"
+    textAlign: "center",
   },
   form: {
-   
     alignItems: "center",
   },
   row: {
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   label: {
-    fontSize: 20
+    fontSize: 20,
   },
   textInput: {
     fontSize: 20,
@@ -175,9 +175,9 @@ const styles = StyleSheet.create({
     color: COLORS.lightGray,
     opacity: 0.9,
   },
-  feedbackmessages:{
+  feedbackmessages: {
     marginBottom: 10,
-    alignItems: 'center'
+    alignItems: "center",
   },
   error: {
     color: "darkred",

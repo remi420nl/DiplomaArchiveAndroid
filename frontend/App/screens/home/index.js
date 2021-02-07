@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     ...FONTS.h1,
     fontSize: 60,
     color: COLORS.steelblue,
-
+    fontWeight: "bold",
     margin: 15,
   },
   welcomeText: {
@@ -56,14 +56,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   searchField: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.darkgray,
+    opacity: 0.8,
     width: 200,
     borderRadius: 10,
-
     padding: 10,
     flexDirection: "row",
   },
   textInput: {
+    color: COLORS.white,
+    fontWeight: "bold",
+    fontSize: 16,
     letterSpacing: 2.5,
     width: "100%",
     textAlign: "center",
@@ -83,6 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     paddingHorizontal: 20,
     paddingVertical: 10,
+    opacity: 0.95,
   },
   searchItemText: {
     fontSize: 16,
@@ -108,7 +112,6 @@ export default Home = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    console.log("useffect");
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
       () => setKeyboardOpen(true)
@@ -123,6 +126,12 @@ export default Home = ({ navigation }) => {
       keyboardDidHideListener.remove();
     };
   });
+
+  const searchCourses = (text) => {
+    setSearchResult(() =>
+      courses.filter((c) => c.name.toLowerCase().includes(text))
+    );
+  };
 
   const StudentContent = () => (
     <View>
@@ -143,7 +152,7 @@ export default Home = ({ navigation }) => {
     </View>
   );
 
-  const EmployerContent = () => (
+  const EmployeeContent = () => (
     <View>
       <Button
         text="Vrijstellingen"
@@ -170,11 +179,12 @@ export default Home = ({ navigation }) => {
       ref={(r) => (ref.current = r)}
       button={
         <TouchableOpacity
+          style={{ margin: 5 }}
           onPress={() => {
             ref.current.show();
           }}
         >
-          <Entypo name="cog" size={32} color={COLORS.white} />
+          <Entypo name="cog" size={32} color={COLORS.steelblue} />
         </TouchableOpacity>
       }
     >
@@ -199,7 +209,7 @@ export default Home = ({ navigation }) => {
       style={[
         styles.searchItem,
         {
-          backgroundColor: index % 2 == 0 ? COLORS.gray2 : COLORS.white,
+          backgroundColor: index % 2 == 0 ? COLORS.white : COLORS.darkgray,
         },
       ]}
       onPress={() => navigation.push("Course", { id: item.id })}
@@ -207,7 +217,7 @@ export default Home = ({ navigation }) => {
       <Text
         style={[
           styles.searchItemText,
-          { color: index % 2 == 0 ? COLORS.white : COLORS.black },
+          { color: index % 2 == 0 ? COLORS.black : COLORS.white },
         ]}
       >
         {item.name}
@@ -230,6 +240,7 @@ export default Home = ({ navigation }) => {
             <TextInput
               style={styles.textInput}
               onChangeText={(v) => searchCourses(v)}
+              placeholderTextColor={COLORS.white}
               placeholder="Zoek een vak"
               onFocus={() => {
                 setSearchResult(courses);
@@ -265,7 +276,7 @@ export default Home = ({ navigation }) => {
           </View>
           <View style={styles.usercontent}>
             {isStudent && StudentContent()}
-            {isEmployee && EmployerContent()}
+            {isEmployee && EmployeeContent()}
           </View>
         </View>
       </View>

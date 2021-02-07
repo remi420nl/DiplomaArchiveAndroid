@@ -55,10 +55,15 @@ export default ({ navigation }) => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const submitLogin = () => {
     if (login.email.length > 0 && login.password.length > 0) {
-      loginUser(login, (value) => setError(value));
+      setError("");
+      setLoading(true);
+      loginUser(login, (value) => setError(value))
+        .then(() => setLoading(false))
+        .catch((e) => console.log(e));
     } else {
       setError("Beide velden invullen svp..");
     }
@@ -69,12 +74,13 @@ export default ({ navigation }) => {
       <Text style={styles.header}>Inloggen</Text>
       <View style={styles.form}>
         <Text style={styles.error}>{error}</Text>
+        {loading && <Text>Laden..</Text>}
         <TextInput
           value={login.email}
           onChangeText={(e) => setLogin({ ...login, ["email"]: e })}
           autoCapitalize="none"
           style={styles.textInput}
-          placeholder="info@example.com"
+          placeholder="info@voorbeeld.nl"
         ></TextInput>
 
         <TextInput
@@ -82,7 +88,7 @@ export default ({ navigation }) => {
           onChangeText={(e) => setLogin({ ...login, ["password"]: e })}
           autoCapitalize="none"
           style={styles.textInput}
-          placeholder="password"
+          placeholder="Wachtwoord"
           secureTextEntry={true}
         ></TextInput>
 

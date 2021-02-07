@@ -17,6 +17,7 @@ import {
 } from "../../../api/Api";
 import { COLORS } from "../../assets/constants";
 import { useAuth } from "../../context/AuthContext";
+import { Button } from "../../components/Button";
 
 export default ({ navigation, route }) => {
   const [course, setCourse] = useState();
@@ -56,10 +57,10 @@ export default ({ navigation, route }) => {
         })
         .catch((e) => console.log(e));
     } else if (user.type === "student") {
-      GetAllExemptions(token)
+      GetAllExemptions(token, courseId)
         .then(({ data }) => {
           setStudentExemptions(data);
-
+          console.log(data);
           setLoading(false);
         })
         .catch((e) => console.log(e));
@@ -119,30 +120,41 @@ export default ({ navigation, route }) => {
     CreateNewExemption(token, courseId).then(() => fetchExemptions());
   };
 
+  const statusStyles = (status) => {
+    const statusText = [styles.text];
+    statusText.push({
+      color: COLORS[status],
+      textTransform: "uppercase",
+      fontSize: 20,
+      fontWeight: "bold",
+      letterSpacing: 2,
+    });
+
+    return { statusText };
+  };
+
   const StudentView = () => {
-    const requests =
-      studentExemptions &&
-      studentExemptions.filter((e) => e.course.id === courseId);
-    if (requests) {
+    if (studentExemptions && studentExemptions.length > 0) {
+      const status = studentExemptions[0].status;
+
+      const { statusText } = statusStyles(status);
+
       return (
-        <View>
-          {requests.length < 1 ? (
-            <TouchableHighlight
-              style={styles.buttonStudent}
-              onPress={() => {
-                requestExemption();
-              }}
-            >
-              <Text style={styles.buttonText}>Vrijstelling aanvragen</Text>
-            </TouchableHighlight>
-          ) : (
-            <Text>Status aanvraag: {requests[0].status} </Text>
-          )}
+        <View style={styles.statusContainer}>
+          <Text style={[styles.text, { fontWeight: "bold", color: "white" }]}>
+            Status vrijstellings aanvraag:
+          </Text>
+          <Text style={statusText}>{status}</Text>
         </View>
       );
-    } else {
-      return <View></View>;
-    }
+    } else
+      return (
+        <Button
+          text="Vrijstelling aanvragen"
+          theme="primary"
+          onPress={() => requestExemption()}
+        />
+      );
   };
 
   const styles = StyleSheet.create({
@@ -173,6 +185,8 @@ export default ({ navigation, route }) => {
     lowerContainer: {
       flex: 2,
       paddingVertical: 5,
+      alignContent: "center",
+      justifyContent: "center",
     },
     button: {
       marginVertical: 15,
@@ -191,7 +205,7 @@ export default ({ navigation, route }) => {
     },
     studentName: {
       padding: 6,
-      color: "#fff",
+      color: COLORS.white,
       fontWeight: "bold",
     },
 
@@ -203,6 +217,18 @@ export default ({ navigation, route }) => {
     },
     buttonText: {
       fontWeight: "bold",
+    },
+    statusContainer: {
+      backgroundColor: COLORS.lightGray4,
+      elevation: 3,
+      shadowOffset: { width: 1, height: 1 },
+      shadowColor: COLORS.shadow,
+      shadowOpacity: 0.4,
+      shadowRadius: 2,
+      padding: 5,
+      borderRadius: 15,
+      flexDirection: "column",
+      alignItems: "center",
     },
   });
 
@@ -240,13 +266,16 @@ export default ({ navigation, route }) => {
           </TouchableHighlight>
           <ScrollView style={{ padding: 10 }}>
             {course.competences.map((c, i) => (
-              <Text style={styles.text}>{c.name}</Text>
+              <Text key={i} style={styles.text}>
+                {c.name}
+              </Text>
             ))}
           </ScrollView>
         </View>
         <View style={styles.lowerContainer}>
           {course && isEmployee && ExemptionsView()}
           {course && isStudent && StudentView()}
+          {!user && <Text style={styles.text}>Niet ingelogd</Text>}
         </View>
       </View>
     );
