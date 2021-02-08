@@ -18,6 +18,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
 import { GetAllCourses, SearchCourseByName } from "../../../api/Api";
 import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
+import showApplicationDetails from "../../components/Home/ApplicationDetails";
 
 const styles = StyleSheet.create({
   container: {
@@ -39,6 +40,7 @@ const styles = StyleSheet.create({
   mainContent: {},
   usercontent: {
     marginBottom: 200,
+    zIndex: 0,
   },
   search: {},
 
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   searchField: {
-    backgroundColor: COLORS.darkgray,
+    backgroundColor: COLORS.gray2,
     opacity: 0.8,
     width: 200,
     borderRadius: 10,
@@ -75,7 +77,6 @@ const styles = StyleSheet.create({
   searchResult: {
     height: 300,
     position: "absolute",
-
     left: 0,
     right: 0,
     zIndex: 1,
@@ -87,6 +88,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     opacity: 0.95,
+    zIndex: 2,
   },
   searchItemText: {
     fontSize: 16,
@@ -188,14 +190,16 @@ export default Home = ({ navigation }) => {
         </TouchableOpacity>
       }
     >
-      <MenuItem onPress={() => alert("todo")}>Contactformulier</MenuItem>
+      <MenuItem onPress={() => navigation.navigate("Contact")}>
+        Contact
+      </MenuItem>
       {isEmployee && (
         <MenuItem onPress={() => navigation.push("EditCompetences")}>
           Competencies bewerken
         </MenuItem>
       )}
       <MenuDivider />
-      <MenuItem onPress={() => alert("todo")}>Informatie</MenuItem>
+      <MenuItem onPress={() => showApplicationDetails()}>Informatie</MenuItem>
       <MenuDivider />
       <MenuItem onPress={() => ref.current.hide()}>Verberg</MenuItem>
     </Menu>
@@ -209,7 +213,7 @@ export default Home = ({ navigation }) => {
       style={[
         styles.searchItem,
         {
-          backgroundColor: index % 2 == 0 ? COLORS.white : COLORS.darkgray,
+          backgroundColor: index % 2 == 0 ? COLORS.white : COLORS.gray2,
         },
       ]}
       onPress={() => navigation.push("Course", { id: item.id })}

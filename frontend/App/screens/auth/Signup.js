@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     width: 220,
     borderRadius: 5,
-    paddingHorizontal: 8,
+    padding: 4,
     borderBottomColor: "black",
     borderBottomWidth: 1,
     marginBottom: 5,
@@ -42,6 +42,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.lightGray,
     opacity: 0.9,
+  },
+  groupChoice: {
+    margin: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   error: {
     color: "darkred",
@@ -86,57 +91,59 @@ export default ({ navigation }) => {
       <View style={styles.container}>
         <View style={{ flex: 1 }}></View>
         <Text style={styles.header}>Registreren</Text>
-
         <Text style={styles.header}>{loading && "Loading..."}</Text>
         <View style={styles.form}>
           <Text style={styles.error}>{error}</Text>
           <TextInput
             value={form.name}
-            onChangeText={(e) => setForm({ ...form, ["name"]: e })}
+            onChangeText={(t) => setForm({ ...form, ["name"]: t })}
             autoCapitalize="none"
             style={styles.textInput}
-            placeholder="Voornaam Achternaam"
-          ></TextInput>
+            placeholder="voornaam achternaam"
+          />
 
           <TextInput
             value={form.email}
-            onChangeText={(e) => setForm({ ...form, ["email"]: e })}
+            onChangeText={(t) => setForm({ ...form, ["email"]: t })}
             autoCapitalize="none"
             style={styles.textInput}
-            placeholder="info@example.com"
-          ></TextInput>
+            placeholder="info@email.com"
+          />
 
           <TextInput
             value={form.password}
-            onChangeText={(e) => setForm({ ...form, ["password"]: e })}
+            onChangeText={(t) => setForm({ ...form, ["password"]: t })}
             autoCapitalize="none"
             style={styles.textInput}
-            placeholder="password"
+            placeholder="wachtwoord"
             secureTextEntry={true}
-          ></TextInput>
+          />
 
           <TextInput
             value={form.passwordconfirm}
-            onChangeText={(e) => setForm({ ...form, ["passwordconfirm"]: e })}
+            onChangeText={(t) => setForm({ ...form, ["passwordconfirm"]: t })}
             autoCapitalize="none"
             style={styles.textInput}
-            placeholder="password"
+            placeholder="herhaal wachtwoord"
             secureTextEntry={true}
-          ></TextInput>
-
-          {groups.map((g, i) => (
-            <View style={{ flexDirection: "row" }} key={i}>
-              <Text>{g.value}</Text>
-              <RadioButton
-                value={g.name}
-                status={
-                  checked && checked.name === g.name ? "checked" : "unchecked"
-                }
-                onPress={() => setChecked(g)}
-              />
-            </View>
-          ))}
-
+          />
+          <View style={styles.groupChoice}>
+            {groups.map((g, i) => (
+              <View
+                style={{ flexDirection: "row", alignItems: "center" }}
+                key={i}
+              >
+                <Text>{g.value}</Text>
+                <RadioButton
+                  value={g.name}
+                  status={
+                    checked && checked.name === g.name ? "checked" : "unchecked"
+                  }
+                  onPress={() => setChecked(g)}
+                />
+              </View>
+            ))}
+          </View>
           <TouchableOpacity disabled={loading}>
             <Text
               title="Voltooi"

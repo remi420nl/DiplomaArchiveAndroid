@@ -67,10 +67,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  buttonText: {
-    color: COLORS.white,
-    fontWeight: "bold",
-  },
   modalHeaderText: {
     fontSize: 18,
     fontWeight: "bold",
@@ -96,10 +92,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  buttons: {
+  buttonContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
+    alignSelf: "center",
+  },
+  modalButtons: {
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
   button: {
     backgroundColor: COLORS.white,
@@ -108,15 +110,31 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-  title: {},
-  competenceName: {
-    fontSize: 18,
+  headerText: {
+    alignSelf: "center",
+    fontSize: 20,
     fontWeight: "bold",
+    textTransform: "uppercase",
+    color: COLORS.steelblue,
+    marginBottom: 5,
+  },
+  title: {
+    backgroundColor: "darkgray",
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    alignItems: "center",
+    borderRadius: 5,
+    alignSelf: "center",
+  },
+  competenceName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
   },
 });
 
 export default ({ navigation, route }) => {
-  const [newKeyword, setNewKeyword] = useState([]);
   const [compName, setCompName] = useState(route.params.name || "");
   const [input, setInput] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -125,9 +143,7 @@ export default ({ navigation, route }) => {
   const [editTitle, setEditTitle] = useState(false);
 
   const { competenceId } = route.params;
-  const titleRef = useRef();
 
-  const [competences, setCompetences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
 
@@ -141,12 +157,10 @@ export default ({ navigation, route }) => {
   const fetchKeywords = () => {
     GetKeywordsForCompetence(token, competenceId)
       .then(({ data }) => {
-        console.log(data);
         setKeywords(data);
         setLoading(false);
       })
       .catch((e) => {
-        console.log(e);
         setLoading(false);
       });
   };
@@ -158,12 +172,10 @@ export default ({ navigation, route }) => {
       return;
     } else {
       const words = input.split(",");
-
       const data = {
         competence: competenceId,
         keywords: words,
       };
-
       AddKeywordsToCompetence(token, data).then(() => {
         setModalVisible(false);
         setEditMode(false);
@@ -270,7 +282,7 @@ export default ({ navigation, route }) => {
             />
           </Pressable>
         </View>
-        <View style={styles.buttons}>
+        <View style={styles.buttonContainer}>
           {((editMode && selectedKeyword) || editTitle) && (
             <TouchableOpacity onPress={() => updateCompetence()}>
               <AntDesign
@@ -325,33 +337,25 @@ export default ({ navigation, route }) => {
                   numberOfLines={6}
                 />
               </View>
-              <View style={styles.buttons}>
-                <TouchableHighlight
-                  style={{
-                    ...styles.modalButton,
-                    backgroundColor: COLORS.darkgreen,
-                  }}
-                  onPress={() => {
-                    addKeywords();
-                  }}
-                >
-                  <Text style={styles.buttonText}>Opslaan</Text>
-                </TouchableHighlight>
-                <TouchableHighlight
-                  style={{
-                    ...styles.modalBbutton,
-                    backgroundColor: COLORS.red,
-                  }}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={styles.buttonText}>Terug</Text>
-                </TouchableHighlight>
+              <View style={styles.modalButtons}>
+                <Button
+                  text="Opslaan"
+                  type="modal"
+                  theme="submit"
+                  onPress={() => addKeywords()}
+                />
+
+                <Button
+                  text="Terug"
+                  type="modal"
+                  theme="cancel"
+                  onPress={() => setModalVisible(!modalVisible)}
+                />
               </View>
             </View>
           </View>
         </Modal>
+        <Text style={styles.headerText}>Trefwoorden</Text>
         <FlatList
           data={keywords}
           renderItem={renderItem}

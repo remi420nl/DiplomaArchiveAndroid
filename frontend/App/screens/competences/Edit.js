@@ -21,8 +21,6 @@ import {
   CreateNewCompetence,
   DeleteCompetence,
   GetAllCompetences,
-  GetCompetences,
-  RegisterGroups,
 } from "../../../api/Api";
 import { AntDesign } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";

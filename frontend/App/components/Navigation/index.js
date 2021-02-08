@@ -27,6 +27,7 @@ import ManageCourse from "../../screens/competences/ManageCourse";
 import ManageDiploma from "../../screens/competences/ManageDiploma";
 import EditCompetences from "../../screens/competences/Edit";
 import Keywords from "../../screens/competences/Keywords";
+import Contact from "../../screens/contact";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -128,7 +129,7 @@ export default () => {
       <HomeStack.Screen
         name="Keywords"
         component={Keywords}
-        options={{ title: "Trefwoorden bewerken" }}
+        options={{ title: "Competentie bewerken" }}
       />
       <HomeStack.Screen
         name="ManageCourse"
@@ -204,6 +205,7 @@ export default () => {
       ) : (
         <Drawer.Screen name="Inloggen" component={LoggedOutStackScreen} />
       )}
+      <Drawer.Screen name="Contact" component={Contact} />
     </Drawer.Navigator>
   );
 

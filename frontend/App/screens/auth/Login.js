@@ -24,11 +24,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     width: 220,
     borderRadius: 5,
-    paddingHorizontal: 8,
     borderBottomColor: "black",
     borderBottomWidth: 1,
     marginBottom: 5,
     backgroundColor: "white",
+    padding: 4,
   },
 
   button: {
@@ -44,6 +44,9 @@ const styles = StyleSheet.create({
   error: {
     color: "darkred",
     fontSize: 20,
+  },
+  signUp: {
+    marginTop: 10,
   },
 });
 
@@ -77,20 +80,20 @@ export default ({ navigation }) => {
         {loading && <Text>Laden..</Text>}
         <TextInput
           value={login.email}
-          onChangeText={(e) => setLogin({ ...login, ["email"]: e })}
+          onChangeText={(t) => setLogin({ ...login, ["email"]: t })}
           autoCapitalize="none"
           style={styles.textInput}
           placeholder="info@voorbeeld.nl"
-        ></TextInput>
+        />
 
         <TextInput
           value={login.password}
-          onChangeText={(e) => setLogin({ ...login, ["password"]: e })}
+          onChangeText={(t) => setLogin({ ...login, ["password"]: t })}
           autoCapitalize="none"
           style={styles.textInput}
-          placeholder="Wachtwoord"
+          placeholder="wachtwoord"
           secureTextEntry={true}
-        ></TextInput>
+        />
 
         <TouchableOpacity>
           <Text
@@ -101,7 +104,10 @@ export default ({ navigation }) => {
             Log In
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Sign Up")}>
+        <TouchableOpacity
+          style={styles.signUp}
+          onPress={() => navigation.navigate("Sign Up")}
+        >
           <Text>Nog geen account? Registreer eerst</Text>
         </TouchableOpacity>
       </View>

@@ -14,7 +14,7 @@ export const COLORS = {
   lightGray3: "#d3d3d3",
   lightGray4: "#adadad",
   gray: "#BEC1D2",
-  gray2: "#808080",
+  gray2: "#b5b4b1",
   background2: "rgba(206,204,202,0.2)",
   background: "#fafcfb",
 

@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Pressable } from "react-native";
 import PropTypes from "prop-types";
 import { COLORS, FONTS, SIZES } from "../../assets/constants";
 
-export const Button = ({ text, style, onPress, disabled, theme }) => {
+export const Button = ({ text, onPress, disabled, theme, type }) => {
   const styles = StyleSheet.create({
     text: {
       fontSize: 18,
@@ -12,8 +12,6 @@ export const Button = ({ text, style, onPress, disabled, theme }) => {
       textAlign: "center",
     },
     container: {
-      backgroundColor:
-        theme == "primary" ? COLORS.mediumseagrean : COLORS.gray2,
       marginVertical: 5,
       justifyContent: "center",
       alignItems: "center",
@@ -30,19 +28,66 @@ export const Button = ({ text, style, onPress, disabled, theme }) => {
     },
   });
 
+  const getStyles = (theme, type) => {
+    const containerStyles = [styles.container];
+    const textStyles = [styles.text];
+
+    switch (theme) {
+      case "primary":
+        containerStyles.push({ backgroundColor: COLORS.mediumseagrean });
+        break;
+      case "secondary":
+        containerStyles.push({ backgroundColor: COLORS.gray2 });
+        break;
+      case "cancel":
+        containerStyles.push({ backgroundColor: COLORS.red });
+        break;
+      case "submit":
+        containerStyles.push({ backgroundColor: COLORS.darkgreen });
+        break;
+      case "contact":
+        containerStyles.push({
+          backgroundColor: COLORS.lightBlue,
+          padding: 10,
+          borderRadius: 15,
+        });
+        break;
+    }
+
+    if (type === "modal") {
+      containerStyles.push({
+        padding: 10,
+        borderRadius: 10,
+      });
+      textStyles.push({
+        fontSize: 14,
+      });
+    }
+
+    return { containerStyles, textStyles };
+  };
+
+  const { containerStyles, textStyles } = getStyles(theme, type);
+
   return (
-    <Pressable style={styles.container} onPress={onPress} disabled={disabled}>
-      <Text style={styles.text}>{text}</Text>
+    <Pressable style={containerStyles} onPress={onPress} disabled={disabled}>
+      <Text style={textStyles}>{text}</Text>
     </Pressable>
   );
 };
 
 Button.propTypes = {
   text: PropTypes.string.isRequired,
-  style: PropTypes.object,
   disabled: PropTypes.bool,
   onPress: PropTypes.func,
-  theme: PropTypes.oneOf(["primary", "secondary"]),
+  theme: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "contact",
+    "submit",
+    "cancel",
+  ]),
+  type: PropTypes.string,
 };
 
 Button.defaultProps = {

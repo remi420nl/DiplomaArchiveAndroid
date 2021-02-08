@@ -7,31 +7,31 @@ from rest_framework.response import Response
 
 class ContactCreateView(APIView):
     permission_classes = (permissions.AllowAny,)
-    
+
     def post(self, request, format=None):
         data = request.data
-        
-        try: 
+
+        try:
             send_mail(
                 data['subject'],
-                'Name: '+ data['name']
-                + '\nEmail: '      
-                + data['email'] 
+                'Name: ' + data['name']
+                + '\nEmail: '
+                + data['email']
                 + '\n\nMessage:\n' + data['message'],
-                'projectwebapp2020nl@gmail.com', 
+                'projectwebapp2020nl@gmail.com',
                 ['projectwebapp2020nl@gmail.com'],
                 fail_silently=False
             )
-            
-            contact = Contact(name=data['name'], email=data['email'], subject=data['subject'],message=data['message'])
+
+            contact = Contact(name=data['name'], email=data['email'],
+                              subject=data['subject'], message=data['message'])
             contact.save()
-            
+
             return Response({
                 'success': 'Message sent successfully'
-            })
-        
+            }, status=200)
+
         except:
-            Response({
+            return Response({
                 'error': 'Message failed to sent'
-            })
-            
+            }, status=500)
