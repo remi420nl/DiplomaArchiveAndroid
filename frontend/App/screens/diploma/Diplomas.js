@@ -162,15 +162,23 @@ export default ({ navigation, route }) => {
       alignItems: "center",
     },
     headerText: {
-      marginTop: 15,
       marginHorizontal: 10,
-      padding: 10,
+      padding: 5,
       fontSize: 20,
       fontWeight: "bold",
       textAlign: "center",
     },
     headerRow: {
+      marginTop: 5,
       flexDirection: "row",
+      marginBottom: 5,
+    },
+    leftHeader: {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    rightHeader: {
+      alignItems: "center",
     },
   });
 
@@ -186,27 +194,29 @@ export default ({ navigation, route }) => {
     return (
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <Text style={styles.headerText}>
-            Diplomas in systeem: {!isLoading && archive.data.length}
-          </Text>
+          <View style={styles.leftHeader}>
+            <Text style={styles.headerText}>Diplomas in systeem:</Text>
+            <Text style={styles.headerText}>
+              {!isLoading && archive.data.length.toString()}
+            </Text>
+          </View>
+
           {!isLoading && archive.students && user.type === "employee" && (
-            <View>
-              <Text tyle={styles.headerText}>
+            <View style={styles.rightHeader}>
+              <Text style={styles.headerText}>
                 Studenten: {archive.students.length}
               </Text>
 
-              <View>
-                <StudentPicker
-                  SingleStudentView={SingleStudentView}
-                  data={archive.students}
-                  onPress={(student) => {
-                    dispatch({
-                      type: student.id ? SET_STUDENT : GET_ALL,
-                      payload: { student_id: student.id },
-                    });
-                  }}
-                />
-              </View>
+              <StudentPicker
+                SingleStudentView={SingleStudentView}
+                data={archive.students}
+                onPress={(student) => {
+                  dispatch({
+                    type: student.id ? SET_STUDENT : GET_ALL,
+                    payload: { student_id: student.id },
+                  });
+                }}
+              />
             </View>
           )}
         </View>
