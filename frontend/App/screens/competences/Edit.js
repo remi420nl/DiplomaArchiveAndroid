@@ -159,6 +159,7 @@ export default ({ navigation, route }) => {
             placeholderTextColor={"black"}
             onChangeText={(t) => setInput(t)}
             showSoftInputOnFocus={editMode && index === 0}
+            multiline={true}
           />
         </Card>
       </Pressable>

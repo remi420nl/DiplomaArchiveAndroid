@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  createRef,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, createRef, useRef } from "react";
 import {
   View,
   Text,
@@ -17,6 +11,7 @@ import {
   Modal,
   Pressable,
   Alert,
+  InteractionManager,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import {
@@ -97,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     alignSelf: "center",
+    width: "100%",
   },
   modalButtons: {
     width: "80%",
@@ -146,9 +142,9 @@ export default ({ navigation, route }) => {
 
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
-
-  const ref = useRef();
   const { user, token } = useAuth();
+
+  const textInputRef = useRef([]);
 
   useEffect(() => {
     fetchKeywords();
@@ -171,7 +167,8 @@ export default ({ navigation, route }) => {
       setModalVisible(false);
       return;
     } else {
-      const words = input.split(",");
+      const words = input.split(",").filter((w) => w !== "");
+
       const data = {
         competence: competenceId,
         keywords: words,
@@ -237,6 +234,15 @@ export default ({ navigation, route }) => {
     );
 
   // keywords[keywords.findIndex((e) => e["id"] === item.id)].name
+
+  const keywordsLength = keywords && keywords.length;
+
+  if (keywordsLength !== textInputRef.length) {
+    textInputRef.current = Array(keywordsLength)
+      .fill()
+      .map((e, i) => textInputRef.current[i] || createRef());
+  }
+
   const renderItem = ({ item, index }) => {
     return (
       <Pressable
@@ -247,17 +253,28 @@ export default ({ navigation, route }) => {
           if (!editTitle) {
             setEditMode(true);
             setSelectedKeyword(item);
+            setTimeout(() => textInputRef.current[index].focus(), 200);
           }
         }}
       >
         <Card>
           <TextInput
-            editable={editMode}
-            style={[styles.text, { color: editMode ? "darkgray" : "black" }]}
+            ref={(r) => (textInputRef.current[index] = r)}
+            editable={editMode && selectedKeyword.id == item.id}
+            style={[
+              styles.text,
+              {
+                color:
+                  editMode && selectedKeyword.id == item.id
+                    ? "darkgray"
+                    : "black",
+              },
+            ]}
             value={item.name}
             placeholderTextColor={"black"}
             onChangeText={(t) => changeValue(item, t)}
-            showSoftInputOnFocus={editMode}
+            showSoftInputOnFocus={true}
+            multiline={true}
           />
         </Card>
       </Pressable>
@@ -279,6 +296,7 @@ export default ({ navigation, route }) => {
               editable={editTitle}
               showSoftInputOnFocus={editTitle}
               onChangeText={(t) => setCompName(t)}
+              multiline={true}
             />
           </Pressable>
         </View>
@@ -360,6 +378,7 @@ export default ({ navigation, route }) => {
           data={keywords}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
+          removeClippedSubviews={false}
         />
       </View>
     );

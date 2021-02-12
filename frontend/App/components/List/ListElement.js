@@ -53,8 +53,12 @@ export default ({
       alignItems: "center",
       justifyContent: "center",
     },
-    competenceList: { marginTop: 10 },
-    competence: { fontSize: 20 },
+    competenceList: {
+      marginTop: 10,
+
+      alignItems: "center",
+    },
+    competence: { fontSize: 20, alignSelf: "center" },
     link: {
       paddingHorizontal: 10,
       paddingVertical: 5,
