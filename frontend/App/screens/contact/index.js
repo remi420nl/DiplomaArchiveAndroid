@@ -1,16 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  Keyboard,
-  TouchableOpacity,
-  TextInput,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  StatusBar,
-} from "react-native";
+import { Text, View, StyleSheet, TextInput } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { SendContactEmail } from "../../../api/Api";
 import { COLORS } from "../../assets/constants";
 import { Button } from "../../components/Button";
@@ -27,10 +17,11 @@ export default () => {
       justifyContent: "center",
       alignItems: "center",
     },
-    header: { alignItems: "center", marginBottom: 25 },
+    header: { alignItems: "center", marginBottom: 20 },
     title: {
       fontSize: 18,
       textTransform: "uppercase",
+      marginTop: 10,
     },
     inputContainer: {
       width: 220,
@@ -86,7 +77,6 @@ export default () => {
       alignItems: "center",
     },
     button: { alignSelf: "center" },
-
     feedback: {
       justifyContent: "center",
       alignItems: "center",
@@ -120,6 +110,7 @@ export default () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <Feather name="mail" size={24} color="black" />
         <Text style={styles.title}>Neem contact op met de school</Text>
       </View>
       <View style={styles.form}>

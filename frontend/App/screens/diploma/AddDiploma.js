@@ -2,17 +2,28 @@ import React, { useEffect, useState, useRef } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { COLORS } from "../../assets/constants";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { AntDesign } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { CreateNewDiploma } from "../../../api/Api";
 import CheckBox from "expo-checkbox";
 import { Button } from "../../components/Button";
 
 const fields = [
-  { text: "Naam diploma", field: "name", type: "text" },
-  { text: "Datum behaald", field: "date", type: "date" },
-  { text: "Omschrijving", field: "context", type: "text" },
-  { text: "Voorkant", field: "front_img", type: "file" },
-  { text: "Achterkant", field: "back_img", type: "file" },
+  { text: "Naam diploma", field: "name", type: "text", icon: null },
+  { text: "Datum behaald", field: "date", type: "date", icon: null },
+  { text: "Omschrijving", field: "context", type: "text", icon: null },
+  {
+    text: "Voorkant",
+    field: "front_img",
+    type: "file",
+    icon: <AntDesign name="pdffile1" size={24} color="black" />,
+  },
+  {
+    text: "Achterkant",
+    field: "back_img",
+    type: "file",
+    icon: <AntDesign name="pdffile1" size={24} color="black" />,
+  },
 ];
 
 export default ({ route }) => {
@@ -88,8 +99,9 @@ export default ({ route }) => {
           {error && <Text style={styles.error}>{error}</Text>}
           {succes && <Text style={styles.success}>{succes}</Text>}
         </View>
-        {formFields.map(({ field, text, type }, i) => (
+        {formFields.map(({ field, text, type, icon }, i) => (
           <View style={styles.row} key={i}>
+            {icon}
             <Text style={styles.label}>{text}</Text>
 
             <TextInput

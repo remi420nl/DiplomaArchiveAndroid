@@ -32,7 +32,7 @@ export const COLORS = {
 
   text: "#343434",
   border: "gray",
-  blue: "#4f6d7a",
+  blue: "#4492C6",
   offwhite: "#f0f0f0",
 
   //for exemptions screen, Aprroved, Rejected, Pending

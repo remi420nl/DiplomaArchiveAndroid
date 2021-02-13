@@ -80,7 +80,6 @@ export default ({ navigation }) => {
         })
         .then(() => setColors())
         .catch((e) => {
-          console.log(e);
           setError(e.response.data.detail);
         });
     } else {

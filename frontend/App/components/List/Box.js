@@ -1,15 +1,4 @@
 import React, { Children, useEffect, useState } from "react";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
-import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from "@react-navigation/drawer";
-
-import { useAuth } from "../../context/AuthContext";
 
 import {
   View,
@@ -18,6 +7,7 @@ import {
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
+import { COLORS } from "../../assets/constants";
 
 const Box = ({ data, horizontal, onPress, colums }) => {
   const styles = StyleSheet.create({
@@ -30,8 +20,9 @@ const Box = ({ data, horizontal, onPress, colums }) => {
       justifyContent: "space-around",
     },
     itemText: {
-      fontSize: 14,
-      color: "#fff",
+      fontSize: 22,
+      color: COLORS.white,
+      textTransform: "uppercase",
       fontWeight: "bold",
       letterSpacing: 1.4,
       flexShrink: 1,
@@ -57,10 +48,13 @@ const Box = ({ data, horizontal, onPress, colums }) => {
     },
   });
 
-  const RenderItem = ({ item, index, seperators }) => (
+  const RenderItem = ({ item }) => (
     <TouchableHighlight
       onLongPress={() => onPress(item)}
-      style={{ ...styles.item, backgroundColor: item.match ? "green" : "blue" }}
+      style={{
+        ...styles.item,
+        backgroundColor: item.match ? "green" : "#009B77",
+      }}
     >
       <Text style={styles.itemText}>{item.name}</Text>
     </TouchableHighlight>

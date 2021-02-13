@@ -3,7 +3,14 @@ import { Text, View, StyleSheet, Pressable } from "react-native";
 import PropTypes from "prop-types";
 import { COLORS, FONTS, SIZES } from "../../assets/constants";
 
-export const Button = ({ text, onPress, disabled, theme, type }) => {
+export const Button = ({
+  text,
+  onPress,
+  disabled,
+  theme,
+  type,
+  extraStyles,
+}) => {
   const styles = StyleSheet.create({
     text: {
       fontSize: 18,
@@ -54,6 +61,8 @@ export const Button = ({ text, onPress, disabled, theme, type }) => {
         });
         break;
     }
+    console.log(extraStyles);
+    containerStyles.push(extraStyles);
 
     if (type === "modal") {
       containerStyles.push({
@@ -89,6 +98,7 @@ Button.propTypes = {
     "cancel",
   ]),
   type: PropTypes.string,
+  extraStyles: PropTypes.object,
 };
 
 Button.defaultProps = {

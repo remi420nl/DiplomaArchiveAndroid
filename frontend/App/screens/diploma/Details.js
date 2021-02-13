@@ -4,6 +4,8 @@ import { DeleteDiploma, GetDiplomaById } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
 import Loading from "../loading";
+import { Entypo } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default ({ navigation, route }) => {
@@ -42,10 +44,16 @@ export default ({ navigation, route }) => {
     competences: {
       flex: 2,
     },
-    header: {
+    title: {
+      marginLeft: 10,
       fontSize: 22,
       fontWeight: "bold",
       textTransform: "uppercase",
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 10,
     },
     text: {
       fontSize: 18,
@@ -126,18 +134,25 @@ export default ({ navigation, route }) => {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.content}>
-            <Text style={styles.header}>
-              Diploma van {diploma.student.name}
+            <View style={styles.header}>
+              <AntDesign name="idcard" size={24} color="black" />
+              <Text style={styles.title}>{diploma.name}</Text>
+            </View>
+            <Text
+              style={[styles.text, { marginBottom: 10, fontStyle: "italic" }]}
+            >
+              {diploma.context}
             </Text>
-            <Text style={styles.text}>{diploma.name}</Text>
-            <Text style={styles.text}>{diploma.context}</Text>
-            <Text style={styles.text}>{diploma.name}</Text>
+            <Text style={styles.text}>Op naam van: {diploma.student.name}</Text>
             <Text style={styles.text}>Behaald op {diploma.date}</Text>
           </View>
         </ScrollView>
         <View style={styles.competences}>
+          <View style={styles.header}>
+            <Entypo name="rainbow" size={24} color="black" />
+            <Text style={styles.title}>Competenties:</Text>
+          </View>
           <ScrollView>
-            <Text style={styles.header}>Competenties:</Text>
             {diploma.competences &&
               diploma.competences.map(({ id, name }) => (
                 <Text key={id} style={styles.text}>

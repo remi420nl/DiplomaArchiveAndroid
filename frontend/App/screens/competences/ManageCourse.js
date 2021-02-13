@@ -1,30 +1,24 @@
-import React, {
-  useEffect,
-  useState,
-  createRef,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   Alert,
   StyleSheet,
-  Button,
   TouchableHighlight,
   Modal,
   CheckBox,
 } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-
+import { Button } from "../../components/Button";
 import {
   GetCompetences,
   GetAllCompetences,
   AddCompetencesForCourse,
   DeleteCompetencesForCourse,
 } from "../../../api/Api";
-import Box from "../../components/Flatlist/Box";
+import Box from "../../components/List/Box";
 import { useAuth } from "../../context/AuthContext";
+import { COLORS } from "../../assets/constants";
 
 // for editing competenece and keywords for a specific course
 
@@ -50,7 +44,7 @@ export default ({ navitation, route }) => {
         setCompetences(data.course);
         setLoading(false);
       })
-      .catch((e) => {
+      .catch(() => {
         setError("Er is iets fout gegaan");
         setLoading(false);
       });
@@ -73,9 +67,8 @@ export default ({ navitation, route }) => {
     container: {
       flex: 1,
       justifyContent: "flex-start",
-
       marginHorizontal: 10,
-      marginBottom: 50,
+      marginBottom: 200,
     },
     title: {
       fontSize: 24,
@@ -88,21 +81,9 @@ export default ({ navitation, route }) => {
       textAlign: "center",
       paddingVertical: 15,
     },
-    addButton: {
-      backgroundColor: "green",
-      margin: 20,
-      paddingHorizontal: 15,
-      paddingVertical: 5,
-      alignSelf: "center",
-      borderColor: "blue",
-      borderWidth: 1,
-      borderRadius: 5,
-    },
-    buttonText: {
-      fontSize: 22,
-      fontWeight: "bold",
-      color: "#fff",
-      textAlign: "center",
+    button: {
+      margin: 10,
+      alignItems: "center",
     },
     checboxList: {
       flexDirection: "row",
@@ -257,14 +238,16 @@ export default ({ navitation, route }) => {
         </View>
       </Modal>
       <Text style={styles.title}>{courseName}</Text>
-      <TouchableHighlight
-        style={styles.addButton}
-        onPress={() => {
-          setModalVisible(true);
-        }}
-      >
-        <Text style={styles.buttonText}>Toevoegen</Text>
-      </TouchableHighlight>
+      <View style={styles.button}>
+        <Button
+          text="Toevoegen"
+          theme="primary"
+          onPress={() => {
+            setModalVisible(true);
+          }}
+          extraStyles={{ backgroundColor: COLORS.blue }}
+        />
+      </View>
       <Text style={styles.description}>Momenteel toegewezen:</Text>
       {competences && (
         <Box

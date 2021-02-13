@@ -1,14 +1,7 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
   Modal,
   TouchableHighlight,
@@ -16,13 +9,8 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import {
-  GetAllExemptions,
-  GetAllExemptionsForCourse,
-  RegisterGroups,
-  UpdateExemptionById,
-} from "../../../api/Api";
+
+import { GetAllExemptions, UpdateExemptionById } from "../../../api/Api";
 import { COLORS, FONTS } from "../../assets/constants";
 import { useAuth } from "../../context/AuthContext";
 
@@ -43,9 +31,7 @@ export default ({ navigation, route }) => {
 
   useEffect(() => {
     if (id) {
-      GetAllExemptionsForCourse(id, token).then(({ data }) =>
-        setExemptions(data)
-      );
+      GetAllExemptions(token, id).then(({ data }) => setExemptions(data));
     } else {
       GetAllExemptions(token)
         .then(({ data }) => {
@@ -173,12 +159,14 @@ export default ({ navigation, route }) => {
 
   //helper function to create extra empty boxes when the last row is not the same length as the number of colums, otherwise flatlist would spread it out
   const formatData = (data, colums) => {
+    data = data.sort((a, b) => a.id - b.id);
+
     const countFullRows = Math.floor(data.length / colums);
 
     let lastRowLength = data.length - countFullRows * colums;
 
     while (lastRowLength !== colums && lastRowLength !== 0) {
-      data.push({ key: `emptybox-${lastRowLength}`, empty: true });
+      data.push({ id: `emptybox-${lastRowLength}`, empty: true });
       lastRowLength++;
     }
     return data;
@@ -311,7 +299,7 @@ export default ({ navigation, route }) => {
           data={formatData(exemptions, 3)}
           numColumns={3}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
         />
       )}
       {exemption && Popup()}

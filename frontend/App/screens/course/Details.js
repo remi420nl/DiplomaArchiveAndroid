@@ -14,6 +14,8 @@ import {
   GetAllExemptions,
   GetCourseById,
 } from "../../../api/Api";
+import { AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import { COLORS } from "../../assets/constants";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
@@ -76,11 +78,13 @@ export default ({ navigation, route }) => {
 
     return (
       <View>
-        <TouchableHighlight
-          onPress={() => navigation.push("Exemptions", { id: courseId })}
+        <Pressable
+          style={{ flexDirection: "row" }}
+          onLongPress={() => navigation.push("Exemptions", { id: courseId })}
         >
-          <Text style={styles.header}>Vrijstellingen</Text>
-        </TouchableHighlight>
+          <AntDesign name="staro" size={24} color="black" />
+          <Text style={styles.title}>Vrijstellingen</Text>
+        </Pressable>
         <View style={styles.exemptions}>
           {exemptions &&
             exemptions.map((e, i) => (
@@ -172,12 +176,18 @@ export default ({ navigation, route }) => {
       paddingVertical: 5,
     },
     header: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 10,
+    },
+    title: {
+      marginLeft: 5,
       fontSize: 22,
       fontWeight: "bold",
       textTransform: "uppercase",
     },
     text: {
-      fontSize: 18,
+      fontSize: 22,
       height: 25,
     },
     lowerContainer: {
@@ -189,11 +199,12 @@ export default ({ navigation, route }) => {
     button: {
       marginVertical: 15,
     },
-    competenseList: { marginTop: 10 },
-    competence: { fontSize: 20 },
+    competenseList: {},
+    text: { fontSize: 20 },
     exemptions: {
       flexDirection: "row",
       justifyContent: "space-between",
+      marginBottom: 5,
     },
     studentButton: {
       backgroundColor: COLORS.blue,
@@ -202,15 +213,15 @@ export default ({ navigation, route }) => {
       alignSelf: "flex-start",
     },
     studentName: {
-      padding: 6,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
       color: COLORS.white,
       fontWeight: "bold",
+      fontSize: 18,
     },
-
     buttonStudent: {
       backgroundColor: COLORS.white,
       borderRadius: 10,
-      padding: 10,
       margin: 5,
     },
     buttonText: {
@@ -238,20 +249,25 @@ export default ({ navigation, route }) => {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.content}>
-            <TouchableHighlight
-              onPress={() =>
-                isEmployee ? alert("Omschrijving Bijwerken") : null
-              }
-            >
-              <Text style={styles.header}>{course.name}</Text>
-            </TouchableHighlight>
-            <Text>{course.description}</Text>
+            <View style={styles.header}>
+              <Entypo name="book" size={28} color="black" />
+              <Pressable
+                onLongPress={() =>
+                  isEmployee ? alert("Omschrijving Bijwerken") : null
+                }
+              >
+                <Text style={styles.title}>{course.name}</Text>
+              </Pressable>
+            </View>
+
+            <Text style={styles.text}>{course.description}</Text>
           </View>
         </ScrollView>
 
         <View style={styles.competences}>
-          <TouchableHighlight
-            onPress={() =>
+          <Pressable
+            style={{ flexDirection: "row" }}
+            onLongPress={() =>
               isEmployee
                 ? navigation.push("ManageCourse", {
                     courseId: courseId,
@@ -260,8 +276,9 @@ export default ({ navigation, route }) => {
                 : null
             }
           >
-            <Text style={styles.header}>Competenties</Text>
-          </TouchableHighlight>
+            <Entypo name="rainbow" size={24} color="black" />
+            <Text style={styles.title}>Competenties</Text>
+          </Pressable>
           <ScrollView style={{ padding: 10 }}>
             {course.competences.map((c, i) => (
               <Text key={i} style={styles.text}>
