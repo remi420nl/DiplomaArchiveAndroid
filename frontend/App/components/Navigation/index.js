@@ -28,6 +28,7 @@ import ManageDiploma from "../../screens/competences/ManageDiploma";
 import EditCompetences from "../../screens/competences/Edit";
 import Keywords from "../../screens/competences/Keywords";
 import Contact from "../../screens/contact";
+import AddCourse from "../../screens/course/AddCourse";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -74,7 +75,7 @@ export default () => {
         component={HomeStackScreen}
       />
       {token ? (
-        <Tabs.Screen name="Profile" component={UserDetails} />
+        <Tabs.Screen name="Profiel" component={UserDetails} />
       ) : (
         <Tabs.Screen
           name="Login"
@@ -141,7 +142,11 @@ export default () => {
         component={ManageDiploma}
         options={{ title: "Diploma Competencies beheren" }}
       />
-
+      <HomeStack.Screen
+        name="CreateCourse"
+        options={{ headerShown: true, title: "Vak toevoegen" }}
+        component={AddCourse}
+      />
       <HomeStack.Screen
         name="Sign Up"
         options={{ headerShown: false, title: "Registreren" }}

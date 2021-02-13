@@ -15,6 +15,7 @@ export const Button = ({ text, onPress, disabled, theme, type }) => {
       marginVertical: 5,
       justifyContent: "center",
       alignItems: "center",
+      minWidth: 140,
       maxWidth: 180,
       maxHeight: 60,
       borderRadius: 2,

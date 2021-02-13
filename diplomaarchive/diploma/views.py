@@ -96,15 +96,14 @@ class AddDiploma(APIView):
         if result > 0:
 
             return Response({"error": "Student heeft al diploma met dezelfde naam"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                            status=409
                             )
 
         if(serializer.is_valid()):
             serializer.save(student=student)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        print(serializer.errors)
-        return Response(status=500)
+        return Response(serializer.errors, status=500)
 
 
 class DiplomaView(UpdateAPIView):

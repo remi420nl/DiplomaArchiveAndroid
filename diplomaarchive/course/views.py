@@ -41,31 +41,25 @@ class CoursesView(ListAPIView):
 
 class AddCourse(APIView):
 
-    serializer_class = CourseSerializer
     permission_classes = (AllowAny,)
-    queryset = Course.objects.all()
 
     def post(self, request, format=None, *args, **kwargs):
-        data = request.data
+        try:
+            data = request.data
 
-        serializer = CourseSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            name = data['name']
-            slug = data['slug']
-            competences = data['competences']
+            serializer = CourseSerializer(data=data)
 
-            saved_course = Course.objects.create(name=name, slug=slug)
+            if(serializer.is_valid()):
+                print("ISVALID")
 
-            for competence in competences:
-                key, value = competence.popitem()
-                if not Competence.objects.filter(name=value).exists():
-                    c = Competence.objects.create(name=value)
-                    saved_course.competences.add(c)
-                else:
-                    c = Competence.objects.get(name=value)
-                    saved_course.competences.add(c)
+                serializer.save()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=409)
+
+        except:
+
+            return Response(status=500)
 
 
 class LookupCourseBySlug(RetrieveAPIView):

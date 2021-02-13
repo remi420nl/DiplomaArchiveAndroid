@@ -171,18 +171,15 @@ export default ({ navigation, route }) => {
     },
   });
 
-  //TODO
-  const formatData = (data, numColumns) => {
-    const numberOfFullRows = Math.floor(data.length / numColumns);
+  //helper function to create extra empty boxes when the last row is not the same length as the number of colums, otherwise flatlist would spread it out
+  const formatData = (data, colums) => {
+    const countFullRows = Math.floor(data.length / colums);
 
-    let numberOfElementsLastRow = data.length - numberOfFullRows * numColumns;
+    let lastRowLength = data.length - countFullRows * colums;
 
-    while (
-      numberOfElementsLastRow !== numColumns &&
-      numberOfElementsLastRow !== 0
-    ) {
-      data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
-      numberOfElementsLastRow++;
+    while (lastRowLength !== colums && lastRowLength !== 0) {
+      data.push({ key: `emptybox-${lastRowLength}`, empty: true });
+      lastRowLength++;
     }
     return data;
   };
@@ -311,7 +308,7 @@ export default ({ navigation, route }) => {
       {colorExplanation()}
       {exemptions && (
         <FlatList
-          data={exemptions}
+          data={formatData(exemptions, 3)}
           numColumns={3}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}

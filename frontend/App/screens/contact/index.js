@@ -24,11 +24,14 @@ export default () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-
       justifyContent: "center",
       alignItems: "center",
     },
-    header: {},
+    header: { alignItems: "center", marginBottom: 25 },
+    title: {
+      fontSize: 18,
+      textTransform: "uppercase",
+    },
     inputContainer: {
       width: 220,
       height: 60,
@@ -117,7 +120,7 @@ export default () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text>Neem contact op met de school</Text>
+        <Text style={styles.title}>Neem contact op met de school</Text>
       </View>
       <View style={styles.form}>
         <View style={styles.inputContainer}>

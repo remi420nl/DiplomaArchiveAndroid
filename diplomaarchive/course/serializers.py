@@ -6,7 +6,8 @@ from competence.serializers import CompetenceSerializer
 
 class CourseSerializer(serializers.ModelSerializer):
 
-    competences = CompetenceSerializer(read_only=False, many=True)
+    competences = CompetenceSerializer(
+        read_only=False, many=True, required=False)
 
     def update(self, instance, validated_data):
         competence = validated_data.pop('competences')
@@ -15,4 +16,4 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'context','competences', 'slug']
+        fields = ['id', 'name', 'description', 'competences', 'slug']

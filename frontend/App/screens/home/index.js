@@ -194,9 +194,14 @@ export default Home = ({ navigation }) => {
         Contact
       </MenuItem>
       {isEmployee && (
-        <MenuItem onPress={() => navigation.push("EditCompetences")}>
-          Competencies bewerken
-        </MenuItem>
+        <>
+          <MenuItem onPress={() => navigation.push("EditCompetences")}>
+            Competencies bewerken
+          </MenuItem>
+          <MenuItem onPress={() => navigation.push("CreateCourse")}>
+            Vak toevoegen
+          </MenuItem>
+        </>
       )}
       <MenuDivider />
       <MenuItem onPress={() => showApplicationDetails()}>Informatie</MenuItem>

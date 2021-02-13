@@ -4,7 +4,6 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   TouchableHighlight,
   Pressable,
 } from "react-native";
@@ -60,7 +59,6 @@ export default ({ navigation, route }) => {
       GetAllExemptions(token, courseId)
         .then(({ data }) => {
           setStudentExemptions(data);
-          console.log(data);
           setLoading(false);
         })
         .catch((e) => console.log(e));
@@ -247,7 +245,7 @@ export default ({ navigation, route }) => {
             >
               <Text style={styles.header}>{course.name}</Text>
             </TouchableHighlight>
-            <Text>{course.context}</Text>
+            <Text>{course.description}</Text>
           </View>
         </ScrollView>
 
