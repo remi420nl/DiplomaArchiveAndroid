@@ -37,16 +37,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
-    STUDENT = 1
-    EMPLOYEE = 2
 
-    ROLE_CHOICES = (
-        (STUDENT, 'Admin'),
-        (EMPLOYEE, 'Employee')
-    )
-
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null = True)
-    
     objects = UserManager()
 
     def __str__(self):

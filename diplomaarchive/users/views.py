@@ -1,11 +1,12 @@
 from .serializers import CustomTokenObtainPairSerializer
-from .serializers import GroupSerializer, UserSerializer
+from .serializers import GroupSerializer, UserSerializer, UpdateUserSerializer, ChangePasswordSerializer
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, logout, get_user_model, login
 from django.contrib.auth.models import User
-from rest_framework import permissions, status
+from rest_framework.generics import UpdateAPIView
+from rest_framework import permissions, status, generics, mixins, permissions
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CustomForm
 
@@ -18,70 +19,8 @@ from .decorators import unauthenticated_user, allowed_users
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
+
 User = get_user_model()
-
-
-@unauthenticated_user
-def login_user(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(username=username, password=password)
-
-        if(user is None):
-            return HttpResponse("Unauthorized")
-        else:
-            login(request, user)
-            return redirect('/')
-
-        return HttpResponse("Your username is " + username)
-    return render(request, 'login.html')
-
-
-def username(request):
-    print(request.user)
-    return HttpResponse("Your username is: " + request.user.username)
-
-
-def logout_user(request):
-    logout(request)
-    return HttpResponse("User logged out..")
-
-
-@login_required(login_url='login')
-@allowed_users(['student'])
-def home(request):
-
-    return render(request, 'home.html')
-
-
-@unauthenticated_user
-def register(request):
-
-    if request.method == 'POST':
-        print(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
-        email = request.POST['email']
-
-        if(username == ""):
-            return HttpResponse("no username!")
-        if(password == ""):
-            return HttpResponse("no password!")
-        if(email == ""):
-            return HttpResponse("no email!")
-        User.objects.create_user(
-            username=username, password=password, email=email)
-        user = authenticate(username=username, password=password)
-        if(user is None):
-            return HttpResponse("Unauthorized")
-        else:
-            login(request, user)
-            print(request.user)
-            return redirect('/')
-
-    return render(request, 'register.html')
 
 
 class SignupView(APIView):
@@ -94,7 +33,6 @@ class SignupView(APIView):
         name = data['name']
         email = data['email']
         password = data['password']
-        #passwordconfirm = data['passwordconfirm']
         group = data['group']
 
         if True:
@@ -129,3 +67,24 @@ class SignupView(APIView):
 class CustomTokenObtainPairView(TokenObtainPairView):
 
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class UpdateUserProfileView(UpdateAPIView):
+
+    serializer_class = UpdateUserSerializer
+
+    def get_object(self):
+        obj = self.request.user
+
+        return obj
+
+
+class UpdateUserPasswordView(UpdateAPIView):
+
+    serializer_class = ChangePasswordSerializer
+
+    def get_object(self):
+        print(self.request.data)
+        obj = self.request.user
+
+        return obj

@@ -28,7 +28,6 @@ import re
 
 
 class ExceptionMiddleware(object):
-
     def process_exception(self, request, exception):
         return Response({'error': True, 'content': exception}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

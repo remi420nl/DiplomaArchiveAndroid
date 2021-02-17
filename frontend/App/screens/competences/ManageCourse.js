@@ -4,7 +4,6 @@ import {
   Text,
   Alert,
   StyleSheet,
-  TouchableHighlight,
   Modal,
   CheckBox,
 } from "react-native";
@@ -114,20 +113,17 @@ export default ({ navitation, route }) => {
       shadowRadius: 3.84,
       elevation: 5,
     },
-    modalButton: {
-      borderRadius: 20,
-      padding: 10,
+    modalButtons: {
+      width: "80%",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
       elevation: 2,
       marginHorizontal: 15,
+      borderRadius: 20,
     },
-
     modalText: {
       marginBottom: 15,
       textAlign: "center",
-    },
-    buttons: {
-      flexDirection: "row",
-      marginTop: 20,
     },
   });
 
@@ -170,6 +166,7 @@ export default ({ navitation, route }) => {
         setCompetences(data.competences);
         setLoading(false);
         setToBeAdded([]);
+        setModalVisible(false);
       })
       .catch((r) => console.log(r));
   };
@@ -214,25 +211,19 @@ export default ({ navitation, route }) => {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Alle competenties</Text>
             {modalVisible && getAllCompetences()}
-            <View style={styles.buttons}>
-              <TouchableHighlight
-                style={{ ...styles.modalButton, backgroundColor: "#dd3a08" }}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                }}
-              >
-                <Text style={{ ...styles.buttonText, fontSize: 16 }}>
-                  Terug
-                </Text>
-              </TouchableHighlight>
-              <TouchableHighlight
-                style={{ ...styles.modalButton, backgroundColor: "#2196F3" }}
+            <View style={styles.modalButtons}>
+              <Button
+                text="Opslaan"
+                type="modal"
+                theme="submit"
                 onPress={() => addCompetence()}
-              >
-                <Text style={{ ...styles.buttonText, fontSize: 16 }}>
-                  Opslaan
-                </Text>
-              </TouchableHighlight>
+              />
+              <Button
+                text="Terug"
+                type="modal"
+                theme="cancel"
+                onPress={() => setModalVisible(!modalVisible)}
+              />
             </View>
           </View>
         </View>

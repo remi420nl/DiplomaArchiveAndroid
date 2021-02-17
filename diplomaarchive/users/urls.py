@@ -4,15 +4,10 @@ from django.views.generic import TemplateView
 
 from django.conf.urls.static import static
 
-from . import views
+from .views import UpdateUserProfileView,UpdateUserPasswordView, SignupView
 
 urlpatterns = [
-    path('login', views.login_user, name='login'),
-    path('username', views.username),
-    path('logout', views.logout_user),
-    path('register2', views.SignupView.as_view()),
-    path('register', views.register),
-    path('home', views.home, name='home'),
-   # path('signup/student', views.StudentSignUpView.as_view(), name='student_signup'),
-   # path('signup/employer', views.TeacherSignUpView.as_view(), name='employer_signup'),
+    path('register2', SignupView.as_view()),
+    path('updateprofile',UpdateUserProfileView.as_view(), name='update_profile'),
+     path('updatepassword', UpdateUserPasswordView.as_view(), name='change_password'),
 ] 

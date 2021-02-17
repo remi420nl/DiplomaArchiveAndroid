@@ -38,8 +38,58 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         serializer = GroupSerializer(groups, many=True)
         user = {
             'name': self.user.name,
+            'email': self.user.email,
             'type': serializer.data[0]['name']
         }
         data.update({'user': user})
 
         return data
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('email', 'name')
+
+    def validate_email(self, value):
+        print("validating email")
+        user = self.context['request'].user
+        if User.objects.exclude(id=user.id).filter(email=value).exists():
+            print("email in use..")
+            raise serializers.ValidationError(
+                {"error": "email is already in use."})
+        return value
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data['email']
+        instance.name = validated_data['name']
+        instance.save()
+
+        return instance
+
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    oldpassword = serializers.CharField(write_only=True, required=True, )
+    password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ('oldpassword', 'password')
+
+    def validate_oldpassword(self, value):
+    
+        user = self.context['request'].user
+        if not user.check_password(value):
+        
+            raise serializers.ValidationError(
+                {"error": "old password not correct"})
+        return value
+
+    def update(self, instance, validated_data):
+
+        instance.set_password(validated_data['password'])
+        instance.save()
+
+        return instance
