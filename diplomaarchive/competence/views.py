@@ -5,16 +5,15 @@ from .serializers import CompetenceSerializer, ExemptionSerializer, ExemptionUpd
 from .models import Competence, Exemption, Keyword
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
 from diploma.models import Diploma
 from course.models import Course
 from course.serializers import CourseSerializer
 from diploma.serializers import DiplomaSerializer
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.permissions import AllowAny
 from diploma.serializers import DiplomaSerializer
 from users.permissions import IsEmployee, IsStudent
 from django.shortcuts import get_object_or_404
+from .blockchain import get_studentexemptions_from_blockchain,  add_exemption_blockchain
 
 
 class ExemptionsView(ListAPIView):
@@ -34,7 +33,6 @@ class ExemptionsView(ListAPIView):
                     exemptions = Exemption.objects.filter(
                         course_id=course_id, student_id=user_id)
 
-                    print(exemptions)
                     return exemptions
                 except:
 
@@ -48,6 +46,24 @@ class ExemptionsView(ListAPIView):
                 exemptions = Exemption.objects.all()
 
                 return exemptions
+
+
+class ApprovedExemptions(APIView):
+
+    # student only
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        print("get methodcalled")
+        id = request
+        print(id)
+
+       # student_id = request.user.id
+        student_id = 2
+
+        approved_exemptions = get_studentexemptions_from_blockchain(student_id)
+
+        return Response({'data': approved_exemptions}, status=200)
 
 
 class ExemptionView(UpdateAPIView):
@@ -98,7 +114,13 @@ class ExemptionView(UpdateAPIView):
         if 'id' in request.GET:
 
             id = request.query_params['id']
+            data = request.data
+
             exemption = Exemption.objects.get(id=id)
+            if data['status'] is 'a':
+                print("exemtpion approved")
+                add_exemption_blockchain(data['student'], data['course'])
+
             serializer = ExemptionUpdateSerializer(
                 exemption, data=request.data, partial=True)
             if(serializer.is_valid()):

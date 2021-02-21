@@ -14,6 +14,7 @@ import { AuthProvider } from "../App/context/AuthContext";
 import { COLORS } from "./assets/constants";
 import Loading from "../App/screens/loading";
 
+
 const styles = StyleSheet.create({
   view: {
     flex: 1,

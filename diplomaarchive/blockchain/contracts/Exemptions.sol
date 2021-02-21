@@ -1,4 +1,5 @@
 pragma solidity ^0.5.16;
+pragma experimental ABIEncoderV2;
 
 contract Exemptions {
     uint256 public exemptionCount = 0;
@@ -14,6 +15,29 @@ contract Exemptions {
 
     constructor() public {
         createExemption("teststudent", "testvak", 1000);
+    }
+
+
+
+    function fromStudent(uint256 student_id)
+        public
+        view
+        returns (string[] memory filtered)
+    {
+        string[] memory tempList = new string[](exemptionCount);
+        uint256 count = 0;
+        for (uint256 i = 0; i < exemptionCount; i++) {
+            if (exemptions[i].student_id == student_id) {
+                tempList[count] = exemptions[i].course;
+                count++;
+            }
+        }
+
+        filtered = new string[](count);
+
+        for (uint256 i = 0; i < count; i++) {
+            filtered[i] = tempList[i];
+        }
     }
 
     function createExemption(

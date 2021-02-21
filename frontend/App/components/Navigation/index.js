@@ -29,6 +29,7 @@ import EditCompetences from "../../screens/competences/Edit";
 import Keywords from "../../screens/competences/Keywords";
 import Contact from "../../screens/contact";
 import AddCourse from "../../screens/course/AddCourse";
+import StudentExemptions from "../../screens/exemption/StudentExemptions";
 
 export default () => {
   const [loading, setLoading] = useState(false);
@@ -116,6 +117,11 @@ export default () => {
         name="Exemptions"
         component={Exemptions}
         options={{ title: "Vrijstellingen" }}
+      />
+        <HomeStack.Screen
+        name="StudentExemptions"
+        component={StudentExemptions}
+        options={{ title: "Goedegekeurde Vrijstellingen" }}
       />
       <HomeStack.Screen
         name="Competences"

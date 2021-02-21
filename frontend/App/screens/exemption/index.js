@@ -37,7 +37,7 @@ export default ({ navigation, route }) => {
         .then(({ data }) => {
           setExemptions(data);
         })
-        .catch((e) => console.log("ERROR", e));
+        .catch((e) => console.log("error", e));
     }
   }, [exemption]);
 
@@ -56,7 +56,7 @@ export default ({ navigation, route }) => {
   ]);
 
   const saveExemption = () => {
-    UpdateExemptionById(exemption.id, token, exemption).then((r) => {
+    UpdateExemptionById(exemption.id, token, exemption).then(() => {
       setExemption(null);
     });
   };
