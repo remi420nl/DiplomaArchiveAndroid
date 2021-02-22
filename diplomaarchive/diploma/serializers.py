@@ -30,6 +30,8 @@ class DiplomaSerializer(WritableNestedModelSerializer, serializers.ModelSerializ
     competences = CompetenceSerializer(
         read_only=False, many=True, required=False)
     student = UserSerializer(read_only=True)
+    date = serializers.DateField(
+        format="%d-%m-%Y", input_formats=['%d-%m-%Y', 'iso-8601'])
 
     def update(self, instance, validated_data):
 

@@ -12,7 +12,8 @@ urlpatterns = [
     path('allexemptions/', ExemptionsView.as_view()),
     path('exemption/', ExemptionView.as_view()),
     path('keywords/<int:id>', KeywordsView.as_view()),
-    path('testt/<int:id>', ApprovedExemptions.as_view()),
+    path('approvedexemptions/', ApprovedExemptions.as_view()),
+
 
 
 ]

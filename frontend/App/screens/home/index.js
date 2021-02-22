@@ -45,21 +45,21 @@ const styles = StyleSheet.create({
   search: {},
 
   title: {
-    ...FONTS.h1,
+    lineHeight: 70,
     fontSize: 60,
-    color: COLORS.steelblue,
+    color: COLORS.primary,
     fontWeight: "bold",
     margin: 15,
   },
   welcomeText: {
     marginLeft: 15,
     fontSize: 18,
-    color: COLORS.steelblue,
+    color: COLORS.primary,
     fontWeight: "bold",
   },
   searchField: {
     backgroundColor: COLORS.gray2,
-    opacity: 0.8,
+    opacity: 0.9,
     width: 200,
     borderRadius: 10,
     padding: 10,
@@ -94,6 +94,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 1,
+  },
+  menuText: {
+    fontSize: 14,
+    textTransform: "uppercase",
+    fontWeight: "bold",
   },
   error: {},
 });
@@ -151,8 +156,20 @@ export default Home = ({ navigation }) => {
           navigation.push("AddDiploma", { token: token, user: user })
         }
       />
+      <Button
+        text={"Vrijstellingen"}
+        onPress={() =>
+          navigation.push("StudentExemptions", { token: token, user: user })
+        }
+        theme="secondary"
+      />
     </View>
   );
+
+  const menuNavigator = (page) => {
+    navigation.push(page);
+    ref.current.hide();
+  };
 
   const EmployeeContent = () => (
     <View>
@@ -186,27 +203,40 @@ export default Home = ({ navigation }) => {
             ref.current.show();
           }}
         >
-          <Entypo name="cog" size={32} color={COLORS.steelblue} />
+          <Entypo name="cog" size={32} color={COLORS.primary} />
         </TouchableOpacity>
       }
     >
-      <MenuItem onPress={() => navigation.navigate("Contact")}>
-        Contact
+      <MenuItem onPress={() => menuNavigator("Contact")}>
+        <Text style={styles.menuText}>Contact</Text>
       </MenuItem>
       {isEmployee && (
         <>
-          <MenuItem onPress={() => navigation.push("EditCompetences")}>
-            Competencies bewerken
+          <MenuItem
+            style={styles.menuText}
+            onPress={() => menuNavigator("EditCompetences")}
+          >
+            <Text style={styles.menuText}>Competencies bijwerken</Text>
           </MenuItem>
-          <MenuItem onPress={() => navigation.push("CreateCourse")}>
-            Vak toevoegen
+          <MenuItem
+            style={styles.menuText}
+            onPress={() => menuNavigator("CreateCourse")}
+          >
+            <Text style={styles.menuText}>Vak toevoegen</Text>
           </MenuItem>
         </>
       )}
       <MenuDivider />
-      <MenuItem onPress={() => showApplicationDetails()}>Informatie</MenuItem>
+      <MenuItem
+        style={styles.menuText}
+        onPress={() => showApplicationDetails()}
+      >
+        <Text style={styles.menuText}>Informatie</Text>
+      </MenuItem>
       <MenuDivider />
-      <MenuItem onPress={() => ref.current.hide()}>Verberg</MenuItem>
+      <MenuItem style={styles.menuText} onPress={() => ref.current.hide()}>
+        <Text style={styles.menuText}>Verberg</Text>
+      </MenuItem>
     </Menu>
   );
 

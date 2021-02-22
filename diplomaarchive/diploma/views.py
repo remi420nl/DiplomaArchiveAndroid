@@ -87,7 +87,6 @@ class AddDiploma(APIView):
         diploma_name = data['name']
 
         serializer = DiplomaSerializer(data=data)
-
         student = request.user
 
         result = Diploma.objects.filter(
@@ -101,7 +100,7 @@ class AddDiploma(APIView):
         if(serializer.is_valid()):
             serializer.save(student=student)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+        print(serializer.errors)
         return Response(serializer.errors, status=500)
 
 

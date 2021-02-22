@@ -109,6 +109,7 @@ export const CreateNewDiploma = (pdf, fields, token) => {
     form.append(field, fields[field]);
   }
 
+  console.log(form);
   return axios.post(`${ip}/api/diploma/adddiploma`, form, {
     headers: {
       Authorization: token,
@@ -137,6 +138,15 @@ export const GetAllExemptions = async (token, courseId) => {
     `${ip}/api/competence/allexemptions/?course=${courseId}`,
     options
   );
+};
+
+export const GetApprovedExemptions = async (token) => {
+  const options = {
+    headers: {
+      Authorization: token,
+    },
+  };
+  return await axios.get(`${ip}/api/competence/approvedexemptions/`, options);
 };
 
 export const GetAllCompetences = async (token) => {

@@ -1,0 +1,1 @@
+ganache-cli -d --db ganache_db_dir --accounts 20 --deterministic --mnemonic="deposit custom pioneer action sibling blouse romance elbow morning pole rent scout"

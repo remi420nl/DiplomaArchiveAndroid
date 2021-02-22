@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { COLORS } from "../../assets/constants";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { AntDesign } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { CreateNewDiploma } from "../../../api/Api";
 import CheckBox from "expo-checkbox";
 import { Button } from "../../components/Button";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const fields = [
   { text: "Naam diploma", field: "name", type: "text", icon: null },
@@ -28,12 +28,13 @@ const fields = [
 
 export default ({ route }) => {
   const [formFields, setFormFields] = useState(fields);
-  const [show, setShow] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [formData, setFormData] = useState({});
   const [pdf, setPdf] = useState([]);
   const [error, setError] = useState(null);
   const [succes, setSuccess] = useState(null);
   const [checked, setChecked] = useState(false);
+  const [date, setDate] = useState(new Date());
 
   const { token, user } = route.params;
 
@@ -52,8 +53,7 @@ export default ({ route }) => {
       CreateNewDiploma(pdf, formData, token)
         .then(() => setSuccess("Diploma Succesvol Verstuurd"))
         .catch((e) => {
-          e.response.data.error;
-          setError(e.response.data.error);
+          console.log(e);
         });
     } else {
       setError("Alle verplichte velden invullen svp");
@@ -78,12 +78,39 @@ export default ({ route }) => {
     return true;
   };
 
-  const picker = async (field) => {
+  const filePicker = async (field) => {
     let result = await DocumentPicker.getDocumentAsync({});
     formData[field] = result.name;
 
     result.field = field;
     setPdf((pdf) => [...pdf, result]);
+  };
+
+  const datePickerHandler = (event) => {
+    setShowDatePicker(true);
+    event.target.blur();
+  };
+
+  function formatDate(date) {
+    var d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [day, month, year].join("-");
+  }
+
+  const setDateField = (event, selectedDate) => {
+    setShowDatePicker(false);
+    const currentDate = selectedDate || date;
+
+    const correctFormat = formatDate(currentDate);
+
+    setFormData({ ...formData, date: correctFormat });
+    setDate(currentDate);
   };
 
   return (
@@ -93,7 +120,16 @@ export default ({ route }) => {
           Diploma toevoegen voor {user && user.name}
         </Text>
       </View>
-
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode={"date"}
+          is24Hour={true}
+          display="spinner"
+          onChange={setDateField}
+          onCA
+        />
+      )}
       <View style={styles.form}>
         <View style={styles.feedbackmessages}>
           {error && <Text style={styles.error}>{error}</Text>}
@@ -106,9 +142,11 @@ export default ({ route }) => {
 
             <TextInput
               value={formData[field] && formData[field].toString()}
-              onFocus={() => {
-                type === "date" ? setShow(true) : setShow(false);
-                type === "file" ? picker(field) : null;
+              onFocus={(event) => {
+                type === "date"
+                  ? datePickerHandler(event)
+                  : setShowDatePicker(false);
+                type === "file" ? filePicker(field) : null;
               }}
               style={styles.textInput}
               onChangeText={(t) => {
@@ -176,7 +214,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: "white",
   },
-
   button: {
     marginTop: 10,
     padding: 10,

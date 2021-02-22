@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -8,57 +7,73 @@ import {
   TouchableHighlight,
   Pressable,
   FlatList,
-  Dimensions,
+  ScrollView,
 } from "react-native";
-// import { Drizzle, generateStore } from "drizzle";
-// import "./shims";
-//  import ExemptionStore from '../../../../blockhain/build/contracts/Exemptions.json';
-// const options = {
-//     contracts: [ExemptionStore]
-//   };
+import { GetAllExemptions, GetApprovedExemptions } from "../../../api/Api";
+import { useAuth } from "../../context/AuthContext";
+import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../../assets/constants";
 
-export default () => {
-  const [loading, setLoading] = useState(false);
- const [state ,setState] = useState(null);
-const [drizzleState, setDrizzleState] = useState(null);
+export default ({ route }) => {
+  const [loading, setLoading] = useState(true);
+  const [approved, setApproved] = useState([]);
+  const [error, setError] = useState(null);
 
-//   useEffect(() => {
-//     const drizzleStore = generateStore(options);
-//     const drizzle = new Drizzle(options, drizzleStore);
-//     setDrizzleState(drizzle);
+  const { token } = route.params;
 
-//     const unsubscribe = drizzle.store.subscribe(() => {
-//         const drizzleState = drizzle.store.getState();
-  
-//         if (drizzleState.drizzleStatus.initialized) {
-//           setLoading(false);
-//         setState(drizzleState);
-//         }
-//       });
+  useEffect(() => {
+    GetApprovedExemptions(token)
+      .then(({ data }) => {
+        setApproved(data.approved);
+        setLoading(false);
+      })
+      .catch((e) => console.log(e));
+  }, []);
 
-//       return () => unsubscribe;
-//   }, []);
-
-
-// const test = () => {
-
-
-//     const contract = drizzleState.contracts.Exemptions;
-//     const dataKey = contract.methods["exemptions"].cacheCall();
-
-//     const { Exemptions } = state.contracts;
-
-//     console.log(Exemptions)
-
-//     const testtt = MyStringStore.Exemptions[dataKey];
-
-//     console.log(testtt)
-// }
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    item: {
+      alignItems: "center",
+      flexDirection: "row",
+      margin: 5,
+      backgroundColor: COLORS.primary,
+      borderRadius: 10,
+      paddingHorizontal: 15,
+      paddingVertical: 6,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.5,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    itemText: {
+      marginLeft: 10,
+      fontSize: 24,
+      textTransform: "uppercase",
+      color: COLORS.white,
+      fontWeight: "bold",
+      letterSpacing: 2,
+    },
+  });
 
   return (
-    <View>
-      {loading && <Text>Laden..</Text>}
-
+    <View style={styles.container}>
+      <View>
+        <Text>Toegewezen vrijstellingen</Text>
+      </View>
+      <ScrollView contentContainerStyle={{ flex: 1, justifyContent: "center" }}>
+        {loading && <Text>Laden..</Text>}
+        {approved.map((course, i) => (
+          <View style={styles.item} key={i}>
+            <Ionicons name="checkmark-done-sharp" size={38} color="#9AF000" />
+            <Text style={styles.itemText}>{course}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 };

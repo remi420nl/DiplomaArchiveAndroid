@@ -33,14 +33,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    margin: 10,
+    padding: 10,
+    backgroundColor: COLORS.background3,
   },
   text: {
     fontSize: 20,
     fontWeight: "bold",
   },
-
-  /////
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -111,11 +110,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textTransform: "uppercase",
-    color: COLORS.steelblue,
-    marginBottom: 5,
+    color: COLORS.primary,
+    marginVertical: 10,
   },
   title: {
-    backgroundColor: "darkgray",
+    backgroundColor: COLORS.primary,
     paddingVertical: 5,
     paddingHorizontal: 15,
     marginBottom: 20,

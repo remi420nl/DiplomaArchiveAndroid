@@ -12,6 +12,7 @@ import {
 
 import { GetAllExemptions, UpdateExemptionById } from "../../../api/Api";
 import { COLORS, FONTS } from "../../assets/constants";
+import { Button } from "../../components/Button";
 import { useAuth } from "../../context/AuthContext";
 
 const statusarray = [
@@ -96,7 +97,8 @@ export default ({ navigation, route }) => {
     },
     modalView: {
       margin: 20,
-      backgroundColor: "white",
+      backgroundColor: COLORS.white,
+      opacity: 0.9,
       borderRadius: 20,
       padding: 15,
       alignItems: "center",
@@ -116,7 +118,7 @@ export default ({ navigation, route }) => {
       elevation: 2,
     },
     textStyle: {
-      color: "white",
+      color: COLORS.white,
       fontWeight: "bold",
       textAlign: "center",
     },
@@ -127,26 +129,33 @@ export default ({ navigation, route }) => {
     modalTitle: {
       fontWeight: "bold",
     },
-    modalButtons: {
+    modalTopButtons: {
       alignItems: "center",
       justifyContent: "space-between",
       borderTopColor: "gray",
       borderTopWidth: 1,
-      margin: 4,
+    },
+    modalBottomButtons: {
+      width: "80%",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+      marginTop: 20,
     },
     segment: {
+      alignSelf: "center",
       flexDirection: "row",
       justifyContent: "center",
     },
     segmentButton: {
       borderRadius: 10,
-      padding: 5,
-      paddingHorizontal: 10,
+      padding: 10,
+      paddingHorizontal: 8,
       margin: 5,
       elevation: 2,
+      flexShrink: 1,
     },
     segmentButtonText: {
-      fontFamily: "Roboto-Bold",
+      fontWeight: "bold",
     },
     colorExplanation: {
       flexDirection: "row",
@@ -217,7 +226,7 @@ export default ({ navigation, route }) => {
             <Text style={styles.modalTitle}>Vak: {exemption.course.name}</Text>
             <Text>{oldStatus}</Text>
 
-            <View style={styles.modalButtons}>
+            <View style={styles.modalTopButtons}>
               <Text style={styles.modalText}>Kies een optie:</Text>
               <View style={styles.segment}>
                 {statusChoices.map(({ key, text }) => (
@@ -236,13 +245,36 @@ export default ({ navigation, route }) => {
               </View>
               <TouchableHighlight
                 onPress={() => alert("todo..")}
-                style={[styles.segmentButton, { backgroundColor: COLORS.red }]}
+                style={[
+                  styles.segmentButton,
+                  { backgroundColor: COLORS.testred },
+                ]}
               >
                 <Text style={styles.segmentButtonText}>Verwijder</Text>
               </TouchableHighlight>
             </View>
-            <View style={{ ...styles.segment, marginTop: 25 }}>
-              <TouchableHighlight
+            <View style={styles.modalBottomButtons}>
+              <Button
+                text="Opslaan"
+                type="modal"
+                theme="submit"
+                onPress={() => {
+                  setModalVisible(false);
+                  saveExemption();
+                }}
+              />
+              <Button
+                text="Terug"
+                type="modal"
+                theme="cancel"
+                onPress={() => {
+                  setModalVisible(false);
+                  setExemption(null);
+                }}
+              />
+
+              {/* 
+            <TouchableHighlight
                 style={{ ...styles.segmentButton, backgroundColor: "#2196F3" }}
                 onPress={() => {
                   setModalVisible(false);
@@ -262,7 +294,7 @@ export default ({ navigation, route }) => {
                 }}
               >
                 <Text style={styles.textStyle}>Opslaan</Text>
-              </TouchableHighlight>
+              </TouchableHighlight> */}
             </View>
           </View>
         </View>

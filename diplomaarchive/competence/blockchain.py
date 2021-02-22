@@ -4,7 +4,7 @@ import sys
 import os
 from rest_framework.response import Response
 
-blockchain_address = 'http://127.0.0.1:7545'
+blockchain_address = 'http://127.0.0.1:8545'
 web3 = Web3(HTTPProvider(blockchain_address))
 
 
@@ -18,18 +18,18 @@ def get_smartcontract():
     compiled_contract_path = a + \
         '/diplomaarchive/blockchain/build/contracts/Exemptions.json'
 
-    deployed_contract_address = '0xb31b0bB83d98A325e66ceA66825160F8DC54C846'
+    deployed_contract_address = '0x95Db0063722C274c84cf2e5E643aC26E680680b3'
 
     with open(compiled_contract_path) as file:
         contract_json = json.load(file)  # load contract info as JSON
 
-        address_test = contract_json['networks']['5777']['address']
+        deployed_adress = contract_json['networks']['1613987460244']['address']
 
         contract_abi = contract_json['abi']
 
     # get copy of contract
     contract = web3.eth.contract(
-        address=address_test, abi=contract_abi)
+        address=deployed_adress, abi=contract_abi)
 
     return contract
 
@@ -40,14 +40,14 @@ def get_studentexemptions_from_blockchain(student_id):
 
     exemptions = []
 
-    exemptions = contract.functions.fromStudent(4).call()
-    print(exemptions)
+    exemptions = contract.functions.fromStudent(student_id).call()
     return exemptions
 
 
 def add_exemption_blockchain(student, course):
 
     contract = get_smartcontract()
+    print(contract)
 
     tx_hash = contract.functions.createExemption(
         student['name'], course['name'], student['id']).transact()

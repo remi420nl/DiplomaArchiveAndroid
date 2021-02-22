@@ -55,8 +55,7 @@ export default () => {
       initialRouteName="Home"
       tabBarOptions={{
         style: {
-          backgroundColor: COLORS.steelblue,
-          opacity: 0.8,
+          backgroundColor: COLORS.primary,
           paddingBottom: 12,
         },
         labelStyle: {
@@ -118,7 +117,7 @@ export default () => {
         component={Exemptions}
         options={{ title: "Vrijstellingen" }}
       />
-        <HomeStack.Screen
+      <HomeStack.Screen
         name="StudentExemptions"
         component={StudentExemptions}
         options={{ title: "Goedegekeurde Vrijstellingen" }}

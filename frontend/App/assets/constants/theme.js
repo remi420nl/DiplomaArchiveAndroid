@@ -3,7 +3,7 @@ const { width, height } = Dimensions.get("window");
 
 export const COLORS = {
   // base colors
-  primary: "#194868", // Dark Blue
+  primary: "#59ADD0", // Dark Blue
   secondary: "#FF615F", // peach
 
   // colors
@@ -15,8 +15,9 @@ export const COLORS = {
   lightGray4: "#adadad",
   gray: "#BEC1D2",
   gray2: "#b5b4b1",
-  background2: "rgba(206,204,202,0.2)",
   background: "#fafcfb",
+  background2: "rgba(206,204,202,0.2)",
+  background3: "#D6D6D6",
 
   darkgray: "#898C95",
   yellow: "#FFD573",
@@ -71,38 +72,38 @@ export const SIZES = {
   height,
 };
 
-export const FONTS = {
-  largeTitle: {
-    fontFamily: "Roboto-Regular",
-    fontSize: SIZES.largeTitle,
-    lineHeight: 55,
-  },
-  h1: { fontFamily: "Roboto-Bold", fontSize: SIZES.h1, lineHeight: 70 },
-  h2: { fontFamily: "Roboto-Bold", fontSize: SIZES.h2, lineHeight: 30 },
-  h3: { fontFamily: "Roboto-Bold", fontSize: SIZES.h3, lineHeight: 22 },
-  h4: { fontFamily: "Roboto-Bold", fontSize: SIZES.h4, lineHeight: 22 },
-  body1: {
-    fontFamily: "Roboto-Regular",
-    fontSize: SIZES.body1,
-    lineHeight: 36,
-  },
-  body2: {
-    fontFamily: "Roboto-Regular",
-    fontSize: SIZES.body2,
-    lineHeight: 30,
-  },
-  body3: {
-    fontFamily: "Roboto-Regular",
-    fontSize: SIZES.body3,
-    lineHeight: 22,
-  },
-  body4: {
-    fontFamily: "Roboto-Regular",
-    fontSize: SIZES.body4,
-    lineHeight: 22,
-  },
-};
+// export const FONTS = {
+//   largeTitle: {
+//     fontFamily: "Roboto-Regular",
+//     fontSize: SIZES.largeTitle,
+//     lineHeight: 55,
+//   },
+//   h1: { fontFamily: "Roboto-Bold", fontSize: SIZES.h1, lineHeight: 70 },
+//   h2: { fontFamily: "Roboto-Bold", fontSize: SIZES.h2, lineHeight: 30 },
+//   h3: { fontFamily: "Roboto-Bold", fontSize: SIZES.h3, lineHeight: 22 },
+//   h4: { fontFamily: "Roboto-Bold", fontSize: SIZES.h4, lineHeight: 22 },
+//   body1: {
+//     fontFamily: "Roboto-Regular",
+//     fontSize: SIZES.body1,
+//     lineHeight: 36,
+//   },
+//   body2: {
+//     fontFamily: "Roboto-Regular",
+//     fontSize: SIZES.body2,
+//     lineHeight: 30,
+//   },
+//   body3: {
+//     fontFamily: "Roboto-Regular",
+//     fontSize: SIZES.body3,
+//     lineHeight: 22,
+//   },
+//   body4: {
+//     fontFamily: "Roboto-Regular",
+//     fontSize: SIZES.body4,
+//     lineHeight: 22,
+//   },
+// };
 
-const appTheme = { COLORS, SIZES, FONTS };
+const appTheme = { COLORS, SIZES };
 
 export default appTheme;

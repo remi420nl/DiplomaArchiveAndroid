@@ -17,8 +17,6 @@ contract Exemptions {
         createExemption("teststudent", "testvak", 1000);
     }
 
-
-
     function fromStudent(uint256 student_id)
         public
         view
@@ -45,12 +43,12 @@ contract Exemptions {
         string memory _course,
         uint256 _student_id
     ) public {
-        exemptionCount++;
         exemptions[exemptionCount] = Exemption(
             exemptionCount,
             _name,
             _course,
             _student_id
         );
+        exemptionCount++;
     }
 }

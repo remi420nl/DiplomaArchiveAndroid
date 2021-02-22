@@ -24,6 +24,7 @@ class ExemptionsView(ListAPIView):
     def get_queryset(self):
 
         if 'course' in self.request.GET:
+            exemptions = []
 
             if self.request.user.groups.filter(name='student'):
 
@@ -35,8 +36,7 @@ class ExemptionsView(ListAPIView):
 
                     return exemptions
                 except:
-
-                    return []
+                    return exemptions
 
             try:
                 id = self.request.query_params["course"]
@@ -51,19 +51,14 @@ class ExemptionsView(ListAPIView):
 class ApprovedExemptions(APIView):
 
     # student only
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (IsStudent,)
 
     def get(self, request, *args, **kwargs):
-        print("get methodcalled")
-        id = request
-        print(id)
-
-       # student_id = request.user.id
-        student_id = 2
+        student_id = request.user.id
 
         approved_exemptions = get_studentexemptions_from_blockchain(student_id)
 
-        return Response({'data': approved_exemptions}, status=200)
+        return Response({'approved': approved_exemptions}, status=200)
 
 
 class ExemptionView(UpdateAPIView):
@@ -117,9 +112,17 @@ class ExemptionView(UpdateAPIView):
             data = request.data
 
             exemption = Exemption.objects.get(id=id)
+
+            if exemption.status is 'a':
+                pass
+               # return Response({'error': 'exemption already approved can not be altered'}, status=403)
+
             if data['status'] is 'a':
-                print("exemtpion approved")
-                add_exemption_blockchain(data['student'], data['course'])
+                try:
+                    add_exemption_blockchain(data['student'], data['course'])
+                except:
+                    # in case there is a problem with de development blockchain it still continues
+                    print("Something went wrong making transaction")
 
             serializer = ExemptionUpdateSerializer(
                 exemption, data=request.data, partial=True)
