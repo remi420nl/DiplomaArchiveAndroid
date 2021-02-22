@@ -7,6 +7,7 @@ import { CreateNewDiploma } from "../../../api/Api";
 import CheckBox from "expo-checkbox";
 import { Button } from "../../components/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import formatDate from "../../util/DateFormatter";
 
 const fields = [
   { text: "Naam diploma", field: "name", type: "text", icon: null },
@@ -90,18 +91,6 @@ export default ({ route }) => {
     setShowDatePicker(true);
     event.target.blur();
   };
-
-  function formatDate(date) {
-    var d = new Date(date),
-      month = "" + (d.getMonth() + 1),
-      day = "" + d.getDate(),
-      year = d.getFullYear();
-
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
-
-    return [day, month, year].join("-");
-  }
 
   const setDateField = (event, selectedDate) => {
     setShowDatePicker(false);

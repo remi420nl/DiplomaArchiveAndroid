@@ -15,12 +15,8 @@ import StudentPicker from "../../components/Dropdown/StudentPicker";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
-import { Header } from "react-native/Libraries/NewAppScreen";
 
 export default ({ navigation, route }) => {
-  const [diplomas, setDiplomas] = useState();
-  const [loading, setLoading] = useState(true);
-
   const [currentIndex, setCurrentIndex] = useState();
 
   const FETCH_SUCCESS = "FETCH_SUCCESSS";
@@ -39,7 +35,13 @@ export default ({ navigation, route }) => {
           isLoading: true,
           error: false,
           data: action.payload,
-          students: action.payload.map((d) => d.student),
+          students: action.payload
+            .map((d) => d.student)
+            .filter(
+              (student, index) =>
+                action.payload.map((d) => d.student.id).indexOf(student.id) ===
+                index
+            ),
         };
       case COLORS_ADDED:
         return {
@@ -89,7 +91,6 @@ export default ({ navigation, route }) => {
 
   const colorsAdded = useRef(false);
   const ref = useRef();
-
   const { token, user } = useAuth();
 
   useEffect(() => {
@@ -200,13 +201,11 @@ export default ({ navigation, route }) => {
               {!isLoading && archive.data.length.toString()}
             </Text>
           </View>
-
           {!isLoading && archive.students && user.type === "employee" && (
             <View style={styles.rightHeader}>
               <Text style={styles.headerText}>
                 Studenten: {archive.students.length}
               </Text>
-
               <StudentPicker
                 SingleStudentView={SingleStudentView}
                 data={archive.students}
