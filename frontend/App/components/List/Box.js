@@ -1,5 +1,4 @@
-import React, { Children, useEffect, useState } from "react";
-
+import React from "react";
 import {
   View,
   Text,
@@ -8,6 +7,8 @@ import {
   TouchableHighlight,
 } from "react-native";
 import { COLORS } from "../../assets/constants";
+
+// Used for competence comparison to render a flatlist
 
 const Box = ({ data, horizontal, onPress, colums }) => {
   const styles = StyleSheet.create({
@@ -48,7 +49,7 @@ const Box = ({ data, horizontal, onPress, colums }) => {
     },
   });
 
-  const RenderItem = ({ item }) => (
+  const renderItem = ({ item }) => (
     <TouchableHighlight
       onLongPress={() => onPress(item)}
       style={{
@@ -65,7 +66,7 @@ const Box = ({ data, horizontal, onPress, colums }) => {
       <FlatList
         horizontal={horizontal}
         data={data}
-        renderItem={RenderItem}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         numColumns={colums}
       />

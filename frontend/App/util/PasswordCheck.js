@@ -11,6 +11,8 @@ const styles = StyleSheet.create({
   },
 });
 
+//For password validation and text to be rendered for the validation
+
 export const isPasswordValid = (form) => {
   const { lowercase, capital, number, length } = passwordValidation(form);
   return lowercase && capital && number && length;

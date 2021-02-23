@@ -27,6 +27,8 @@ const fields = [
   },
 ];
 
+//Screen to let student add a diploma, incuding filepicker and datepicker
+
 export default ({ route }) => {
   const [formFields, setFormFields] = useState(fields);
   const [showDatePicker, setShowDatePicker] = useState(false);

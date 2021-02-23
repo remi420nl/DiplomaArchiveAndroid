@@ -1,18 +1,11 @@
-import React, { useEffect, useState, useReducer, useRef } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { Text, StyleSheet, ScrollView } from "react-native";
 
 import { Transition, Transitioning } from "react-native-reanimated";
 import { GetAllCourses } from "../../../api/Api";
 import { useAuth } from "../../../App/context/AuthContext";
 import ListElement from "../../components/List/ListElement";
+import { useHeaderHeight } from "@react-navigation/stack";
 
 const transition = (
   <Transition.Together>
@@ -30,36 +23,6 @@ const colors = [
   { bg: "#FDBD50", color: "#F5F5EB" },
 ];
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  cardContainer: {
-    flexGrow: 1,
-  },
-
-  courseTitle: {
-    fontSize: 38,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    letterSpacing: -2,
-  },
-  competencesList: {
-    marginTop: 10,
-  },
-  competence: {
-    fontSize: 20,
-    lineHeight: 20 * 1.5,
-    textAlign: "center",
-  },
-  error: {
-    color: "darkred",
-    fontSize: 28,
-    fontWeight: "bold",
-    marginHorizontal: 25,
-  },
-});
-
 export default ({ navigation }) => {
   const [courses, setCourses] = useState();
   const [currentIndex, setCurrentIndex] = useState(null);
@@ -70,7 +33,39 @@ export default ({ navigation }) => {
   const firstRender = useRef(true);
   const colorsUpdated = useRef(false);
 
-  const { token, user } = useAuth();
+  const { token } = useAuth();
+
+  const headerHeight = useHeaderHeight();
+
+  const styles = StyleSheet.create({
+    container: {
+      paddingTop: headerHeight,
+      flex: 1,
+    },
+    cardContainer: {
+      flexGrow: 1,
+    },
+    courseTitle: {
+      fontSize: 38,
+      fontWeight: "bold",
+      textTransform: "uppercase",
+      letterSpacing: -2,
+    },
+    competencesList: {
+      marginTop: 10,
+    },
+    competence: {
+      fontSize: 20,
+      lineHeight: 20 * 1.5,
+      textAlign: "center",
+    },
+    error: {
+      color: "darkred",
+      fontSize: 28,
+      fontWeight: "bold",
+      marginHorizontal: 25,
+    },
+  });
 
   useEffect(() => {
     if (!colorsUpdated.current) {
@@ -89,15 +84,12 @@ export default ({ navigation }) => {
 
   const setColors = () => {
     if (firstRender.current || colorsUpdated.current) {
-      console.log(firstRender.current, colorsUpdated.current);
       firstRender.current = false;
       return;
     }
-
     if (!courses) {
       return null;
     }
-
     let arr = [];
 
     let count = 0;

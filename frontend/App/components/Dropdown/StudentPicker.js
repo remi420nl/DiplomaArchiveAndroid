@@ -1,9 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
+import React, { useRef } from "react";
+import { View, StyleSheet} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { COLORS } from "../../assets/constants";
 
 const allDiplomas = { name: "Alle Diplomas", id: null, email: "null" };
+
+// Picker component to show a popup to display all students which have a diploma, which the user can choose from
+
 export default ({ data, onPress }) => {
   data = [...data, allDiplomas];
 
@@ -16,7 +19,6 @@ export default ({ data, onPress }) => {
       borderWidth: 1,
       borderRadius: 5,
       margin: 4,
-
       alignItems: "center",
     },
     picker: {

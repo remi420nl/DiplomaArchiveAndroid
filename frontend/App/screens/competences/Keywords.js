@@ -4,16 +4,12 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   FlatList,
-  Dimensions,
   Modal,
   Pressable,
   Alert,
-  InteractionManager,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import {
   GetKeywordsForCompetence,
   AddKeywordsToCompetence,
@@ -23,113 +19,15 @@ import {
 } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
-import Loading from "../loading";
+import Loading from "../../components/loading";
 import Card from "../../components/Card";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS } from "../../assets/constants";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { useHeaderHeight } from "@react-navigation/stack";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 10,
-    backgroundColor: COLORS.background3,
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
+//Screen to let employee edit a competence like the name and add or remove keywords
 
-  modalHeaderText: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
-
-  inputContainer: {},
-  inputField: {
-    width: 200,
-    textAlignVertical: "top",
-    justifyContent: "flex-start",
-    margin: 15,
-    padding: 15,
-    borderWidth: 1,
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    alignSelf: "center",
-    width: "100%",
-  },
-  modalButtons: {
-    width: "80%",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-  },
-  button: {
-    backgroundColor: COLORS.white,
-    marginBottom: 10,
-    elevation: 3,
-    padding: 10,
-    borderRadius: 10,
-  },
-  headerText: {
-    alignSelf: "center",
-    fontSize: 20,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    color: COLORS.primary,
-    marginVertical: 10,
-  },
-  title: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    marginBottom: 20,
-    alignItems: "center",
-    borderRadius: 5,
-    alignSelf: "center",
-  },
-  competenceName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
-  },
-});
-
-export default ({ navigation, route }) => {
+export default ({ route }) => {
   const [compName, setCompName] = useState(route.params.name || "");
   const [input, setInput] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -144,6 +42,108 @@ export default ({ navigation, route }) => {
   const { user, token } = useAuth();
 
   const textInputRef = useRef([]);
+  const headerHeight = useHeaderHeight();
+
+  const styles = StyleSheet.create({
+    container: {
+      paddingTop: headerHeight,
+      flex: 1,
+      justifyContent: "center",
+      padding: 10,
+      backgroundColor: COLORS.background3,
+    },
+    text: {
+      fontSize: 20,
+      fontWeight: "bold",
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: "white",
+      borderRadius: 20,
+      padding: 35,
+      alignItems: "center",
+      shadowColor: COLORS.black,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+
+    modalHeaderText: {
+      fontSize: 18,
+      fontWeight: "bold",
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: "center",
+    },
+
+    inputContainer: {},
+    inputField: {
+      width: 200,
+      textAlignVertical: "top",
+      justifyContent: "flex-start",
+      margin: 15,
+      padding: 15,
+      borderWidth: 1,
+      shadowColor: COLORS.black,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    },
+    buttonContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-around",
+      alignSelf: "center",
+      width: "100%",
+    },
+    modalButtons: {
+      width: "80%",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+    },
+    button: {
+      backgroundColor: COLORS.white,
+      marginBottom: 10,
+      elevation: 3,
+      padding: 10,
+      borderRadius: 10,
+    },
+    headerText: {
+      alignSelf: "center",
+      fontSize: 20,
+      fontWeight: "bold",
+      textTransform: "uppercase",
+      color: COLORS.primary,
+      marginVertical: 10,
+    },
+    title: {
+      backgroundColor: COLORS.primary,
+      paddingVertical: 5,
+      paddingHorizontal: 15,
+      marginBottom: 20,
+      alignItems: "center",
+      borderRadius: 5,
+      alignSelf: "center",
+    },
+    competenceName: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: "white",
+    },
+  });
 
   useEffect(() => {
     fetchKeywords();

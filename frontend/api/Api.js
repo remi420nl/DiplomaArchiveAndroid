@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const ip = "http://192.168.163.252:8000";
+//API Calls to Django backend
+
+const ip = "http://192.168.98.252:8000";
 
 export const GetAllCourses = async () => {
   return await axios.get(`${ip}/api/course/`);
@@ -81,18 +83,6 @@ export const GetDiplomaById = async (id, token) => {
   return await axios.get(`${ip}/api/diploma/diploma/?id=${id}`, options);
 };
 
-// export const FireBase = async () => {
-//   var firebaseConfig = {
-//     apiKey: "AIzaSyBoclY1HEjjt-Tz6Wn11W1amuRf4zgCsI8",
-//     authDomain: "diplomaarchive.firebaseapp.com",
-//     projectId: "diplomaarchive",
-//     storageBucket: "diplomaarchive.appspot.com",
-//     messagingSenderId: "838390795779",
-//     appId: "1:838390795779:web:495582252e14f2ebb78836",
-//   };
-//   // Initialize Firebase
-//   firebase.initializeApp(firebaseConfig);
-// };
 
 export const CreateNewDiploma = (pdf, fields, token) => {
   const form = new FormData();

@@ -1,13 +1,9 @@
-import React, {
-  useEffect,
-  useState,
-  createRef,
-  useRef,
-  useCallback,
-} from "react";
+import React from "react";
 import { View, StyleSheet } from "react-native";
 import { COLORS } from "../../assets/constants";
 import PropTypes from "prop-types";
+
+// For white Cards being used in Competence Screens
 
 const styles = StyleSheet.create({
   card: {

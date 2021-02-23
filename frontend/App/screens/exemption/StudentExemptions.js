@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableHighlight,
-  Pressable,
-  FlatList,
-  ScrollView,
-} from "react-native";
-import { GetAllExemptions, GetApprovedExemptions } from "../../../api/Api";
-import { useAuth } from "../../context/AuthContext";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { GetApprovedExemptions } from "../../../api/Api";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../assets/constants";
+import { useHeaderHeight } from "@react-navigation/stack";
+
+//Screen to show logged in student an overview of all approved exemptions which are stored on the blockchain and immutable
 
 export default ({ route }) => {
   const [loading, setLoading] = useState(true);
   const [approved, setApproved] = useState([]);
-  const [error, setError] = useState(null);
 
   const { token } = route.params;
 
@@ -30,11 +22,17 @@ export default ({ route }) => {
       .catch((e) => console.log(e));
   }, []);
 
+  const headerHeight = useHeaderHeight();
+
   const styles = StyleSheet.create({
     container: {
+      paddingTop: headerHeight,
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
+    },
+    title: {
+      marginTop: 25,
     },
     item: {
       alignItems: "center",
@@ -60,13 +58,30 @@ export default ({ route }) => {
     },
   });
 
+  const totalText = () => {
+    let total = "";
+    approved.length < 1 ? (total = "Geen") : (total = approved.length);
+    return total;
+  };
+
   return (
     <View style={styles.container}>
-      <View>
-        <Text>Toegewezen vrijstellingen</Text>
+      <View style={styles.title}>
+        <Text
+          style={[
+            styles.itemText,
+            { color: COLORS.black, textAlign: "center" },
+          ]}
+        >{`${totalText()} toegewezen vrijstellingen`}</Text>
       </View>
-      <ScrollView contentContainerStyle={{ flex: 1, justifyContent: "center" }}>
-        {loading && <Text>Laden..</Text>}
+      <ScrollView
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: "flex-start",
+          marginTop: 30,
+        }}
+      >
+        {loading && <Text>Vrijstellingen van blockchain laden..</Text>}
         {approved.map((course, i) => (
           <View style={styles.item} key={i}>
             <Ionicons name="checkmark-done-sharp" size={38} color="#9AF000" />

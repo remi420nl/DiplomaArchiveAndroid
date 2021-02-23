@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import React from "react";
+import { Text, StyleSheet, Pressable } from "react-native";
 import PropTypes from "prop-types";
-import { COLORS, FONTS, SIZES } from "../../assets/constants";
+import { COLORS} from "../../assets/constants";
+
+// Button component with different themes and styling options
 
 export const Button = ({
   text,
@@ -27,7 +29,6 @@ export const Button = ({
       maxHeight: 60,
       borderRadius: 2,
       padding: 5,
-
       elevation: 3,
       shadowOffset: { width: 1, height: 1 },
       shadowColor: COLORS.shadow,
@@ -45,7 +46,7 @@ export const Button = ({
         containerStyles.push({ backgroundColor: COLORS.mediumseagrean });
         break;
       case "secondary":
-        containerStyles.push({ backgroundColor: COLORS.gray2 });
+        containerStyles.push({ backgroundColor: COLORS.darkgray });
         break;
       case "cancel":
         containerStyles.push({ backgroundColor: COLORS.red });
@@ -100,6 +101,8 @@ Button.propTypes = {
   type: PropTypes.string,
   extraStyles: PropTypes.object,
 };
+
+//Default onpress handler
 
 Button.defaultProps = {
   text: "Button",

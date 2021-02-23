@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Signup, Login } from "../../api/Api";
 
+//Context component to provide login and signup functions plus to share token and user details with all child components
+
 export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);

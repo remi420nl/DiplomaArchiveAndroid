@@ -1,17 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-} from "react-native";
-import { GetAllDiplomas, GetAllDiplomasByUser } from "../../../api/Api";
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-import { ScrollView } from "react-native-gesture-handler";
-import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
+
+//Component for displaying for an interactive element for a diploma or course
 
 export default ({
   i,
@@ -28,7 +20,6 @@ export default ({
     container: {
       flexGrow: 1,
     },
-
     header: {
       backgroundColor: COLORS.background2,
       alignItems: "center",
@@ -54,8 +45,7 @@ export default ({
       justifyContent: "center",
     },
     competenceList: {
-      marginTop: 10,
-
+      marginTop: 10, //
       alignItems: "center",
     },
     competence: { fontSize: 20, alignSelf: "center" },

@@ -1,3 +1,6 @@
+//To show the correct date format in the input field after the user has used the datepicker to make a selection
+// DD/MM/YYYY format
+
 export default function (date) {
   var d = new Date(date),
     month = "" + (d.getMonth() + 1),

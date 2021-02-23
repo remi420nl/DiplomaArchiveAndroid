@@ -1,19 +1,10 @@
-import React, {
-  useEffect,
-  useState,
-  createRef,
-  useRef,
-  useCallback,
-  isValidElement,
-} from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  Dimensions,
   Pressable,
   Alert,
 } from "react-native";
@@ -24,52 +15,54 @@ import {
 } from "../../../api/Api";
 import { AntDesign } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
-import { Button } from "../../components/Button";
-import Loading from "../loading";
+import Loading from "../../components/loading";
 import Card from "../../components/Card";
 import { COLORS } from "../../assets/constants";
+import { useHeaderHeight } from "@react-navigation/stack";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 10,
-    backgroundColor: COLORS.background3,
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  buttons: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  button: {
-    backgroundColor: COLORS.white,
-    marginBottom: 10,
-    elevation: 3,
+//Screen to let employee view and edit all the available competences
 
-    padding: 10,
-    borderRadius: 10,
-  },
-});
-
-export default ({ navigation, route }) => {
+export default ({ navigation }) => {
   const [competences, setCompetences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [input, setInput] = useState("");
 
-  const ref = useRef();
-  const { user, token } = useAuth();
+  const { token } = useAuth();
+
+  const headerHeight = useHeaderHeight();
+
+  const styles = StyleSheet.create({
+    container: {
+      paddingTop: headerHeight,
+      flex: 1,
+      justifyContent: "center",
+      padding: 10,
+      backgroundColor: COLORS.background3,
+    },
+    text: {
+      fontSize: 20,
+      fontWeight: "bold",
+    },
+    buttons: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-around",
+    },
+    button: {
+      backgroundColor: COLORS.white,
+      marginBottom: 10,
+      elevation: 3,
+      padding: 10,
+      borderRadius: 10,
+    },
+  });
 
   useEffect(() => {
     // Added eventlistener to refresh when the user navigates back to this screen so the course gets updated
     const unsubscribe = navigation.addListener("focus", () => {
       fetchCompetences();
     });
-
     // user has to be logged in for this
     return unsubscribe;
   }, [!editMode, navigation]);

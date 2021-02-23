@@ -1,31 +1,25 @@
 import React, {
   useEffect,
   useState,
-  createRef,
-  useRef,
-  useCallback,
 } from "react";
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
-  TouchableHighlight,
-  Pressable,
   FlatList,
-  Dimensions,
 } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import {  TouchableOpacity } from "react-native-gesture-handler";
 import { GetCompetences, RegisterGroups } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
 import { COLORS } from "../../assets/constants";
+import { useHeaderHeight } from "@react-navigation/stack";
+
+//Screen to let employee see the course and student competences and which are of them are still requiered or if requierments are met 
 
 export default ({ navigation, route }) => {
   const [studentCompetences, setStudentComp] = useState(null);
   const [courseCompetences, setCourseComp] = useState(null);
-
-  const refs = useRef([]);
 
   const { student, course } = route.params;
 
@@ -41,8 +35,11 @@ export default ({ navigation, route }) => {
       .catch((e) => console.log(e));
   }, []);
 
+  const headerHeight = useHeaderHeight();
+
   const styles = StyleSheet.create({
     container: {
+      paddingTop: headerHeight,
       flex: 1,
       marginVertical: 20,
       padding: 3,

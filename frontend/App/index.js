@@ -1,30 +1,14 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Navigation from "./components/Navigation";
 import * as Font from "expo-font";
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Platform,
-  StatusBar,
-} from "react-native";
+import { StatusBar } from "react-native";
 import { AuthProvider } from "../App/context/AuthContext";
-import { COLORS } from "./assets/constants";
-import Loading from "../App/screens/loading";
-
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    backgroundColor: "blue",
-    // paddingTop: Platform.OS === "android" ? 25 : 0,
-  },
-});
+import Loading from "../App/components/loading";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
+
+  //Making sure fonts are loaded before the app is shown
 
   useEffect(() => {
     Font.loadAsync({
@@ -37,7 +21,7 @@ export default function App() {
 
   return !loading ? (
     <AuthProvider>
-      <StatusBar backgroundColor={COLORS.background} barStyle="dark-content" />
+      <StatusBar barStyle="dark-content" />
       <Navigation />
     </AuthProvider>
   ) : (

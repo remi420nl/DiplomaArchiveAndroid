@@ -7,10 +7,11 @@ import { RadioButton } from "react-native-paper";
 import { useAuth } from "../../context/AuthContext";
 import {
   isPasswordValid,
-  passwordValidation,
   PasswordValidationText,
 } from "../../util/PasswordCheck";
 import { IsEmailValid } from "../../util/EmailCheck";
+
+//Signup screen
 
 const styles = StyleSheet.create({
   container: {

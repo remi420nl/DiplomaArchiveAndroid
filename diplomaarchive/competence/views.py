@@ -50,7 +50,6 @@ class ExemptionsView(ListAPIView):
 
 class ApprovedExemptions(APIView):
 
-    # student only
     permission_classes = (IsStudent,)
 
     def get(self, request, *args, **kwargs):
@@ -114,8 +113,7 @@ class ExemptionView(UpdateAPIView):
             exemption = Exemption.objects.get(id=id)
 
             if exemption.status is 'a':
-                pass
-               # return Response({'error': 'exemption already approved can not be altered'}, status=403)
+                return Response({'error': 'exemption already approved can not be altered'}, status=403)
 
             if data['status'] is 'a':
                 try:

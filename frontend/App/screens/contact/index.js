@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { SendContactEmail } from "../../../api/Api";
 import { COLORS } from "../../assets/constants";
 import { Button } from "../../components/Button";
+
+//Contact screen available for all users, it uses the backend to forward the mail to a gmail account
 
 export default () => {
   const [loading, setLoading] = useState(false);

@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Alert,
-  StyleSheet,
-  Modal,
-  CheckBox,
-} from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { View, Text, Alert, StyleSheet, Modal, CheckBox } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { Button } from "../../components/Button";
 import {
   GetCompetences,
@@ -18,10 +11,9 @@ import {
 import Box from "../../components/List/Box";
 import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
+import { useHeaderHeight } from "@react-navigation/stack";
 
-// for editing competenece and keywords for a specific course
-
-// possibly move this page to the course section
+// Screen for adding or removing competences that belong to a course
 
 export default ({ navitation, route }) => {
   const [competences, setCompetences] = useState([]);
@@ -62,8 +54,11 @@ export default ({ navitation, route }) => {
       .catch((e) => console.log(e));
   }, [competences]);
 
+  const headerHeight = useHeaderHeight();
+
   const styles = StyleSheet.create({
     container: {
+      paddingTop: headerHeight,
       flex: 1,
       justifyContent: "flex-start",
       marginHorizontal: 10,
@@ -90,7 +85,6 @@ export default ({ navitation, route }) => {
     },
 
     // for the modal:
-
     centeredView: {
       flex: 1,
       justifyContent: "center",

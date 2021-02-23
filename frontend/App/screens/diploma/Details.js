@@ -3,20 +3,22 @@ import { View, Text, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { DeleteDiploma, GetDiplomaById } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
-import Loading from "../loading";
+import Loading from "../../components/loading";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { useHeaderHeight } from "@react-navigation/stack";
+
+//Screen to display details of a diploma
 
 export default ({ navigation, route }) => {
   const [diploma, setDiploma] = useState();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const { token, id } = route.params;
   const { user } = useAuth();
 
   useEffect(() => {
+    //Evenlistener to make a new api call when the users presses back after updating diploma details
     const unsubscribe = navigation.addListener("focus", () => {
       GetDiplomaById(id, token)
         .then(({ data }) => {
@@ -30,8 +32,11 @@ export default ({ navigation, route }) => {
     return unsubscribe;
   }, [navigation]);
 
+  const headerHeight = useHeaderHeight();
+
   const styles = StyleSheet.create({
     container: {
+      paddingTop: headerHeight,
       marginTop: 40,
       margin: 10,
       flex: 1,

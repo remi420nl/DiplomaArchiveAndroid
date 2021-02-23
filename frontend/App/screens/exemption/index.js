@@ -11,15 +11,18 @@ import {
 } from "react-native";
 
 import { GetAllExemptions, UpdateExemptionById } from "../../../api/Api";
-import { COLORS, FONTS } from "../../assets/constants";
+import { COLORS } from "../../assets/constants";
 import { Button } from "../../components/Button";
 import { useAuth } from "../../context/AuthContext";
+import { useHeaderHeight } from "@react-navigation/stack";
 
 const statusarray = [
   { key: "a", text: "Goedkeuren" },
   { key: "r", text: "Afkeuren" },
   { key: "p", text: "In Behandeling" },
 ];
+
+//Screen to let employee manage all exemption requests that are currently in the system
 
 export default ({ navigation, route }) => {
   const [exemptions, setExemptions] = useState(null);
@@ -51,7 +54,7 @@ export default ({ navigation, route }) => {
     setExemption((e) => ({ ...e, status: status }));
   };
 
-  //to save the old status so it can be changed in usestate by the user but keep showing the the oldstatus untill the change is saved
+  //To save the old status so it can be changed in usestate by the user but keep showing the the oldstatus untill the change is saved
   const oldStatus = React.useMemo(() => exemption && exemption.status, [
     !modalVisible,
   ]);
@@ -62,8 +65,11 @@ export default ({ navigation, route }) => {
     });
   };
 
+  const headerHeight = useHeaderHeight();
+
   const styles = StyleSheet.create({
     container: {
+      paddingTop: headerHeight,
       padding: 5,
       backgroundColor: COLORS.offwhite,
       flex: 1,
@@ -166,7 +172,7 @@ export default ({ navigation, route }) => {
     },
   });
 
-  //helper function to create extra empty boxes when the last row is not the same length as the number of colums, otherwise flatlist would spread it out
+  //Helper function to create extra empty boxes when the last row is not the same length as the number of colums, otherwise flatlist would spread it out
   const formatData = (data, colums) => {
     data = data.sort((a, b) => a.id - b.id);
 
@@ -229,29 +235,24 @@ export default ({ navigation, route }) => {
             <View style={styles.modalTopButtons}>
               <Text style={styles.modalText}>Kies een optie:</Text>
               <View style={styles.segment}>
-                {statusChoices.map(({ key, text }) => (
-                  <TouchableHighlight
-                    key={key}
-                    style={[
-                      styles.segmentButton,
-                      { backgroundColor: segmentBackground(key) },
-                      { borderColor: COLORS.lightBlue, borderWidth: 1 },
-                    ]}
-                    onPress={() => setStatus(key)}
-                  >
-                    <Text style={styles.segmentButtonText}>{text}</Text>
-                  </TouchableHighlight>
-                ))}
+                {oldStatus !== "Goedgekeurd" &&
+                  statusChoices.map(({ key, text }) => (
+                    <TouchableHighlight
+                      key={key}
+                      style={[
+                        styles.segmentButton,
+                        { backgroundColor: segmentBackground(key) },
+                        { borderColor: COLORS.lightBlue, borderWidth: 1 },
+                      ]}
+                      onPress={() => setStatus(key)}
+                    >
+                      <Text style={styles.segmentButtonText}>{text}</Text>
+                    </TouchableHighlight>
+                  ))}
+                {oldStatus === "Goedgekeurd" && (
+                  <Text>Goedgekeurde vrijstelling niet meer aan te passen</Text>
+                )}
               </View>
-              <TouchableHighlight
-                onPress={() => alert("todo..")}
-                style={[
-                  styles.segmentButton,
-                  { backgroundColor: COLORS.testred },
-                ]}
-              >
-                <Text style={styles.segmentButtonText}>Verwijder</Text>
-              </TouchableHighlight>
             </View>
             <View style={styles.modalBottomButtons}>
               <Button
@@ -272,29 +273,6 @@ export default ({ navigation, route }) => {
                   setExemption(null);
                 }}
               />
-
-              {/* 
-            <TouchableHighlight
-                style={{ ...styles.segmentButton, backgroundColor: "#2196F3" }}
-                onPress={() => {
-                  setModalVisible(false);
-                  setExemption(null);
-                }}
-              >
-                <Text style={styles.textStyle}>Terug</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
-                style={{
-                  ...styles.segmentButton,
-                  backgroundColor: COLORS.darkgreen,
-                }}
-                onPress={() => {
-                  setModalVisible(false);
-                  saveExemption();
-                }}
-              >
-                <Text style={styles.textStyle}>Opslaan</Text>
-              </TouchableHighlight> */}
             </View>
           </View>
         </View>
@@ -307,8 +285,9 @@ export default ({ navigation, route }) => {
 
     return (
       <View style={styles.colorExplanation}>
-        {options.map((o) => (
+        {options.map((o, i) => (
           <View
+            key={i}
             style={{
               padding: 5,
               alignItems: "center",

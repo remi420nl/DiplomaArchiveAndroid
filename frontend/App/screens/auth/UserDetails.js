@@ -1,16 +1,16 @@
-import React, { useMemo, useState, useRef } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { COLORS } from "../../assets/constants";
 import { UpdateUser, UpdateUserPassword } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
-
 import {
   PasswordValidationText,
-  passwordValidation,
   isPasswordValid,
 } from "../../util/PasswordCheck";
 import { IsEmailValid } from "../../util/EmailCheck";
+
+//Show userdetails and functionailty to update profile information and/or password
 
 const styles = StyleSheet.create({
   container: {

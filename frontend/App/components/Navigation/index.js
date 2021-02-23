@@ -1,6 +1,6 @@
-import React, { Children, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
-import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   createDrawerNavigator,
@@ -8,33 +8,35 @@ import {
   DrawerItemList,
   DrawerItem,
 } from "@react-navigation/drawer";
-import Home from "../../screens/home";
-import Login from "../../screens/auth/Login";
-import Signup from "../../screens/auth/Signup";
-import Courses from "../../screens/course/Courses";
-import Diplomas from "../../screens/diploma/Diplomas";
-
-import Loading from "../../screens/loading";
-import UserDetails from "../../screens/auth/UserDetails";
 import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
-import AddDiploma from "../../screens/diploma/AddDiploma";
-import DiplomaDetails from "../../screens/diploma/Details";
-import CourseDetails from "../../screens/course/Details";
-import Exemptions from "../../screens/exemption";
-import Competences from "../../screens/competences/Comparison";
-import ManageCourse from "../../screens/competences/ManageCourse";
-import ManageDiploma from "../../screens/competences/ManageDiploma";
-import EditCompetences from "../../screens/competences/Edit";
-import Keywords from "../../screens/competences/Keywords";
-import Contact from "../../screens/contact";
-import AddCourse from "../../screens/course/AddCourse";
-import StudentExemptions from "../../screens/exemption/StudentExemptions";
+import Loading from "../../components/loading";
+import {
+  Home,
+  Login,
+  Signup,
+  Courses,
+  Diplomas,
+  UserDetails,
+  AddCourse,
+  AddDiploma,
+  DiplomaDetails,
+  CourseDetails,
+  Exemptions,
+  Competences,
+  ManageCourse,
+  ManageDiploma,
+  EditCompetences,
+  Keywords,
+  Contact,
+  StudentExemptions,
+} from "../../screens";
+
+//Navigation V5 for the Stack, Bottom and Drawer navigators
 
 export default () => {
   const [loading, setLoading] = useState(false);
 
-  const MainStack = createStackNavigator();
   const Tabs = createBottomTabNavigator();
   const HomeStack = createStackNavigator();
   const ProfileStack = createStackNavigator();
@@ -87,19 +89,28 @@ export default () => {
   );
 
   const HomeStackScreen = () => (
-    <HomeStack.Navigator initialRouteName="Home">
-      <HomeStack.Screen name="Home" options={{ headerShown: false }}>
+    <HomeStack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerTransparent: true,
+      }}
+    >
+      <HomeStack.Screen name="Home" options={{ headerShown: false }} head>
         {(props) => <Home {...props} />}
       </HomeStack.Screen>
       <HomeStack.Screen
         name="Courses"
         component={Courses}
-        options={{ title: "Vakken" }}
+        options={{
+          title: "Vakken",
+        }}
       />
       <HomeStack.Screen
         name="Course"
         component={CourseDetails}
-        options={{ title: "Vak" }}
+        options={{
+          title: "Vak",
+        }}
       />
       <HomeStack.Screen
         name="Diplomas"
@@ -107,20 +118,21 @@ export default () => {
         options={{ headerShown: false }}
       />
       <HomeStack.Screen name="Diploma" component={DiplomaDetails} />
-      <HomeStack.Screen
-        name="AddDiploma"
-        component={AddDiploma}
-        options={{ headerShown: true, title: "Diploma Toevoegen" }}
-      />
+      <HomeStack.Screen name="AddDiploma" component={AddDiploma} />
       <HomeStack.Screen
         name="Exemptions"
         component={Exemptions}
-        options={{ title: "Vrijstellingen" }}
+        options={{
+          title: "Vrijstellingen",
+        }}
       />
       <HomeStack.Screen
         name="StudentExemptions"
         component={StudentExemptions}
-        options={{ title: "Goedegekeurde Vrijstellingen" }}
+        options={{
+          title: "Goedgekeurde Vrijstellingen",
+          headerTransparent: true,
+        }}
       />
       <HomeStack.Screen
         name="Competences"
@@ -130,31 +142,45 @@ export default () => {
       <HomeStack.Screen
         name="EditCompetences"
         component={EditCompetences}
-        options={{ title: "Competenties bewerken" }}
+        options={{
+          title: "Competenties bewerken",
+        }}
       />
       <HomeStack.Screen
         name="Keywords"
         component={Keywords}
-        options={{ title: "Competentie bewerken" }}
+        options={{
+          title: "Competentie bewerken",
+        }}
       />
       <HomeStack.Screen
         name="ManageCourse"
         component={ManageCourse}
-        options={{ title: "Vak Competenties Beheren" }}
+        options={{
+          title: "Vak Competenties Beheren",
+        }}
       />
       <HomeStack.Screen
         name="ManageDiploma"
         component={ManageDiploma}
-        options={{ title: "Diploma Competencies beheren" }}
+        options={{
+          title: "Diploma Competencies beheren",
+        }}
       />
       <HomeStack.Screen
         name="CreateCourse"
-        options={{ headerShown: true, title: "Vak toevoegen" }}
+        options={{
+          headerShown: true,
+          title: "Vak toevoegen",
+        }}
         component={AddCourse}
       />
       <HomeStack.Screen
         name="Sign Up"
-        options={{ headerShown: false, title: "Registreren" }}
+        options={{
+          headerShown: false,
+          title: "Registreren",
+        }}
       >
         {(props) => <Signup {...props} />}
       </HomeStack.Screen>

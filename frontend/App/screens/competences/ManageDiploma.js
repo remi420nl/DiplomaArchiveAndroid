@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import {
-  GetCompetences,
   GetAllCompetences,
   UpdateDiploma,
   CheckKeywordsDiploma,
@@ -18,61 +10,12 @@ import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
 import Card from "../../components/Card";
 import { COLORS } from "../../assets/constants";
+import { useHeaderHeight } from "@react-navigation/stack";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  list: {
-    width: "100%",
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-
-  upperContainer: {
-    flex: 1,
-    width: "100%",
-    justifyContent: "space-between",
-    flexDirection: "row",
-  },
-  lowerContainer: {
-    height: "20%",
-    padding: 8,
-  },
-
-  keywords: {
-    flex: 1,
-    borderRightWidth: 3,
-    borderColor: COLORS.darkgray,
-    paddingHorizontal: 25,
-  },
-  competenceList: {
-    flex: 1,
-    paddingHorizontal: 35,
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-  },
-  button: {},
-  header: {
-    height: 40,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-});
+//Screen to let employee manage the competences for a students diploma plus a functionality to read the pdf file to check for matches in the keyword database
 
 export default ({ navigation, route }) => {
   const [competences, setCompetences] = useState(null);
-  const [keywordsFound, setKeywordsFound] = useState(null);
   const [selectedCompetences, setSelectendCompetences] = useState([]);
   const [loading, setLoading] = useState(false);
   const [matches, setMatches] = useState(null);
@@ -86,6 +29,58 @@ export default ({ navigation, route }) => {
   useEffect(() => {
     fetchCompetences();
   }, []);
+
+  const headerHeight = useHeaderHeight();
+
+  const styles = StyleSheet.create({
+    container: {
+      paddingTop: headerHeight,
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    list: {
+      width: "100%",
+    },
+    text: {
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    upperContainer: {
+      flex: 1,
+      width: "100%",
+      justifyContent: "space-between",
+      flexDirection: "row",
+    },
+    lowerContainer: {
+      height: "20%",
+      padding: 8,
+    },
+    keywords: {
+      flex: 1,
+      borderRightWidth: 3,
+      borderColor: COLORS.darkgray,
+      paddingHorizontal: 25,
+    },
+    competenceList: {
+      flex: 1,
+      paddingHorizontal: 35,
+    },
+    buttons: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      width: "100%",
+    },
+    button: {},
+    header: {
+      height: 40,
+      alignItems: "center",
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: "bold",
+    },
+  });
 
   const fetchCompetences = () => {
     setResult(null);

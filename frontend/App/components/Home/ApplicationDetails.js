@@ -1,5 +1,7 @@
 import React from "react";
-import { View, Text, Alert } from "react-native";
+import { Alert } from "react-native";
+
+//Alert popup 
 
 export default () =>
   Alert.alert(

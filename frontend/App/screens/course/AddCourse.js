@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
-import { COLORS } from "../../assets/constants";
 import { CreateNewCourse } from "../../../api/Api";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
 
-export default ({ route }) => {
+//Screen to let employee add a course
+
+export default () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [succes, setSuccess] = useState(null);

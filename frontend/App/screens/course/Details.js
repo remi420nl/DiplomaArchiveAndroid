@@ -1,14 +1,7 @@
 import React, { useEffect, useState, createRef, useRef } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-  Pressable,
-} from "react-native";
+import { View, Text, ScrollView, StyleSheet, Pressable } from "react-native";
 import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
-import Loading from "../loading";
+import Loading from "../../components/loading";
 import {
   CreateNewExemption,
   GetAllExemptions,
@@ -19,6 +12,9 @@ import { Entypo } from "@expo/vector-icons";
 import { COLORS } from "../../assets/constants";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
+import { useHeaderHeight } from "@react-navigation/stack";
+
+//Screen for displaying course details and funcitonality to edit specific details, with seperate Student or Employee views
 
 export default ({ navigation, route }) => {
   const [course, setCourse] = useState();
@@ -105,7 +101,6 @@ export default ({ navigation, route }) => {
                 <MenuItem onPress={() => alert("todo")}>
                   Student Openen
                 </MenuItem>
-
                 <MenuDivider />
                 <MenuItem onPress={() => refs.current[i].hide()}>
                   Terug
@@ -131,7 +126,6 @@ export default ({ navigation, route }) => {
       fontWeight: "bold",
       letterSpacing: 2,
     });
-
     return { statusText };
   };
 
@@ -159,8 +153,11 @@ export default ({ navigation, route }) => {
       );
   };
 
+  const headerHeight = useHeaderHeight();
+
   const styles = StyleSheet.create({
     container: {
+      paddingTop: headerHeight,
       marginTop: 40,
       margin: 10,
       flex: 1,

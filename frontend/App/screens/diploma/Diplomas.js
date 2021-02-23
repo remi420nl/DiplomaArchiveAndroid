@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  ActivityIndicatorComponent,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Transition, Transitioning } from "react-native-reanimated";
 import { GetAllDiplomas, GetAllDiplomasByUser } from "../../../api/Api";
 import ListElement from "../../components/List/ListElement";
@@ -15,6 +7,8 @@ import StudentPicker from "../../components/Dropdown/StudentPicker";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAuth } from "../../context/AuthContext";
 import { COLORS } from "../../assets/constants";
+
+//Screen to display either all the diploma's or from the loggid in student
 
 export default ({ navigation, route }) => {
   const [currentIndex, setCurrentIndex] = useState();
@@ -27,6 +21,7 @@ export default ({ navigation, route }) => {
 
   const SingleStudentView = route.params.student;
 
+  //Reduce function for useReducer to manage a more complex state
   const archiveReducer = (state, action) => {
     switch (action.type) {
       case FETCH_SUCCESS:
@@ -105,6 +100,7 @@ export default ({ navigation, route }) => {
     setColors();
   });
 
+  //Color array for background and text colors
   const colors = [
     { bg: "#A8DDE9", color: "#3F5B98" },
     { bg: "#086E4B", color: "#FCBE4A" },
@@ -113,6 +109,7 @@ export default ({ navigation, route }) => {
     { bg: "#FDBD50", color: "#F5F5EB" },
   ];
 
+  //Setting collors which will stop from adjusting the state when the ref is set to true, otherwise it causes an infinite loop
   const setColors = () => {
     if (!colorsAdded.current && archive.data) {
       colorsAdded.current = true;
@@ -127,6 +124,7 @@ export default ({ navigation, route }) => {
     }
   };
 
+  //Depending on which kind of user is logged in either all diploma's get fetched or just the ones from the student
   const getDiplomas = () => {
     if (!colorsAdded.current && user) {
       if (user.type === "employee") {
@@ -157,6 +155,7 @@ export default ({ navigation, route }) => {
       flex: 1,
     },
     header: {
+      paddingTop: 25,
       flexDirection: "row",
       justifyContent: "space-between",
       backgroundColor: COLORS.background2,

@@ -9,10 +9,11 @@ import {
   TextInput,
   TouchableHighlight,
   TouchableWithoutFeedback,
+  ImageBackground,
   StatusBar,
 } from "react-native";
 
-import { COLORS, FONTS, SIZES } from "../../assets/constants";
+import { COLORS } from "../../assets/constants";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/Button";
@@ -20,10 +21,13 @@ import { GetAllCourses, SearchCourseByName } from "../../../api/Api";
 import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 import showApplicationDetails from "../../components/Home/ApplicationDetails";
 
+//Main screen for the app
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    marginTop: 25,
   },
   header: {
     width: "100%",
@@ -42,12 +46,16 @@ const styles = StyleSheet.create({
     marginBottom: 200,
     zIndex: 0,
   },
-  search: {},
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+  },
 
   title: {
     lineHeight: 70,
     fontSize: 60,
-    color: COLORS.primary,
+    color: COLORS.steelblue,
     fontWeight: "bold",
     margin: 15,
   },
@@ -58,7 +66,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   searchField: {
-    backgroundColor: COLORS.gray2,
+    backgroundColor: COLORS.darkgray,
     opacity: 0.9,
     width: 200,
     borderRadius: 10,
@@ -207,7 +215,7 @@ export default Home = ({ navigation }) => {
         </TouchableOpacity>
       }
     >
-      <MenuItem onPress={() => menuNavigator("Contact")}>
+      <MenuItem onPress={() => navigation.navigate("Contact")}>
         <Text style={styles.menuText}>Contact</Text>
       </MenuItem>
       {isEmployee && (
@@ -272,53 +280,59 @@ export default Home = ({ navigation }) => {
         Keyboard.dismiss();
       }}
     >
-      <View style={styles.container}>
-        <View style={styles.header}>{TopButton()}</View>
-        <View>
-          <View style={styles.searchField}>
-            <TextInput
-              style={styles.textInput}
-              onChangeText={(v) => searchCourses(v)}
-              placeholderTextColor={COLORS.white}
-              placeholder="Zoek een vak"
-              onFocus={() => {
-                setSearchResult(courses);
-              }}
-            />
-          </View>
+      <ImageBackground
+        source={require("../../assets/background/Home.jpg")}
+        style={styles.image}
+      >
+        <StatusBar translucent backgroundColor="transparent" />
+        <View style={styles.container}>
+          <View style={styles.header}>{TopButton()}</View>
           <View>
-            {searchResult && (
-              <View
-                style={{
-                  ...styles.searchResult,
-                  height: keyboardOpen ? 300 : 600,
+            <View style={styles.searchField}>
+              <TextInput
+                style={styles.textInput}
+                onChangeText={(v) => searchCourses(v)}
+                placeholderTextColor={COLORS.white}
+                placeholder="Zoek een vak"
+                onFocus={() => {
+                  setSearchResult(courses);
                 }}
-              >
-                <FlatList
-                  data={searchResult}
-                  renderItem={renderItem}
-                  keyExtractor={(item) => item.id.toString()}
-                />
-              </View>
-            )}
+              />
+            </View>
+            <View>
+              {searchResult && (
+                <View
+                  style={{
+                    ...styles.searchResult,
+                    height: keyboardOpen ? 300 : 600,
+                  }}
+                >
+                  <FlatList
+                    data={searchResult}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id.toString()}
+                  />
+                </View>
+              )}
+            </View>
+          </View>
+          {error && <Text style={styles.error}>{error}</Text>}
+
+          <View style={styles.main}>
+            <View style={styles.mainContent}>
+              <Text style={styles.welcomeText}>
+                {user ? `Hallo ${user.name}!` : "Niet Ingelogd"}
+              </Text>
+
+              <Text style={styles.title}>DIPLOMA ARCHIVE</Text>
+            </View>
+            <View style={styles.usercontent}>
+              {isStudent && StudentContent()}
+              {isEmployee && EmployeeContent()}
+            </View>
           </View>
         </View>
-        {error && <Text style={styles.error}>{error}</Text>}
-
-        <View style={styles.main}>
-          <View style={styles.mainContent}>
-            <Text style={styles.welcomeText}>
-              {user ? `Hallo ${user.name}!` : "Niet Ingelogd"}
-            </Text>
-
-            <Text style={styles.title}>DIPLOMA ARCHIVE</Text>
-          </View>
-          <View style={styles.usercontent}>
-            {isStudent && StudentContent()}
-            {isEmployee && EmployeeContent()}
-          </View>
-        </View>
-      </View>
+      </ImageBackground>
     </TouchableWithoutFeedback>
   );
 };
