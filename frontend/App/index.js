@@ -5,11 +5,13 @@ import { StatusBar } from "react-native";
 import { AuthProvider } from "../App/context/AuthContext";
 import Loading from "../App/components/loading";
 
+
+//Initial startup with Authprovider parent wrapping the children to provide them context 
+
 export default function App() {
   const [loading, setLoading] = useState(true);
 
   //Making sure fonts are loaded before the app is shown
-
   useEffect(() => {
     Font.loadAsync({
       "Roboto-Bold": require("./assets/constants/fonts/Roboto-Bold.ttf"),
