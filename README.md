@@ -1,7 +1,6 @@
 # DiplomaArchiveAndroid
-Django And React Native Project
 
-Django Rest API 
+Django Rest API  
 React Native Expo
 
 Android application to store diplomas that students can provide by uploading them in pdf format. This provided students the ability to request an exemption for a particular course based on the competences per diploma.
@@ -16,3 +15,4 @@ React Native Expo, this includes hooks like useEffect, useState, useMemo, useRef
 StyleSheet styling  
 Expanding Javascript knowledge  
 Postgres Databases  
+Solidity smartcontracts  
