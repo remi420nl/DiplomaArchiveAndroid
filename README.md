@@ -16,3 +16,6 @@ StyleSheet styling
 Expanding Javascript knowledge  
 Postgres Databases  
 Solidity smartcontracts  
+  
+Heroku deployment:  
+https://diplomaarchivedjango.herokuapp.com/
